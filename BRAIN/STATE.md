@@ -16,6 +16,9 @@ Massive consolidation + build session. Campfire Architecture fully built. Waymak
 ### Session Highlight (Feb 19 — Evening, Part 1)
 ElevenLabs Waymaker Brief pipeline built end-to-end. STATE.md → Claude → ElevenLabs TTS → MP3 → Kitchen Table audio player. Three brief types: Week Opener (Mon), Mid-Week Pulse (Wed), Week Wrap (Sat). ~16,200 ElevenLabs credits/month. First test brief generated and played successfully.
 
+### Session Highlight (Feb 19 — Evening, Part 3)
+Deploy-check run: 13/14 sites healthy. kamunity.org returning 404 — root cause: missing `@netlify/plugin-nextjs` in netlify.toml + package.json. Fix pushed to GitHub. Netlify build in progress. Also corrected ECOSYSTEM.md tech stack (Next.js, not HTML/JS). Awaiting build confirmation before marking resolved.
+
 ### Session Highlight (Feb 19 — Evening, Part 2)
 KP-01 Safety Sprint complete (code built, awaiting deploy + manual test). G1: Full WA crisis protocol hardcoded into Kai system prompt (route.ts) — all 7 crisis lines + strict behavioral rules. G4: Honest disclaimers added to all 5 public sites (kamunity.org, kamunity.ai, sovereignty-audit, ai-readiness, vine-o-code) — all visible without scrolling. G3: Full test script created (PLAN/kp-01-safety-tests.md) — 9 scenarios ready to run manually. Vine-o-code source located: kamunity-engine/outcome-vine/
 
@@ -30,7 +33,7 @@ Three meetings next week:
 
 | System | Status | Notes |
 |---|---|---|
-| kamunity.org (Kai) | ✅ Live | Encounter interface. Needs crisis protocol hardcoded. |
+| Kai (kamunity.org) | ⚠️ 404 — fix in progress | @netlify/plugin-nextjs fix pushed Feb 19. Awaiting Netlify build. |
 | kamunity.ai | ✅ Live | Community rooms platform. |
 | Sovereignty Audit | ✅ Live | Free self-assessment tool. |
 | AI Readiness | ✅ Live | 12-question quiz + toolkit. |

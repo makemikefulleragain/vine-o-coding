@@ -1,6 +1,6 @@
 # KAMUNITY ECOSYSTEM MAP
 ## All Live Sites, Tools & Infrastructure
-### Last Updated: Feb 19, 2026
+### Last Updated: Feb 19, 2026 (deploy-check run — 13/14 healthy, kamunity.org 404 fix in progress)
 
 *This document is the single source of truth for what exists, where it lives, and how it's deployed. Any AI session reads this to understand the full landscape.*
 
@@ -12,7 +12,7 @@
 
 | Site | URL | Purpose | Deploy Method | GitHub Repo | Status |
 |---|---|---|---|---|---|
-| **Kai (kamunity.org)** | [kamunity.org](https://kamunity.org) | Constitutional AI encounter interface — the front door | GitHub → Netlify CI/CD | `kamunity-org` | ✅ Live |
+| **Kai (kamunity.org)** | [kamunity.org](https://kamunity.org) | Constitutional AI encounter interface — the front door | GitHub → Netlify CI/CD | `kamunity-org` | ⚠️ 404 — fix pushed Feb 19 (@netlify/plugin-nextjs added) |
 | **Kamunity.ai** | [kamunity.ai](https://kamunity.ai) | AI capabilities hub, community rooms platform | GitHub → Netlify CI/CD | `kamunity` (private) | ✅ Live |
 | **Wedding** | [fariha-mike-wedding-2026.netlify.app](https://fariha-mike-wedding-2026.netlify.app) | Wedding planning — community rooms dogfooding | GitHub → Netlify CI/CD | `NeoKamunityWedding` (private) | ✅ Live |
 
@@ -73,7 +73,7 @@
 
 | Project | Stack | Build Step |
 |---|---|---|
-| kamunity.org (Kai) | HTML/JS + Anthropic Claude API | None (static + API) |
+| kamunity.org (Kai) | Next.js 14 + TypeScript + Tailwind + Anthropic Claude API | Yes (Next.js build + @netlify/plugin-nextjs) |
 | kamunity.ai | Next.js + TypeScript + Drizzle ORM + Supabase | Yes (Next.js build) |
 | AI Readiness | React + Tailwind + Vite | Yes (Vite build) |
 | Sovereignty Audit | React + Tailwind + Vite | Yes (Vite build) |
