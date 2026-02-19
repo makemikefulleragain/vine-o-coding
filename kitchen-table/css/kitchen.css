@@ -858,3 +858,80 @@ body {
   }
   .wm-fab { bottom: 16px; left: 16px; }
 }
+
+/* ─── Monday Brief Player ─────────────────────────────────── */
+
+.brief-card {
+  background: rgba(232, 168, 76, 0.06);
+  border: 1px solid rgba(232, 168, 76, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.brief-card.brief-empty {
+  border-style: dashed;
+  opacity: 0.85;
+}
+
+.brief-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brief-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.brief-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.brief-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #e8a84c;
+  line-height: 1.2;
+}
+
+.brief-week {
+  font-size: 0.75rem;
+  color: rgba(232, 200, 160, 0.55);
+  letter-spacing: 0.02em;
+}
+
+.brief-audio {
+  width: 100%;
+  height: 36px;
+  accent-color: #e8a84c;
+  border-radius: 6px;
+}
+
+.brief-audio::-webkit-media-controls-panel {
+  background: rgba(30, 24, 18, 0.9);
+}
+
+.brief-btn {
+  align-self: flex-start;
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+}
+
+.brief-error {
+  font-size: 0.8rem;
+  color: #e05c5c;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .brief-btn { width: 100%; text-align: center; }
+}

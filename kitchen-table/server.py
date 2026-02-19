@@ -12,6 +12,7 @@ The server reads ANTHROPIC_API_KEY from:
   2. .env file in this directory
 """
 
+import datetime
 import http.server
 import json
 import os
@@ -24,6 +25,8 @@ from pathlib import Path
 PORT = 8732
 CLAUDE_URL = "https://api.anthropic.com/v1/messages"
 CLAUDE_MODEL = "claude-sonnet-4-20250514"
+ELEVENLABS_TTS_URL = "https://api.elevenlabs.io/v1/text-to-speech"
+ELEVENLABS_MODEL = "eleven_turbo_v2_5"
 
 def load_env():
     """Read .env file if it exists."""
@@ -41,12 +44,29 @@ def load_env():
 def get_api_key():
     return os.environ.get("ANTHROPIC_API_KEY", "")
 
+def get_elevenlabs_key():
+    return os.environ.get("ELEVENLABS_API_KEY", "")
+
+def get_elevenlabs_voice_id():
+    return os.environ.get("ELEVENLABS_VOICE_ID", "")
+
 
 class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
+
+    def do_GET(self):
+        if self.path.startswith("/api/"):
+            if self.path == "/api/brief/status":
+                self.handle_brief_status()
+            else:
+                self.send_error(404)
+        else:
+            super().do_GET()
 
     def do_POST(self):
         if self.path == "/api/waymaker":
             self.handle_waymaker()
+        elif self.path == "/api/brief":
+            self.handle_brief_generate()
         else:
             self.send_error(404)
 
@@ -109,6 +129,91 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
             print(f"Proxy error: {e}", file=sys.stderr)
             self.send_json(500, {"error": str(e)})
 
+    def handle_brief_status(self):
+        week_tag = datetime.date.today().strftime("%Y-W%V")
+        audio_path = Path(__file__).parent / "audio" / f"brief-{week_tag}.mp3"
+        if audio_path.exists():
+            self.send_json(200, {"exists": True, "url": f"/audio/brief-{week_tag}.mp3", "week": week_tag})
+        else:
+            self.send_json(200, {"exists": False, "week": week_tag})
+
+    def handle_brief_generate(self):
+        api_key = get_api_key()
+        el_key = get_elevenlabs_key()
+        voice_id = get_elevenlabs_voice_id()
+
+        if not api_key:
+            self.send_json(500, {"error": "ANTHROPIC_API_KEY not set"}); return
+        if not el_key:
+            self.send_json(500, {"error": "ELEVENLABS_API_KEY not set — add to .env"}); return
+        if not voice_id:
+            self.send_json(500, {"error": "ELEVENLABS_VOICE_ID not set — add to .env"}); return
+
+        state_path = Path(__file__).parent.parent / "BRAIN" / "STATE.md"
+        if not state_path.exists():
+            self.send_json(500, {"error": "BRAIN/STATE.md not found"}); return
+        state_content = state_path.read_text(encoding="utf-8")
+
+        brief_system = (
+            "You are Waymaker, the internal AI assistant for Kamunity. "
+            "Write a warm, spoken Monday morning brief based on the STATE.md content provided. "
+            "RULES: Written for ears, not eyes — no markdown, no bullet points, no headers, no tables. "
+            "Conversational prose. Natural spoken cadence. Maximum 450 words (about 3 minutes spoken). "
+            "Start with a warm opener acknowledging the week ahead. "
+            "Cover: what's live and healthy, what's critical right now, the single most important priority this week, and one grounding encouraging note. "
+            "End warmly. Sound like a trusted colleague giving a quick kitchen table briefing, not a corporate report."
+        )
+
+        claude_payload = json.dumps({
+            "model": CLAUDE_MODEL,
+            "max_tokens": 800,
+            "system": brief_system,
+            "messages": [{"role": "user", "content": f"Here is the current STATE.md:\n\n{state_content}\n\nWrite the Monday morning brief now."}],
+        }).encode("utf-8")
+
+        ctx = ssl.create_default_context()
+        req = urllib.request.Request(
+            CLAUDE_URL, data=claude_payload,
+            headers={"Content-Type": "application/json", "x-api-key": api_key, "anthropic-version": "2023-06-01"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, context=ctx) as resp:
+                brief_text = json.loads(resp.read()).get("content", [{}])[0].get("text", "")
+        except Exception as e:
+            self.send_json(500, {"error": f"Claude error: {e}"}); return
+
+        if not brief_text.strip():
+            self.send_json(500, {"error": "Claude returned empty brief"}); return
+
+        tts_payload = json.dumps({
+            "text": brief_text,
+            "model_id": ELEVENLABS_MODEL,
+            "voice_settings": {"stability": 0.5, "similarity_boost": 0.75, "style": 0.3, "use_speaker_boost": True},
+        }).encode("utf-8")
+
+        tts_req = urllib.request.Request(
+            f"{ELEVENLABS_TTS_URL}/{voice_id}",
+            data=tts_payload,
+            headers={"xi-api-key": el_key, "Content-Type": "application/json", "Accept": "audio/mpeg"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(tts_req, context=ctx) as resp:
+                audio_data = resp.read()
+        except urllib.error.HTTPError as e:
+            self.send_json(e.code, {"error": f"ElevenLabs error: {e.code}", "detail": e.read().decode("utf-8", errors="replace")}); return
+        except Exception as e:
+            self.send_json(500, {"error": f"ElevenLabs error: {e}"}); return
+
+        week_tag = datetime.date.today().strftime("%Y-W%V")
+        audio_dir = Path(__file__).parent / "audio"
+        audio_dir.mkdir(exist_ok=True)
+        audio_path = audio_dir / f"brief-{week_tag}.mp3"
+        audio_path.write_bytes(audio_data)
+        print(f"Brief generated: {audio_path.name} ({len(audio_data)//1024}KB)", file=sys.stderr)
+        self.send_json(200, {"url": f"/audio/brief-{week_tag}.mp3", "week": week_tag, "text": brief_text})
+
     def send_json(self, code, data):
         body = json.dumps(data).encode("utf-8")
         self.send_response(code)
@@ -132,9 +237,12 @@ if __name__ == "__main__":
             port = int(sys.argv[i + 1])
 
     key = get_api_key()
+    el_key = get_elevenlabs_key()
+    voice_id = get_elevenlabs_voice_id()
     print(f"\n🔥 Kitchen Table Server")
     print(f"   http://localhost:{port}")
-    print(f"   Waymaker API: {'✅ Key loaded' if key else '❌ No ANTHROPIC_API_KEY — set in .env or environment'}")
+    print(f"   Waymaker API: {'✅ Key loaded' if key else '❌ No ANTHROPIC_API_KEY — set in .env'}")
+    print(f"   Monday Brief:  {'✅ ElevenLabs ready' if (el_key and voice_id) else '❌ Set ELEVENLABS_API_KEY + ELEVENLABS_VOICE_ID in .env'}")
     print(f"   Press Ctrl+C to stop\n")
 
     handler = KitchenTableHandler
