@@ -18,13 +18,14 @@ The nerve centre is a git-tracked folder on OneDrive with markdown documents, pr
 
 | Task | Status | What's Needed |
 |---|---|---|
-| Git clone kamunity-org into PROJECTS/ | Pending | `git clone` + verify CI/CD |
-| Git clone kamunity (kamunity.ai) into PROJECTS/ | Pending | `git clone` + verify CI/CD |
-| Git clone NeoKamunityWedding into PROJECTS/ | Pending | `git clone` + verify CI/CD |
-| Archive zip of old Dev_Code folders | Pending | PowerShell Compress-Archive |
-| Move `important teck/` to secure location | **Critical** | Manual — contains API keys |
+| Git clone kamunity-org into PROJECTS/ | ✅ Done Feb 19 | CI/CD verified — push triggered deploy |
+| Git clone kamunity (kamunity.ai) into PROJECTS/ | ✅ Done Feb 19 | Cloned to PROJECTS/kamunity-ai/ |
+| Git clone NeoKamunityWedding into PROJECTS/ | ✅ Done Feb 19 | Cloned to PROJECTS/wedding/ |
+| Run `npm install` in ai-readiness + sovereignty-audit | ✅ Done Feb 19 | 0 prod vulnerabilities |
+| Archive zip of old Dev_Code folders | ⏳ Pending | PowerShell Compress-Archive — see below |
+| Move `important teck/` to secure location | 🔴 **MANUAL** | Contains API keys — do not automate |
 | Rename auto-named Netlify sites | Low priority | Netlify dashboard |
-| Run `npm install` in ai-readiness + sovereignty-audit | Before next deploy | Terminal |
+| Delete old NeoKamunity/ source folders | After CI/CD confirm | Verify Netlify deploys from PROJECTS/ first |
 
 ### 2. Deploy Kitchen Table
 

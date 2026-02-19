@@ -150,7 +150,7 @@ Revenue target: $5-8K/month by April 2026.
 | PLAN/ | ✅ Complete | PHASE_QUEUE.md, RHYTHM.md, DECISION_LOG.md, kamunity-master-roadmap.md, campfire-phase-plan.md |
 | ENGINE/ | ✅ Complete | RUNNER.md (Vine-o-Code v2), TEMPLATES/ (3 templates) |
 | KNOWLEDGE/ | ✅ Complete | THREE_SPEEDS.md, engine-v1/, engine-v1-full/ (complete RALF engine), 10+ research/scope docs |
-| PROJECTS/ | ✅ Partial | ai-readiness/, sovereignty-audit/ moved. Git clones pending (kamunity-org, kamunity, wedding). |
+| PROJECTS/ | ✅ Complete | All 5 codebases present: ai-readiness/, sovereignty-audit/, kamunity-org/, kamunity-ai/, wedding/. npm install done. |
 | WORKSHOP/ | ✅ Complete | 17 engine prototypes (auto1/2/3), HeroGameTest, Kamunity-Prototype, KamunityCardGame |
 | ARCHIVE/ | ✅ Complete | _HISTORY_INDEX.md, phase-0-audit-report.md, unified-recommendation.md, kitchen-table-v2.html, files.zip |
 
@@ -190,6 +190,7 @@ Revenue target: $5-8K/month by April 2026.
 ## The Honest Numbers
 
 - **Sites live:** 12 active + 1 playground + 4 pending archive
+- **PROJECTS/ codebases:** 5 (ai-readiness, sovereignty-audit, kamunity-org, kamunity-ai, wedding) — all cloned + npm installed
 - **GitHub repos:** 7 (3 active, 1 playground, 3 archive)
 - **Netlify projects:** 18 (target: reduce to ~14 after cleanup)
 - **Nerve centre:** 1 consolidated folder, git-tracked, 300+ files committed
