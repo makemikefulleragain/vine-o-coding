@@ -16,6 +16,9 @@ Massive consolidation + build session. Campfire Architecture fully built. Waymak
 ### Session Highlight (Feb 19 — Evening, Part 1)
 ElevenLabs Waymaker Brief pipeline built end-to-end. STATE.md → Claude → ElevenLabs TTS → MP3 → Kitchen Table audio player. Three brief types: Week Opener (Mon), Mid-Week Pulse (Wed), Week Wrap (Sat). ~16,200 ElevenLabs credits/month. First test brief generated and played successfully.
 
+### Session Highlight (Feb 19 — Evening, Part 4)
+All 6 core sites now on GitHub CI/CD (sovereignty-audit, ai-readiness, vine-o-coding migrated from drag-and-drop). UAT fixes: G4 disclaimers moved to footers on all sites, crisis card fixed (tel: → website link, all 7 WA crisis lines shown). /uat workflow created. 14/14 deploy-check confirmed healthy.
+
 ### Session Highlight (Feb 19 — Evening, Part 3)
 Deploy-check run: 14/14 sites healthy. kamunity.org was 404 — root cause: missing `@netlify/plugin-nextjs` in netlify.toml + package.json. Fix pushed and confirmed working (200). Also corrected ECOSYSTEM.md tech stack (Next.js, not HTML/JS).
 

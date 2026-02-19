@@ -1,6 +1,6 @@
 # KAMUNITY ECOSYSTEM MAP
 ## All Live Sites, Tools & Infrastructure
-### Last Updated: Feb 19, 2026 (deploy-check run — 14/14 healthy. kamunity.org 404 fixed: @netlify/plugin-nextjs added)
+### Last Updated: Feb 19, 2026 (all 6 core sites on GitHub CI/CD. deploy-check 14/14 healthy.)
 
 *This document is the single source of truth for what exists, where it lives, and how it's deployed. Any AI session reads this to understand the full landscape.*
 
@@ -20,9 +20,9 @@
 
 | Site | URL | Purpose | GitHub Repo | Local Path | Status |
 |---|---|---|---|---|---|
-| **Sovereignty Audit** | [kamunity-audit.netlify.app](https://kamunity-audit.netlify.app) | Free digital sovereignty self-assessment for orgs | `kamunity-audit` | `PROJECTS/sovereignty-audit/` | ✅ Live — connect Netlify to GitHub |
-| **AI Readiness** | [kamunity-ai-readiness.netlify.app](https://kamunity-ai-readiness.netlify.app) | 12-question AI readiness quiz + toolkit | `kamunity-ai-readiness` | `PROJECTS/ai-readiness/` | ✅ Live — connect Netlify to GitHub |
-| **Vine-o-Code** | [vine-o-coding.netlify.app](https://vine-o-coding.netlify.app) | 6-step constitutional build methodology site | `vine-o-coding` | `kamunity-engine/outcome-vine/` | ✅ Live — connect Netlify to GitHub |
+| **Sovereignty Audit** | [kamunity-audit.netlify.app](https://kamunity-audit.netlify.app) | Free digital sovereignty self-assessment for orgs | `kamunity-audit` | `PROJECTS/sovereignty-audit/` | ✅ Live — GitHub CI/CD |
+| **AI Readiness** | [kamunity-ai-readiness.netlify.app](https://kamunity-ai-readiness.netlify.app) | 12-question AI readiness quiz + toolkit | `kamunity-ai-readiness` | `PROJECTS/ai-readiness/` | ✅ Live — GitHub CI/CD |
+| **Vine-o-Code** | [vine-o-coding.netlify.app](https://vine-o-coding.netlify.app) | 6-step constitutional build methodology site | `vine-o-coding` | `kamunity-engine/outcome-vine/` | ✅ Live — GitHub CI/CD |
 | **FactoryK Showcase** | [factoryk1.netlify.app](https://factoryk1.netlify.app) | "The Factory by the Fire" — narrative showcase of FactoryK | TBD | ✅ Live |
 | **Nonna's Knitting Circle** | [nonnas-knitting-circle.netlify.app](https://nonnas-knitting-circle.netlify.app) | Community pattern sharing — proof of concept, live testing | `kamunity-engine/nonna_knits_club/` | ✅ Live (testing) |
 | **Grants Hub** | [grants-hub.netlify.app](https://grants-hub.netlify.app) | Grant acquittal + reporting helper, live testing | `kamunity-engine/grants-hub/` | ✅ Live (testing) |
