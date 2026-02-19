@@ -1,0 +1,51 @@
+export const vinePhases = [
+  {
+    id: 1,
+    title: 'Make It Clear',
+    outcome: 'Landing page with hero section, 3-step process cards, and proof section showing the grants-hub story.',
+    score: 78,
+    status: 'success',
+  },
+  {
+    id: 2,
+    title: 'Make It Walkable',
+    outcome: '6-step interactive widget that generates foundation documents (CONSTITUTION, MISSION, RUNNER, SETUP, STATE, PHASE_QUEUE) plus an opening prompt — all downloadable as a ZIP.',
+    score: 82,
+    status: 'success',
+  },
+  {
+    id: 3,
+    title: 'Make It Learnable',
+    outcome: 'Case study page with interactive 8-phase timeline, 4 methodology deep dives, and downloadable methodology summary.',
+    score: 80,
+    status: 'success',
+  },
+  {
+    id: 4,
+    title: 'Make It Findable',
+    outcome: 'SEO pass — Open Graph tags, Twitter Card, JSON-LD structured data, sitemap, robots.txt, and per-route document titles.',
+    score: 82,
+    status: 'success',
+  },
+  {
+    id: 5,
+    title: 'Make It Lived',
+    outcome: 'First UAT round drove all changes: scroll-to-top fix, sticky widget progress bar, fade-in animations, Maya content pass, About/FAQ/Privacy/Terms page, floating feedback button.',
+    score: 86,
+    status: 'success',
+  },
+  {
+    id: 6,
+    title: 'Make It Honest & Visual',
+    outcome: 'Truthfulness audit caught "5 simple questions" claim. Added animated methodology flow, Netlify Forms feedback widget, Brian\'s further reading links, desktop spacing fixes, and "What you\'ll need" toolkit section.',
+    score: 84,
+    status: 'success',
+  },
+  {
+    id: 7,
+    title: 'Make It Rich & Shareable',
+    outcome: 'Deep dive cards restructured — lessons and links always visible, expandable analysis styled as magazine with headings and pull-quotes. This site added as a live case study.',
+    score: null,
+    status: 'current',
+  },
+]
