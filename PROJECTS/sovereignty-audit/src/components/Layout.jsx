@@ -116,14 +116,6 @@ export default function Layout({ children }) {
         )}
       </header>
 
-      {/* G4 — Honest disclaimer — visible without scrolling */}
-      <div className="bg-amber-50 border-b border-amber-200 print:hidden">
-        <p className="max-w-5xl mx-auto px-4 py-2 text-xs text-amber-800 text-center leading-snug">
-          This is a free tool by a community project, not a certified professional service. Results are a starting point, not professional advice.
-          For legal, financial, health, or safety matters, consult a qualified professional.
-        </p>
-      </div>
-
       <main className="flex-1">
         {children}
       </main>
@@ -178,6 +170,10 @@ export default function Layout({ children }) {
             </p>
             <p className="text-xs text-white/30">Perth, Western Australia · 2026</p>
           </div>
+          {/* G4 — Honest disclaimer */}
+          <p className="text-xs text-white/30 text-center mt-4 pt-4 border-t border-white/10 print:hidden">
+            Free tool by a community project, not a certified professional service. Results are a starting point — consult a qualified professional for legal, financial, health, or safety matters.
+          </p>
         </div>
       </footer>
     </div>
