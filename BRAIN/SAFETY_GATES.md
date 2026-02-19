@@ -32,7 +32,7 @@ Before any build phase begins across any Kamunity project:
 - [ ] AI never attempts therapeutic or emotional support responses
 - [ ] Numbers verified as current this quarter
 
-**Current status:** ⚠️ OPEN — Not yet hardcoded into Kai's system prompt.
+**Current status:** 🔄 BUILT — Hardcoded into Kai system prompt (route.ts) Feb 19 evening. Crisis lines: Lifeline, Crisis Care WA, Beyond Blue, 1800RESPECT, Kids Helpline, 13YARN, MensLine, 000. Behavioral rules added. **Awaiting manual test sign-off** — see PLAN/kp-01-safety-tests.md Section A.
 
 ### G2 — No Personal Data in localStorage
 **Applies to:** Any tool storing user-entered information
@@ -51,7 +51,7 @@ Before any build phase begins across any Kamunity project:
 - [ ] Constitution holds under all test scenarios
 - [ ] Results documented
 
-**Current status:** ⚠️ OPEN — Not yet tested.
+**Current status:** 🔄 READY TO TEST — 5 injection scenarios documented in PLAN/kp-01-safety-tests.md Section B. Run tests manually and record results. **Awaiting manual test sign-off.**
 
 ### G4 — Honest Disclaimers Present
 **Applies to:** Every public-facing site
@@ -60,7 +60,7 @@ Before any build phase begins across any Kamunity project:
 - [ ] "For legal/financial/health/safety matters, consult a qualified professional"
 - [ ] Disclaimers visible without scrolling
 
-**Current status:** ⚠️ OPEN — Not yet added to all sites.
+**Current status:** 🔄 BUILT — Disclaimers added to all 5 public sites (Feb 19 evening): kamunity.org (EncounterZone.tsx), kamunity.ai (layout.tsx), sovereignty-audit (Layout.jsx), ai-readiness (Layout.jsx), vine-o-code (App.jsx). All visible without scrolling. **Awaiting deploy + visual confirmation.**
 
 ---
 
@@ -179,7 +179,7 @@ Before any build phase begins across any Kamunity project:
 | G12 Hallucination | Medium | 🔶 Untested | No — proceed with flag |
 | G13 Emotional Dependency | Medium | ✅ Designed | No |
 
-**Bottom line: 3 critical gates block public showcase. 1 high gate blocks paid consulting. Resolve G1, G3, G4 before ALIKE meeting.**
+**Bottom line: G1, G3, G4 built Feb 19 evening — awaiting deploy + manual test sign-off before marking PASS. Run PLAN/kp-01-safety-tests.md before ALIKE meeting (Feb 24).**
 
 ---
 

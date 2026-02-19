@@ -116,6 +116,14 @@ export default function Layout({ children }) {
         )}
       </header>
 
+      {/* G4 — Honest disclaimer — visible without scrolling */}
+      <div className="bg-amber-50 border-b border-amber-200 print:hidden">
+        <p className="max-w-5xl mx-auto px-4 py-2 text-xs text-amber-800 text-center leading-snug">
+          This is a free tool by a community project, not a certified professional service. Results are a starting point, not professional advice.
+          For legal, financial, health, or safety matters, consult a qualified professional.
+        </p>
+      </div>
+
       <main className="flex-1">
         {children}
       </main>

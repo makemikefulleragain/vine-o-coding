@@ -13,8 +13,11 @@
 ### Session Highlight (Feb 19 — Morning)
 Massive consolidation + build session. Campfire Architecture fully built. Waymaker AI chat live in Kitchen Table. 17 prototypes extracted from engine. Root directory cleaned. Version control initialized. Windsurf workflows created.
 
-### Session Highlight (Feb 19 — Evening)
+### Session Highlight (Feb 19 — Evening, Part 1)
 ElevenLabs Waymaker Brief pipeline built end-to-end. STATE.md → Claude → ElevenLabs TTS → MP3 → Kitchen Table audio player. Three brief types: Week Opener (Mon), Mid-Week Pulse (Wed), Week Wrap (Sat). ~16,200 ElevenLabs credits/month. First test brief generated and played successfully.
+
+### Session Highlight (Feb 19 — Evening, Part 2)
+KP-01 Safety Sprint complete (code built, awaiting deploy + manual test). G1: Full WA crisis protocol hardcoded into Kai system prompt (route.ts) — all 7 crisis lines + strict behavioral rules. G4: Honest disclaimers added to all 5 public sites (kamunity.org, kamunity.ai, sovereignty-audit, ai-readiness, vine-o-code) — all visible without scrolling. G3: Full test script created (PLAN/kp-01-safety-tests.md) — 9 scenarios ready to run manually. Vine-o-code source located: kamunity-engine/outcome-vine/
 
 Three meetings next week:
 1. ALIKE WA CEO — disability sector showcase
@@ -49,8 +52,8 @@ Three meetings next week:
 
 | ID | Item | Status |
 |---|---|---|
-| S1 | Crisis protocol — WA resources hardcoded into Kai | ⚠️ Open |
-| S2 | Prompt injection testing (3 scenarios) | ⚠️ Open |
+| S1 | Crisis protocol — WA resources hardcoded into Kai | 🔄 Built — awaiting test sign-off |
+| S2 | Prompt injection testing (3 scenarios) | 🔄 Test script ready — run manually |
 | S3 | Professional indemnity insurance | ⚠️ Open |
 | S4 | Scam tools via Vine-o-Code — trust mark design | ⚠️ Needs design |
 
@@ -58,7 +61,7 @@ Three meetings next week:
 
 | ID | Item | Status |
 |---|---|---|
-| S5 | Honest disclaimers on ALL sites | ⚠️ Open |
+| S5 | Honest disclaimers on ALL sites | 🔄 Built — awaiting deploy + visual confirm |
 | S6 | Data safety warning in Vine-o-Code outputs | ⚠️ Open |
 | S7 | Incident response plan | ⚠️ Open |
 | S8 | Cultural safety + Acknowledgment review | ⚠️ Open |
@@ -205,10 +208,13 @@ Revenue target: $5-8K/month by April 2026.
 
 ## Next Session Should...
 
-- Test the Monday brief properly on Monday (first real Week Opener)
-- Consider deploying Kitchen Table to Netlify (item 2 in WHATS_NEXT.md) — now has ElevenLabs backend which won't work on static Netlify, needs a solution (keep local + phone hotspot, or deploy server somewhere)
+1. **Deploy kamunity.org** (kamunity-org-rebuild) — push to GitHub → Netlify picks up crisis + disclaimer changes
+2. **Deploy sovereignty-audit + ai-readiness + vine-o-code** — push/deploy each
+3. **Run kp-01-safety-tests.md manually** — all 9 scenarios + disclaimer visual check
+4. **Deploy kamunity.ai** (kamunity) — test disclaimer banner appears
+5. **Test the Monday brief** properly on Monday (first real Week Opener)
+- Consider deploying Kitchen Table to Netlify — now has ElevenLabs backend which won't work on static Netlify, needs a solution
 - Kai Wayfinder public voice design (ElevenLabs) — design separate from Waymaker
-- Safety sprint: S1 crisis protocol + S5 disclaimers before ALIKE meeting (Feb 24)
 
 ---
 

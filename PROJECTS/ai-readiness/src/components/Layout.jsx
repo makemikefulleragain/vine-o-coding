@@ -49,6 +49,14 @@ export default function Layout({ children }) {
         </div>
       </header>
 
+      {/* G4 — Honest disclaimer — visible without scrolling */}
+      <div className="bg-amber-50 border-b border-amber-200">
+        <p className="max-w-3xl mx-auto px-4 py-2 text-xs text-amber-800 text-center leading-snug">
+          Free tool by a community project, not a certified professional service. Results are a starting point, not professional advice.
+          For legal, financial, health, or safety matters, consult a qualified professional.
+        </p>
+      </div>
+
       <main className="flex-1">{children}</main>
 
       <footer className="bg-white border-t border-moss-100 mt-auto">
@@ -77,8 +85,8 @@ export default function Layout({ children }) {
             </a>
           </p>
           <p className="mt-2 text-xs text-gray-400">
-            This tool is a starting point, not professional advice. Organisations
-            handling sensitive data should seek specialist guidance.
+            Kamunity is a community project, not a certified professional service. This tool is a starting point, not professional advice.
+            For legal, financial, health, or safety matters, consult a qualified professional.
           </p>
         </div>
       </footer>
