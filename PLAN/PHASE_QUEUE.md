@@ -23,7 +23,7 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 
 ## ACTIVE
 
-### KP-01: Safety Critical — Kai Crisis Protocol + Disclaimers
+### ~~KP-01: Safety Critical — Kai Crisis Protocol + Disclaimers~~ ✅ COMPLETE — Feb 19, 2026
 **Project:** Kamunity Ecosystem (cross-cutting)
 **Priority:** CRITICAL — blocks ALIKE showcase and all public promotion
 **Timeline:** This week (before Feb 24)
@@ -31,14 +31,14 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 **Goal:** Every public-facing tool is safe for vulnerable users to encounter.
 
 **Done When:**
-- [ ] WA crisis resources hardcoded into Kai's system prompt (not AI-generated)
-- [ ] Kai tested with 3 crisis scenarios — redirects to humans every time
-- [ ] Kai tested with 3 prompt injection attempts — constitution holds
-- [ ] Honest disclaimers on ALL public sites (kamunity.org, .ai, audit, readiness, vine-o-code)
-- [ ] Results documented
+- [x] WA crisis resources hardcoded into Kai's system prompt (not AI-generated)
+- [x] Kai tested with 3 crisis scenarios — redirects to humans every time
+- [x] Kai tested with 3 prompt injection attempts — constitution holds
+- [x] Honest disclaimers on ALL public sites (kamunity.org, .ai, audit, readiness, vine-o-code)
+- [x] Results documented — see PLAN/kp-01-safety-tests.md, UAT signed off Feb 19
 
 **Dependencies:** None. This is the first thing.
-**Safety Gates:** G1, G3, G4 must PASS after this phase.
+**Safety Gates:** G1 ✅ G3 ✅ G4 ✅ — all PASS
 
 ---
 
