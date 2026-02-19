@@ -82,7 +82,11 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 ├── kitchen-table/                         ← Mission Control dashboard (PWA)
 │   ├── index.html (Today view)
 │   ├── tasks.html, phases.html, ecosystem.html...
-│   └── js/data.js (46 tasks, 7 phases, 16 sites, 16 allies)
+│   ├── js/data.js (46 tasks, 7 phases, 16 sites, 16 allies)
+│   ├── js/brief.js (Mon/Wed/Sat Waymaker Brief — audio player UI)
+│   ├── js/waymaker.js (Waymaker AI chat — all 8 pages)
+│   ├── server.py (local server + Claude + ElevenLabs proxy)
+│   └── audio/ (generated MP3 briefs — gitignored)
 │
 ├── NERVE_CENTRE_MAP.md                    ← THIS FILE — start here
 └── WHATS_NEXT.md                          ← Nerve centre roadmap
@@ -106,7 +110,7 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 
 | Action | Command / Location |
 |---|---|
-| **Run Kitchen Table** | `python -m http.server 8732 --directory kitchen-table` then open `localhost:8732` |
+| **Run Kitchen Table** | `python server.py` (from `kitchen-table/`) then open `localhost:8732` — includes Claude + ElevenLabs |
 | **Check what's next** | Read `PLAN/PHASE_QUEUE.md` — KP-01 is current |
 | **Check what's blocked** | Read `BRAIN/SAFETY_GATES.md` — 3 critical gates block ALIKE |
 | **Check the pulse** | Read `BRAIN/STATE.md` — updated Feb 19 |
@@ -203,12 +207,19 @@ See KNOWLEDGE/THREE_SPEEDS.md for the full methodology.
 
 ## STATUS REPORT — Where Things Stand (Feb 19, 2026)
 
-### What Got Built Today
+### What Got Built Today (Morning)
 - 7-layer Campfire Architecture — fully populated
 - 20+ documents across BRAIN/, PLAN/, ENGINE/, KNOWLEDGE/
 - 2 project codebases moved into PROJECTS/
 - Full engine-v1 extracted and catalogued (5 iterations, 17 prototypes)
 - THREE_SPEEDS methodology documented
+
+### What Got Built Today (Evening)
+- Waymaker Brief pipeline: STATE.md → Claude → ElevenLabs TTS → MP3 → Kitchen Table player
+- Three brief types: Week Opener (Mon), Mid-Week Pulse (Wed), Week Wrap (Sat)
+- 250-word punchy format with Kai capabilities nudge
+- Off-day placeholder with next brief day + test-generate link
+- 3 new decisions logged. 27 total.
 
 ### Safety Status
 - **3 critical gates block ALIKE showcase:** Kai crisis protocol, prompt injection testing, disclaimer text
@@ -304,7 +315,7 @@ These are working prototypes sitting in WORKSHOP/ waiting to be tested, polished
 | GitHub repos | 7 |
 | Working prototypes | 11 |
 | Research iterations | 5 (with full audit trails) |
-| Decisions logged | 24 |
+| Decisions logged | 27 |
 | Safety gates defined | 16 |
 | Phases in queue | 11 |
 | Allies mapped | 16 |

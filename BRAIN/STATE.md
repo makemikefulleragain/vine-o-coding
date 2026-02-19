@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 19, 2026 (afternoon — post Campfire build session)
+### Last Updated: Feb 19, 2026 (evening — ElevenLabs Waymaker Brief pipeline complete)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -10,8 +10,11 @@
 
 **Week of Feb 19-23, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
 
-### Session Highlight (Feb 19)
+### Session Highlight (Feb 19 — Morning)
 Massive consolidation + build session. Campfire Architecture fully built. Waymaker AI chat live in Kitchen Table. 17 prototypes extracted from engine. Root directory cleaned. Version control initialized. Windsurf workflows created.
+
+### Session Highlight (Feb 19 — Evening)
+ElevenLabs Waymaker Brief pipeline built end-to-end. STATE.md → Claude → ElevenLabs TTS → MP3 → Kitchen Table audio player. Three brief types: Week Opener (Mon), Mid-Week Pulse (Wed), Week Wrap (Sat). ~16,200 ElevenLabs credits/month. First test brief generated and played successfully.
 
 Three meetings next week:
 1. ALIKE WA CEO — disability sector showcase
@@ -35,6 +38,7 @@ Three meetings next week:
 | Wedding site | ✅ Live | Planning site, community rooms dogfood. |
 | Kitchen Table | 🏠 Local only | Internal ops dashboard + Waymaker AI chat. Not yet deployed to Netlify. |
 | Waymaker (Kai) | 🔮 Live locally | AI ops assistant inside Kitchen Table. Claude-powered. Context-aware per page. |
+| Waymaker Brief | 🔊 Live locally | Mon/Wed/Sat audio brief. STATE.md → Claude → ElevenLabs TTS. Plays in Kitchen Table. |
 | Campfire Architecture | ✅ Complete | All 7 layers built. BRAIN/, PLAN/, ENGINE/, KNOWLEDGE/, PROJECTS/, WORKSHOP/, ARCHIVE/. |
 
 ---
@@ -153,6 +157,7 @@ Revenue target: $5-8K/month by April 2026.
 | Version control | ✅ Git initialized. Initial commit done. Private GitHub repo pending. |
 | Windsurf workflows | ✅ 6 slash commands created (.windsurf/workflows/) |
 | Waymaker AI chat | ✅ Live in Kitchen Table (all 8 pages). Claude API via server.py. |
+| Waymaker Brief | ✅ Mon/Wed/Sat audio brief pipeline. ElevenLabs TTS. Audio player on Today page. |
 | Root directory | ✅ Cleaned. Only NERVE_CENTRE_MAP.md + WHATS_NEXT.md at root. |
 
 ---
@@ -190,8 +195,20 @@ Revenue target: $5-8K/month by April 2026.
 - **Allies mapped:** 16 (3 meetings imminent, 3 to contact, rest mapped)
 - **Engine prototypes:** 17 (11 built, 4 recommended, 2 escalated) — extracted to WORKSHOP/
 - **Waymaker:** Live in Kitchen Table, context-aware across all 8 pages
+- **Waymaker Brief:** Mon/Wed/Sat audio pipeline live. ~16,200 ElevenLabs credits/month (16% of 100k)
 - **Revenue:** $0
 - **Days to NLnet deadline:** ~41
+
+---
+
+---
+
+## Next Session Should...
+
+- Test the Monday brief properly on Monday (first real Week Opener)
+- Consider deploying Kitchen Table to Netlify (item 2 in WHATS_NEXT.md) — now has ElevenLabs backend which won't work on static Netlify, needs a solution (keep local + phone hotspot, or deploy server somewhere)
+- Kai Wayfinder public voice design (ElevenLabs) — design separate from Waymaker
+- Safety sprint: S1 crisis protocol + S5 disclaimers before ALIKE meeting (Feb 24)
 
 ---
 

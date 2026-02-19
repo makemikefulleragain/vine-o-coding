@@ -42,6 +42,9 @@
 | 2026-02-19 | important teck/ is a security concern | API keys in a Word doc. Must not go in archive zip. Move to secure location. | KP-06, security |
 | 2026-02-19 | WALGA project added to phase queue as KP-07 | Live client, going well, needs tracking alongside other projects. | PHASE_QUEUE.md |
 | 2026-02-19 | OpenAI chat export noted as future task | Valuable conversations, artifacts, reports, budgets saved in OpenAI. Get out eventually. Not urgent. | PARKING LOT |
+| 2026-02-19 | Waymaker Brief is private — Kitchen Table + local server only | Audio brief reads STATE.md (internal ops data). Never public. Never deployed to static Netlify. Needs server.py to run. | Kitchen Table deploy strategy, ElevenLabs pipeline |
+| 2026-02-19 | Mon/Wed/Sat brief cadence (3x/week, not daily) | Daily would cost ~40,500 credits/month (40%). 3x/week = ~16,200/month (16%) — preserves 84k credits for Kai Wayfinder, podcasts, one-offs. Natural rhythm: opener/pulse/wrap. | ElevenLabs credit budget, brief pipeline |
+| 2026-02-19 | Three brief types: Week Opener, Mid-Week Pulse, Week Wrap | Different prompts per day — Monday fires up the week, Wednesday checks course, Saturday reflects + resets. Each has tailored 6-part structure + Kai capabilities nudge. | server.py brief system prompts, brief.js UI |
 
 ---
 

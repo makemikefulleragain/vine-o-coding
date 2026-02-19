@@ -72,15 +72,19 @@ v4 (future)  Mobile-first. Voice via ElevenLabs. Multi-device.
 
 With an ElevenLabs account, three immediate opportunities:
 
-| Integration | What | Where |
-|---|---|---|
-| **Kai Voice** | Give Kai a consistent speaking voice for audio encounters | kamunity.org |
-| **Audio Briefings** | Generate a weekly audio summary of STATE.md | Kitchen Table / podcast feed |
-| **Accessibility** | Read-aloud for audit tool results, readiness quiz results | kamunity-audit, ai-readiness |
+| Integration | What | Where | Status |
+|---|---|---|---|
+| **Kai Voice** | Give Kai a consistent speaking voice for audio encounters | kamunity.org | ⏳ Pending — design separate from Waymaker |
+| **Audio Briefings** | Mon/Wed/Sat spoken brief from STATE.md | Kitchen Table | ✅ DONE Feb 19, 2026 |
+| **Accessibility** | Read-aloud for audit tool results, readiness quiz results | kamunity-audit, ai-readiness | ⏳ Pending |
 
-**Kai Voice is the highest value.** An AI that speaks to community organisations — in a warm, considered, Australian-contextual voice — is a differentiator no one else has. This aligns directly with the encounter model on kamunity.org.
+**Audio Briefings — ✅ DONE Feb 19, 2026.**
+Waymaker Brief pipeline: STATE.md → Claude → ElevenLabs TTS → MP3 → Kitchen Table audio player.
+Three types: Week Opener (Mon), Mid-Week Pulse (Wed), Week Wrap (Sat). ~16,200 credits/month. Waymaker voice found (Scottish-Australian, warm, personal). Private — local Kitchen Table only.
 
-**Audio Briefings are the sneaky-useful one.** Mike listens to a 3-minute summary while making coffee Monday morning. STATE.md → ElevenLabs TTS → audio file → Kitchen Table plays it. The rhythm becomes effortless.
+**Kai Voice is the highest value (still pending).** An AI that speaks to community organisations — in a warm, considered, Australian-contextual voice — is a differentiator no one else has. Kai Wayfinder = public voice, designed separately from Waymaker.
+
+**Accessibility (still pending).** Read-aloud for audit/readiness results.
 
 ### 6. Windsurf Workflow Files — ✅ DONE
 
