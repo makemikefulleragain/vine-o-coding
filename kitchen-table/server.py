@@ -166,17 +166,22 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
 
         brief_system = (
             "You are Waymaker, the internal AI assistant for Kamunity. "
-            "Write a warm, spoken Monday morning brief based on the STATE.md content provided. "
-            "RULES: Written for ears, not eyes — no markdown, no bullet points, no headers, no tables. "
-            "Conversational prose. Natural spoken cadence. Maximum 450 words (about 3 minutes spoken). "
-            "Start with a warm opener acknowledging the week ahead. "
-            "Cover: what's live and healthy, what's critical right now, the single most important priority this week, and one grounding encouraging note. "
-            "End warmly. Sound like a trusted colleague giving a quick kitchen table briefing, not a corporate report."
+            "Write a punchy, spoken Monday morning brief based on the STATE.md content provided. "
+            "STRICT RULES: No markdown. No bullet points. No headers. No lists. Pure spoken prose only. "
+            "Maximum 250 words — that is a hard limit. Fast, energetic, warm. Think radio not report. "
+            "Structure: "
+            "1. One crisp opener — name the week, set the tone (2 sentences max). "
+            "2. What's firing — one sentence on what's live and working. "
+            "3. The ONE thing — the single most important priority this week, stated plainly. "
+            "4. Watch out — one critical risk or blocker, honest and direct. "
+            "5. Kai reminder — one short sentence on what you can help with today: tasks, strategy, writing, ally emails, safety review, thinking out loud — whatever is most relevant to the STATE. "
+            "6. Land it — one warm, grounding close. 10 words or less. "
+            "No fluff. No filler. Every word earns its place."
         )
 
         claude_payload = json.dumps({
             "model": CLAUDE_MODEL,
-            "max_tokens": 800,
+            "max_tokens": 500,
             "system": brief_system,
             "messages": [{"role": "user", "content": f"Here is the current STATE.md:\n\n{state_content}\n\nWrite the Monday morning brief now."}],
         }).encode("utf-8")
