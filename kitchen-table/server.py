@@ -58,6 +58,8 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
             if self.path.startswith("/api/"):
                 if self.path == "/api/brief/status":
                     self.handle_brief_status()
+                elif self.path == "/api/files":
+                    self.handle_files_get()
                 else:
                     self.send_error(404)
             else:
@@ -76,6 +78,8 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_waymaker()
         elif self.path == "/api/brief":
             self.handle_brief_generate()
+        elif self.path == "/api/files":
+            self.handle_files_write()
         else:
             self.send_error(404)
 
@@ -283,6 +287,41 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
         audio_path.write_bytes(audio_data)
         print(f"Brief generated: {audio_path.name} ({len(audio_data)//1024}KB)", file=sys.stderr)
         self.send_json(200, {"url": f"/audio/brief-{tag}.mp3", "week": week_tag, "tag": tag, "brief_type": brief_type, "text": brief_text})
+
+
+    # Whitelisted BRAIN/PLAN files readable and writable via /api/files
+    FILE_MAP = {
+        "STATE":          ("BRAIN", "STATE.md"),
+        "PHASE_QUEUE":    ("PLAN",  "PHASE_QUEUE.md"),
+        "SAFETY_GATES":   ("BRAIN", "SAFETY_GATES.md"),
+        "ECOSYSTEM":      ("BRAIN", "ECOSYSTEM.md"),
+        "MEETING_BRIEFS": ("PLAN",  "meeting-briefs.md"),
+    }
+
+    def handle_files_get(self):
+        """Return whitelisted markdown file contents from parent directory."""
+        root = Path(__file__).parent.parent
+        files = {}
+        for key, (folder, filename) in self.FILE_MAP.items():
+            path = root / folder / filename
+            files[key] = path.read_text(encoding="utf-8") if path.exists() else None
+        self.send_json(200, {"files": files})
+
+    def handle_files_write(self):
+        """Write content back to a whitelisted markdown file (round-trip, local only)."""
+        length = int(self.headers.get("Content-Length", 0))
+        body = json.loads(self.rfile.read(length))
+        key = body.get("path", "")
+        content = body.get("content", "")
+        if key not in self.FILE_MAP:
+            self.send_json(400, {"error": f"Unknown file key: {key}"}); return
+        root = Path(__file__).parent.parent
+        folder, filename = self.FILE_MAP[key]
+        file_path = root / folder / filename
+        file_path.write_text(content, encoding="utf-8")
+        import sys as _sys
+        print(f"[files] Wrote {key} -> {file_path.name}", file=_sys.stderr)
+        self.send_json(200, {"saved": key, "path": str(file_path)})
 
     def send_json(self, code, data):
         body = json.dumps(data).encode("utf-8")

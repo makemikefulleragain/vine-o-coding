@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 19, 2026 (late evening — Kitchen Table v2 complete + meeting prep done)
+### Last Updated: Feb 19, 2026 (evening — ElevenLabs Waymaker Brief pipeline complete)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -15,9 +15,6 @@ Massive consolidation + build session. Campfire Architecture fully built. Waymak
 
 ### Session Highlight (Feb 19 — Evening, Part 1)
 ElevenLabs Waymaker Brief pipeline built end-to-end. STATE.md → Claude → ElevenLabs TTS → MP3 → Kitchen Table audio player. Three brief types: Week Opener (Mon), Mid-Week Pulse (Wed), Week Wrap (Sat). ~16,200 ElevenLabs credits/month. First test brief generated and played successfully.
-
-### Session Highlight (Feb 19 — Late Evening, Kitchen Table v2)
-Kitchen Table v2 complete in one session. Live data round-trip from BRAIN/PLAN markdown. Key deliverables: `/api/files` GET+POST in server.py (reads/writes BRAIN/ + PLAN/ live), `/.netlify/functions/markdown` serves bundled snapshots on Netlify, `✏️ Source` editor tab (5-file editor, save-to-disk, dirty state), Waymaker now reads full raw markdown files as context (not data.js summaries), Today page widgets (weekly rhythm reminder, NLnet urgency countdown, ally radar), `tools/ai-safety-checklist.html` printable leave-behind for ALIKE demo, `PLAN/meeting-briefs.md` full prep for all 3 meetings. Kitchen Table deployed to Netlify (kamunity-kitchen-table.netlify.app) with password gate. `/restart-server` Windsurf workflow created.
 
 ### Session Highlight (Feb 19 — Evening, Part 4)
 All 6 core sites now on GitHub CI/CD (sovereignty-audit, ai-readiness, vine-o-coding migrated from drag-and-drop). UAT fixes: G4 disclaimers moved to footers on all sites, crisis card fixed (tel: → website link, all 7 WA crisis lines shown). /uat workflow created. 14/14 deploy-check confirmed healthy.
@@ -48,8 +45,8 @@ Three meetings next week:
 | Nonna's Knitting | ✅ Live | Proof of concept, community testing. |
 | Grants Hub | ✅ Live | Grant reporting tool, community testing. |
 | Wedding site | ✅ Live | Planning site, community rooms dogfood. |
-| Kitchen Table | ✅ Live | kamunity-kitchen-table.netlify.app — password protected. v2: live data, Source editor, Today widgets. |
-| Waymaker (Kai) | ✅ Live | AI ops assistant in Kitchen Table. Reads full BRAIN/PLAN markdown files as context. Deployed + local. |
+| Kitchen Table | 🏠 Local only | Internal ops dashboard + Waymaker AI chat. Not yet deployed to Netlify. |
+| Waymaker (Kai) | 🔮 Live locally | AI ops assistant inside Kitchen Table. Claude-powered. Context-aware per page. |
 | Waymaker Brief | 🔊 Live locally | Mon/Wed/Sat audio brief. STATE.md → Claude → ElevenLabs TTS. Plays in Kitchen Table. |
 | Campfire Architecture | ✅ Complete | All 7 layers built. BRAIN/, PLAN/, ENGINE/, KNOWLEDGE/, PROJECTS/, WORKSHOP/, ARCHIVE/. |
 
@@ -61,8 +58,8 @@ Three meetings next week:
 
 | ID | Item | Status |
 |---|---|---|
-| S1 | Crisis protocol — WA resources hardcoded into Kai | ✅ Done — UAT passed Feb 19 |
-| S2 | Prompt injection testing (3 scenarios) | ✅ Done — UAT passed Feb 19 |
+| S1 | Crisis protocol — WA resources hardcoded into Kai | 🔄 Built — awaiting test sign-off |
+| S2 | Prompt injection testing (3 scenarios) | 🔄 Test script ready — run manually |
 | S3 | Professional indemnity insurance | ⚠️ Open |
 | S4 | Scam tools via Vine-o-Code — trust mark design | ⚠️ Needs design |
 
@@ -70,7 +67,7 @@ Three meetings next week:
 
 | ID | Item | Status |
 |---|---|---|
-| S5 | Honest disclaimers on ALL sites | ✅ Done — UAT passed Feb 19 |
+| S5 | Honest disclaimers on ALL sites | 🔄 Built — awaiting deploy + visual confirm |
 | S6 | Data safety warning in Vine-o-Code outputs | ⚠️ Open |
 | S7 | Incident response plan | ⚠️ Open |
 | S8 | Cultural safety + Acknowledgment review | ⚠️ Open |
@@ -166,14 +163,10 @@ Revenue target: $5-8K/month by April 2026.
 ### Infrastructure
 | System | Status |
 |---|---|
-| Version control | ✅ Git initialized. Kitchen Table on GitHub (kamunity-kitchen-table). Nerve centre tracked. |
-| Windsurf workflows | ✅ 7 slash commands: new-session, session-end, uat, safety-review, weekly-rhythm, deploy-check, restart-server |
-| Waymaker AI chat | ✅ Live in Kitchen Table (all 9 pages). Reads full BRAIN/PLAN markdown files. |
+| Version control | ✅ Git initialized. Initial commit done. Private GitHub repo pending. |
+| Windsurf workflows | ✅ 6 slash commands created (.windsurf/workflows/) |
+| Waymaker AI chat | ✅ Live in Kitchen Table (all 8 pages). Claude API via server.py. |
 | Waymaker Brief | ✅ Mon/Wed/Sat audio brief pipeline. ElevenLabs TTS. Audio player on Today page. |
-| Kitchen Table | ✅ Deployed to Netlify (kamunity-kitchen-table.netlify.app). Password protected. v2 live data. |
-| Source Editor | ✅ Browser-based editor for BRAIN/PLAN files. Local: saves to disk. Netlify: read-only. |
-| Meeting prep | ✅ PLAN/meeting-briefs.md — full briefs for ALIKE, Activate MH, AI Speaker. |
-| AI Safety Checklist | ✅ tools/ai-safety-checklist.html — printable leave-behind. |
 | Root directory | ✅ Cleaned. Only NERVE_CENTRE_MAP.md + WHATS_NEXT.md at root. |
 
 ---
@@ -202,18 +195,17 @@ Revenue target: $5-8K/month by April 2026.
 
 ## The Honest Numbers
 
-- **Sites live:** 13 active (Kitchen Table now deployed) + 1 playground + 4 pending archive
-- **PROJECTS/ codebases:** 5 (ai-readiness, sovereignty-audit, kamunity-org, kamunity-ai, wedding)
-- **GitHub repos:** 8 (4 active incl. kamunity-kitchen-table, 1 playground, 3 archive)
-- **Netlify projects:** 19 (target: reduce to ~14 after cleanup)
-- **Nerve centre:** 1 consolidated folder, git-tracked
-- **Tasks tracked:** 46 across 7 phases (t10 AI Safety Checklist ✅ done tonight)
-- **Safety items:** 13 (S1 ✅ S2 ✅ S5 ✅ done — 1 critical open: insurance)
+- **Sites live:** 12 active + 1 playground + 4 pending archive
+- **PROJECTS/ codebases:** 5 (ai-readiness, sovereignty-audit, kamunity-org, kamunity-ai, wedding) — all cloned + npm installed
+- **GitHub repos:** 7 (3 active, 1 playground, 3 archive)
+- **Netlify projects:** 18 (target: reduce to ~14 after cleanup)
+- **Nerve centre:** 1 consolidated folder, git-tracked, 300+ files committed
+- **Tasks tracked:** 46 across 7 phases
+- **Safety items:** 13 (4 critical, 5 high, 4 medium)
 - **Allies mapped:** 16 (3 meetings imminent, 3 to contact, rest mapped)
-- **Kitchen Table:** v2 live data — Source editor, Waymaker reads full BRAIN/PLAN markdown, Today widgets
-- **Windsurf workflows:** 7 (incl. /restart-server added tonight)
-- **Meeting prep:** PLAN/meeting-briefs.md written for all 3 meetings (Feb 24 week)
-- **AI Safety Checklist:** tools/ai-safety-checklist.html — print-ready leave-behind
+- **Engine prototypes:** 17 (11 built, 4 recommended, 2 escalated) — extracted to WORKSHOP/
+- **Waymaker:** Live in Kitchen Table, context-aware across all 8 pages
+- **Waymaker Brief:** Mon/Wed/Sat audio pipeline live. ~16,200 ElevenLabs credits/month (16% of 100k)
 - **Revenue:** $0
 - **Days to NLnet deadline:** ~41
 
@@ -223,14 +215,13 @@ Revenue target: $5-8K/month by April 2026.
 
 ## Next Session Should...
 
-1. **Monday brief** — test the Week Opener brief on Monday Feb 23 (first real use)
-2. **Meeting week (Feb 24)** — use meeting-briefs.md + print AI Safety Checklist before each meeting
-3. **Post-meeting** — update STATE.md + allies page within 24hrs of each meeting (use Source editor)
-4. **Insurance** — get PI insurance quotes before first paid engagement (S3 still open)
-5. **NLnet draft** — April 1 deadline is 41 days away. KNOWLEDGE/nlnet-application-draft.md needs finishing.
-6. **Cross-link sites** (t15) — every ecosystem site → kamunity.org
-- Verify Netlify function markdown.mjs fix (502 → 200) on deployed Source editor
-- If Source editor works on Netlify: Waymaker on deployed now reads live BRAIN/PLAN snapshots
+1. **Deploy kamunity.org** (kamunity-org-rebuild) — push to GitHub → Netlify picks up crisis + disclaimer changes
+2. **Deploy sovereignty-audit + ai-readiness + vine-o-code** — push/deploy each
+3. **Run kp-01-safety-tests.md manually** — all 9 scenarios + disclaimer visual check
+4. **Deploy kamunity.ai** (kamunity) — test disclaimer banner appears
+5. **Test the Monday brief** properly on Monday (first real Week Opener)
+- Consider deploying Kitchen Table to Netlify — now has ElevenLabs backend which won't work on static Netlify, needs a solution
+- Kai Wayfinder public voice design (ElevenLabs) — design separate from Waymaker
 
 ---
 

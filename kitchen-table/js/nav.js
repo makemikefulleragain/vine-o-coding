@@ -10,6 +10,7 @@ const PAGES = [
   { href: 'money.html',     label: '💰 Money',      id: 'money' },
   { href: 'safety.html',    label: '🛡️ Safety',    id: 'safety' },
   { href: 'gaps.html',      label: '❓ Gaps',       id: 'gaps' },
+  { href: 'source.html',   label: '✏️ Source',    id: 'source' },
 ];
 
 export function initNav(currentId) {

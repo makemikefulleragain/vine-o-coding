@@ -7,6 +7,7 @@
 <title>Today — The Kitchen Table</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/kitchen.css">
+<script src="./js/auth.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -43,6 +44,7 @@
     </div>
   </div>
 
+  <div id="widgets-mount"></div>
   <div id="today-out"></div>
 
   <div class="data-bar">
@@ -59,6 +61,7 @@ import { initCompose }       from './js/compose.js';
 import { TASKS, SITES, loadState, exportState, importState, clearState } from './js/data.js';
 import { nlnetCountdown }    from './js/utils.js';
 import { renderTodayGroups, updateStats } from './js/tasks.js';
+import { renderTodayWidgets } from './js/widgets.js';
 import { initWaymaker }      from './js/waymaker.js';
 import { initBrief }         from './js/brief.js';
 
@@ -74,6 +77,7 @@ function render() {
   document.getElementById('s-nlnet').textContent    = nlnetCountdown();
   document.getElementById('s-sites').textContent    = SITES.filter(s => s.st === 'live').length;
   document.getElementById('s-meetings').textContent = TASKS.filter(t => t.tags.includes('meeting') && !t.done).length;
+  renderTodayWidgets('widgets-mount');
 }
 
 render();

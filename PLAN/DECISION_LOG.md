@@ -45,6 +45,10 @@
 | 2026-02-19 | Waymaker Brief is private — Kitchen Table + local server only | Audio brief reads STATE.md (internal ops data). Never public. Never deployed to static Netlify. Needs server.py to run. | Kitchen Table deploy strategy, ElevenLabs pipeline |
 | 2026-02-19 | Mon/Wed/Sat brief cadence (3x/week, not daily) | Daily would cost ~40,500 credits/month (40%). 3x/week = ~16,200/month (16%) — preserves 84k credits for Kai Wayfinder, podcasts, one-offs. Natural rhythm: opener/pulse/wrap. | ElevenLabs credit budget, brief pipeline |
 | 2026-02-19 | Three brief types: Week Opener, Mid-Week Pulse, Week Wrap | Different prompts per day — Monday fires up the week, Wednesday checks course, Saturday reflects + resets. Each has tailored 6-part structure + Kai capabilities nudge. | server.py brief system prompts, brief.js UI |
+| 2026-02-19 | Kitchen Table v2: live data via server.py /api/files + Netlify function | Local reads real BRAIN/PLAN files. Deployed reads bundled data/ snapshots. Write back (round-trip) local only — Netlify is read-only. Keeps deployment simple without write infrastructure. | server.py, markdown.mjs, waymaker.js |
+| 2026-02-19 | No import.meta.url in Netlify functions — use process.cwd() | esbuild converts ESM→CJS; import.meta.url crashes at runtime (502). process.cwd() = /var/task in Lambda where included_files land. Lesson learned. | netlify/functions/markdown.mjs |
+| 2026-02-19 | Meeting briefs stored in PLAN/ and synced to kitchen-table/data/ | Waymaker reads them as live context. Source editor exposes them for in-browser editing. Single source of truth in PLAN/. | PLAN/meeting-briefs.md, kitchen-table/data/ |
+| 2026-02-19 | tools/ folder added for client-facing deliverables | Printable one-pagers, leave-behinds, templates — not internal docs, not code. Separate from BRAIN/ (strategy) and KNOWLEDGE/ (library). | Campfire Architecture, tools/ai-safety-checklist.html |
 
 ---
 

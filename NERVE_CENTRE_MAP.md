@@ -79,14 +79,28 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 │   ├── kitchen-table-v2.html                 Superseded prototype (data extracted)
 │   └── files.zip                             Legacy archive
 │
-├── kitchen-table/                         ← Mission Control dashboard (PWA)
-│   ├── index.html (Today view)
-│   ├── tasks.html, phases.html, ecosystem.html...
+├── kitchen-table/                         ← Mission Control dashboard (PWA) — deployed
+│   ├── index.html (Today) + 8 more pages (tasks, phases, ecosystem, allies, money, safety, gaps, source)
 │   ├── js/data.js (46 tasks, 7 phases, 16 sites, 16 allies)
-│   ├── js/brief.js (Mon/Wed/Sat Waymaker Brief — audio player UI)
-│   ├── js/waymaker.js (Waymaker AI chat — all 8 pages)
-│   ├── server.py (local server + Claude + ElevenLabs proxy)
+│   ├── js/waymaker.js (Waymaker AI — reads full BRAIN/PLAN markdown as context)
+│   ├── js/source.js (Source editor — 5-file browser editor, saves to disk locally)
+│   ├── js/widgets.js (Today widgets — rhythm reminder, NLnet countdown, ally radar)
+│   ├── js/auth.js (password gate — sessionStorage)
+│   ├── js/brief.js (Mon/Wed/Sat audio brief player)
+│   ├── data/ (BRAIN/PLAN snapshots for Netlify deployment)
+│   ├── netlify/functions/waymaker.mjs (Claude API proxy)
+│   ├── netlify/functions/markdown.mjs (serves data/ snapshots)
+│   ├── server.py (local server + /api/files + Claude + ElevenLabs)
 │   └── audio/ (generated MP3 briefs — gitignored)
+│
+├── tools/                                 ← Client-facing deliverables (printable, shareable)
+│   └── ai-safety-checklist.html              Printable AI safety one-pager for community orgs
+│
+├── .windsurf/workflows/                   ← Windsurf slash commands (7 total)
+│   ├── new-session.md, session-end.md
+│   ├── uat.md, safety-review.md
+│   ├── weekly-rhythm.md, deploy-check.md
+│   └── restart-server.md                     Stops + restarts server.py + opens browser
 │
 ├── NERVE_CENTRE_MAP.md                    ← THIS FILE — start here
 └── WHATS_NEXT.md                          ← Nerve centre roadmap
@@ -110,7 +124,7 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 
 | Action | Command / Location |
 |---|---|
-| **Run Kitchen Table** | `python server.py` (from `kitchen-table/`) then open `localhost:8732` — includes Claude + ElevenLabs |
+| **Run Kitchen Table** | Type `/restart-server` in Windsurf — or: `python server.py` (from `kitchen-table/`) then open `localhost:8732` |
 | **Check what's next** | Read `PLAN/PHASE_QUEUE.md` — KP-01 is current |
 | **Check what's blocked** | Read `BRAIN/SAFETY_GATES.md` — 3 critical gates block ALIKE |
 | **Check the pulse** | Read `BRAIN/STATE.md` — updated Feb 19 |
@@ -131,7 +145,7 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 | kamunity.org | Git push | Push to `kamunity-org` repo → auto-deploys |
 | kamunity.ai | Git push | Push to `kamunity` repo → auto-deploys |
 | wedding | Git push | Push to `NeoKamunityWedding` repo → auto-deploys |
-| kitchen-table | Not deployed yet | Local only. Deploy target TBD. |
+| kitchen-table | Git push | Push to `kamunity-kitchen-table` repo → Netlify auto-deploys. Local: `/restart-server` |
 
 ---
 

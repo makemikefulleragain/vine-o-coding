@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="./js/auth.js"></script>
+<meta name="theme-color" content="#1a1714">
+<title>Source Editor — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">✏️ Source Editor</h2>
+  <p class="section-sub">Read and write BRAIN/ + PLAN/ markdown files directly. Local only — Netlify shows read-only snapshots.</p>
+  <div id="source-mount"></div>
+</main>
+
+<script type="module">
+import { initNav }     from './js/nav.js';
+import { initWaymaker } from './js/waymaker.js';
+import { initSource }  from './js/source.js';
+
+initNav('source');
+initWaymaker('source');
+initSource();
+</script>
+</body>
+</html>

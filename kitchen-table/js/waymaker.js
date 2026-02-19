@@ -11,13 +11,32 @@ const MAX_HISTORY = 20;
 // Auto-detect: Netlify functions vs local Python server
 const IS_NETLIFY = location.hostname !== 'localhost' && location.hostname !== '127.0.0.1';
 const API_ENDPOINT = IS_NETLIFY ? '/.netlify/functions/waymaker' : '/api/waymaker';
+const FILES_ENDPOINT = IS_NETLIFY ? '/.netlify/functions/markdown' : '/api/files';
 
 let chatHistory = [];
 let currentPage = 'today';
 let isOpen = false;
 let isLoading = false;
+let liveFiles = null;
+let filesFetchedAt = 0;
+const FILES_TTL_MS = 5 * 60 * 1000;
 
 // ─── System Prompt Builder ───────────────────────────────────────
+
+async function fetchLiveFiles() {
+  const now = Date.now();
+  if (liveFiles && (now - filesFetchedAt) < FILES_TTL_MS) return;
+  try {
+    const resp = await fetch(FILES_ENDPOINT);
+    if (resp.ok) {
+      const data = await resp.json();
+      liveFiles = data.files || null;
+      filesFetchedAt = now;
+    }
+  } catch {
+    // silent — fall back to data.js context
+  }
+}
 
 function buildSystemPrompt(pageId) {
   const state = loadState();
@@ -109,7 +128,26 @@ RULES:
 - If asked about something you genuinely don't know, say so honestly
 - Reference specific file paths in the Campfire Architecture when relevant
 - Suggest opening Windsurf/Cascade for build tasks — you're ops, Cascade is the builder
-- If the user seems overwhelmed, help them pick ONE thing to focus on`;
+- If the user seems overwhelmed, help them pick ONE thing to focus on${liveFiles ? `
+
+---
+
+LIVE BRAIN FILES (read directly from source — authoritative):
+
+=== STATE.md ===
+${liveFiles.STATE || '(not available)'}
+
+=== PHASE_QUEUE.md ===
+${liveFiles.PHASE_QUEUE || '(not available)'}
+
+=== SAFETY_GATES.md ===
+${liveFiles.SAFETY_GATES || '(not available)'}
+
+=== ECOSYSTEM.md ===
+${liveFiles.ECOSYSTEM || '(not available)'}
+
+=== MEETING_BRIEFS.md ===
+${liveFiles.MEETING_BRIEFS || '(not available)'}` : ''}`;
 }
 
 // ─── Chat State ──────────────────────────────────────────────────
@@ -141,6 +179,7 @@ async function sendToWaymaker(userMessage) {
   chatHistory.push({ role: 'user', content: userMessage });
   saveHistory();
 
+  await fetchLiveFiles();
   const system = buildSystemPrompt(currentPage);
   const messages = chatHistory.map(m => ({
     role: m.role,
@@ -355,8 +394,13 @@ async function handleSend() {
 
 // ─── Initialize ─────────────────────────────────────────────────
 
+export function refreshWaymakerFiles() {
+  filesFetchedAt = 0; // force re-fetch on next message
+}
+
 export function initWaymaker(pageId = 'today') {
   currentPage = pageId;
   loadHistory();
   createChatUI();
+  fetchLiveFiles(); // pre-fetch in background — ready for first message
 }
