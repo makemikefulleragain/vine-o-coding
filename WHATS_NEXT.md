@@ -49,25 +49,29 @@ STATE.md freshness is now handled by:
 
 ## Medium Term (This Month → Next Quarter)
 
-### 4. Kitchen Table v2 — Live Data Round-Trip
+### 4. Kitchen Table v2 — Live Data Round-Trip ✅ COMPLETE — Feb 19, 2026
 
-Waymaker AI chat arrived early (v3 feature built Feb 19). The evolution path has been reordered:
+All v2 features shipped in one session.
 
-**Updated evolution path:**
+**Evolution path:**
 ```
 v1 (done)    Static dashboard. Data in data.js. Local storage.
-v1.5 (now)   Waymaker AI chat. Claude-powered. Context-aware per page.
-v2 (next)    Live data. Pulls from BRAIN/ + PLAN/ markdown. Editable. Round-trip writes.
-v3 (later)   Full operational copilot. Email drafts. Meeting prep. Audio briefings.
+v1.5 (done)  Waymaker AI chat. Claude-powered. Context-aware per page.
+v2 (done)    Live data from BRAIN/PLAN markdown. Source editor. Round-trip writes.
+v3 (next)    Full operational copilot. Email drafts. Meeting prep. Audio briefings.
 v4 (future)  Mobile-first. Voice via ElevenLabs. Multi-device.
 ```
 
-**v2 specifics (still needed — FactoryK speed):**
-- Server reads BRAIN/STATE.md and PLAN/PHASE_QUEUE.md as data sources
-- Kitchen Table UI can edit task status, safety gate status directly
-- Write changes back to the markdown files (round-trip via server.py)
-- Requires version control in place first (✅ done) to prevent accidental overwrites
-- Add: weekly rhythm reminder, NLnet countdown, ally follow-up tracker
+**v2 shipped — Feb 19:**
+- ✅ `/api/files` in server.py — reads real BRAIN/ + PLAN/ files live
+- ✅ `/.netlify/functions/markdown` — serves bundled data/ snapshots on Netlify
+- ✅ `✏️ Source` editor tab — 4-file editor with dirty state, save-to-disk, discard
+- ✅ Waymaker reads full markdown files as context (not just data.js summaries)
+- ✅ `refreshWaymakerFiles()` — cache busted after every save
+- ✅ Deploy helper with copy-pastable sync commands
+- ✅ Weekly rhythm reminder on Today page (day-specific action)
+- ✅ NLnet countdown widget (urgency coloring: normal → warning → urgent)
+- ✅ Ally follow-up tracker (upcoming meetings + 24hr follow-up reminder)
 
 ### 5. ElevenLabs Integration Points
 
