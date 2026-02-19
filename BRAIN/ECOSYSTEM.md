@@ -1,6 +1,6 @@
 # KAMUNITY ECOSYSTEM MAP
 ## All Live Sites, Tools & Infrastructure
-### Last Updated: Feb 19, 2026 (deploy-check run — 13/14 healthy, kamunity.org 404 fix in progress)
+### Last Updated: Feb 19, 2026 (deploy-check run — 14/14 healthy. kamunity.org 404 fixed: @netlify/plugin-nextjs added)
 
 *This document is the single source of truth for what exists, where it lives, and how it's deployed. Any AI session reads this to understand the full landscape.*
 
@@ -12,7 +12,7 @@
 
 | Site | URL | Purpose | Deploy Method | GitHub Repo | Status |
 |---|---|---|---|---|---|
-| **Kai (kamunity.org)** | [kamunity.org](https://kamunity.org) | Constitutional AI encounter interface — the front door | GitHub → Netlify CI/CD | `kamunity-org` | ⚠️ 404 — fix pushed Feb 19 (@netlify/plugin-nextjs added) |
+| **Kai (kamunity.org)** | [kamunity.org](https://kamunity.org) | Constitutional AI encounter interface — the front door | GitHub → Netlify CI/CD | `kamunity-org` | ✅ Live |
 | **Kamunity.ai** | [kamunity.ai](https://kamunity.ai) | AI capabilities hub, community rooms platform | GitHub → Netlify CI/CD | `kamunity` (private) | ✅ Live |
 | **Wedding** | [fariha-mike-wedding-2026.netlify.app](https://fariha-mike-wedding-2026.netlify.app) | Wedding planning — community rooms dogfooding | GitHub → Netlify CI/CD | `NeoKamunityWedding` (private) | ✅ Live |
 
