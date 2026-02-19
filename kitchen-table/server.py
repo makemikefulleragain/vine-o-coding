@@ -54,13 +54,22 @@ def get_elevenlabs_voice_id():
 class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
-        if self.path.startswith("/api/"):
-            if self.path == "/api/brief/status":
-                self.handle_brief_status()
+        try:
+            if self.path.startswith("/api/"):
+                if self.path == "/api/brief/status":
+                    self.handle_brief_status()
+                else:
+                    self.send_error(404)
             else:
-                self.send_error(404)
-        else:
-            super().do_GET()
+                super().do_GET()
+        except Exception as e:
+            import traceback
+            print(f"do_GET error: {e}", file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+            try:
+                self.send_json(500, {"error": str(e)})
+            except Exception:
+                pass
 
     def do_POST(self):
         if self.path == "/api/waymaker":
@@ -130,7 +139,8 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
             self.send_json(500, {"error": str(e)})
 
     def handle_brief_status(self):
-        week_tag = datetime.date.today().strftime("%Y-W%V")
+        iso = datetime.date.today().isocalendar()
+        week_tag = f"{iso[0]}-W{iso[1]:02d}"
         audio_path = Path(__file__).parent / "audio" / f"brief-{week_tag}.mp3"
         if audio_path.exists():
             self.send_json(200, {"exists": True, "url": f"/audio/brief-{week_tag}.mp3", "week": week_tag})
@@ -206,7 +216,8 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             self.send_json(500, {"error": f"ElevenLabs error: {e}"}); return
 
-        week_tag = datetime.date.today().strftime("%Y-W%V")
+        iso = datetime.date.today().isocalendar()
+        week_tag = f"{iso[0]}-W{iso[1]:02d}"
         audio_dir = Path(__file__).parent / "audio"
         audio_dir.mkdir(exist_ok=True)
         audio_path = audio_dir / f"brief-{week_tag}.mp3"
