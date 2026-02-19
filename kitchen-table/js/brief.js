@@ -19,7 +19,7 @@ export function initBrief() {
       } else if (data.brief_day) {
         renderGenerateBtn(mount, data.week, data.brief_type);
       } else {
-        mount.style.display = 'none';
+        renderOffDay(mount, data.week);
       }
     })
     .catch(() => {
@@ -63,6 +63,24 @@ function renderGenerateBtn(mount, week, briefType) {
 
   document.getElementById('brief-generate-btn').addEventListener('click', () => {
     generateBrief(mount, week, briefType);
+  });
+}
+
+function renderOffDay(mount, week) {
+  const today = new Date().getDay(); // 0=Sun,1=Mon,...6=Sat
+  const nextDay = today < 1 ? 'Monday' : today < 3 ? 'Wednesday' : today < 6 ? 'Saturday' : 'Monday';
+  mount.innerHTML = `
+    <div class="brief-card brief-empty">
+      <div class="brief-header">
+        <span class="brief-icon">🔊</span>
+        <div class="brief-meta">
+          <span class="brief-title">Waymaker Brief</span>
+          <span class="brief-week">Next brief: ${nextDay} — <button class="brief-link-btn" id="brief-test-btn">generate now for testing</button></span>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('brief-test-btn').addEventListener('click', () => {
+    generateBrief(mount, week, 'opener');
   });
 }
 

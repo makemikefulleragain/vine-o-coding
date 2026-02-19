@@ -932,6 +932,19 @@ body {
   margin: 0;
 }
 
+.brief-link-btn {
+  background: none;
+  border: none;
+  color: rgba(232, 168, 76, 0.6);
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.brief-link-btn:hover { color: #e8a84c; }
+
 @media (max-width: 640px) {
   .brief-btn { width: 100%; text-align: center; }
 }
