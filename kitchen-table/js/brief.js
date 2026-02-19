@@ -1,5 +1,11 @@
 // THE KITCHEN TABLE — brief.js
-// Monday Morning Brief — STATE.md → Claude → ElevenLabs → audio player
+// Waymaker Brief — Mon/Wed/Sat — STATE.md → Claude → ElevenLabs → audio player
+
+const BRIEF_LABELS = {
+  opener: 'Week Opener',
+  pulse:  'Mid-Week Pulse',
+  wrap:   'Week Wrap',
+};
 
 export function initBrief() {
   const mount = document.getElementById('brief-mount');
@@ -9,24 +15,26 @@ export function initBrief() {
     .then(r => r.json())
     .then(data => {
       if (data.exists) {
-        renderPlayer(mount, data.url, data.week);
+        renderPlayer(mount, data.url, data.week, data.brief_type);
+      } else if (data.brief_day) {
+        renderGenerateBtn(mount, data.week, data.brief_type);
       } else {
-        renderGenerateBtn(mount, data.week);
+        mount.style.display = 'none';
       }
     })
     .catch(() => {
-      // Server not running with brief support — hide silently
       mount.style.display = 'none';
     });
 }
 
-function renderPlayer(mount, url, week) {
+function renderPlayer(mount, url, week, briefType) {
+  const label = BRIEF_LABELS[briefType] || 'Brief';
   mount.innerHTML = `
     <div class="brief-card">
       <div class="brief-header">
         <span class="brief-icon">🔊</span>
         <div class="brief-meta">
-          <span class="brief-title">Monday Brief</span>
+          <span class="brief-title">Waymaker ${label}</span>
           <span class="brief-week">${formatWeek(week)}</span>
         </div>
       </div>
@@ -37,27 +45,28 @@ function renderPlayer(mount, url, week) {
     </div>`;
 }
 
-function renderGenerateBtn(mount, week) {
+function renderGenerateBtn(mount, week, briefType) {
+  const label = BRIEF_LABELS[briefType] || 'Brief';
   mount.innerHTML = `
     <div class="brief-card brief-empty">
       <div class="brief-header">
         <span class="brief-icon">🔊</span>
         <div class="brief-meta">
-          <span class="brief-title">Monday Brief</span>
+          <span class="brief-title">Waymaker ${label}</span>
           <span class="brief-week">${formatWeek(week)} — not yet generated</span>
         </div>
       </div>
       <button class="btn btn-ember brief-btn" id="brief-generate-btn">
-        Generate this week's brief
+        Generate ${label}
       </button>
     </div>`;
 
   document.getElementById('brief-generate-btn').addEventListener('click', () => {
-    generateBrief(mount, week);
+    generateBrief(mount, week, briefType);
   });
 }
 
-function generateBrief(mount, week) {
+function generateBrief(mount, week, briefType) {
   const btn = document.getElementById('brief-generate-btn');
   if (btn) {
     btn.disabled = true;
@@ -68,7 +77,7 @@ function generateBrief(mount, week) {
     .then(r => r.json())
     .then(data => {
       if (data.url) {
-        renderPlayer(mount, data.url, week);
+        renderPlayer(mount, data.url, data.week || week, data.brief_type || briefType);
       } else {
         if (btn) { btn.disabled = false; btn.textContent = 'Try again'; }
         console.error('Brief error:', data.error);

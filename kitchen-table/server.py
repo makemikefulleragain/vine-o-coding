@@ -139,13 +139,35 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
             self.send_json(500, {"error": str(e)})
 
     def handle_brief_status(self):
-        iso = datetime.date.today().isocalendar()
+        today = datetime.date.today()
+        iso = today.isocalendar()
         week_tag = f"{iso[0]}-W{iso[1]:02d}"
-        audio_path = Path(__file__).parent / "audio" / f"brief-{week_tag}.mp3"
-        if audio_path.exists():
-            self.send_json(200, {"exists": True, "url": f"/audio/brief-{week_tag}.mp3", "week": week_tag})
+        weekday = today.weekday()  # 0=Mon, 2=Wed, 5=Sat
+        BRIEF_DAYS = {0: ("Mon", "opener"), 2: ("Wed", "pulse"), 5: ("Sat", "wrap")}
+        audio_dir = Path(__file__).parent / "audio"
+
+        if weekday in BRIEF_DAYS:
+            day_slug, brief_type = BRIEF_DAYS[weekday]
+            tag = f"{week_tag}-{day_slug}"
+            audio_path = audio_dir / f"brief-{tag}.mp3"
+            self.send_json(200, {
+                "exists": audio_path.exists(),
+                "url": f"/audio/brief-{tag}.mp3" if audio_path.exists() else None,
+                "tag": tag, "week": week_tag,
+                "brief_day": True, "brief_type": brief_type,
+            })
         else:
-            self.send_json(200, {"exists": False, "week": week_tag})
+            # Not a brief day — find the most recent brief this week
+            found = None
+            for slug, btype in [("Mon", "opener"), ("Wed", "pulse"), ("Sat", "wrap")]:
+                p = audio_dir / f"brief-{week_tag}-{slug}.mp3"
+                if p.exists():
+                    found = (f"{week_tag}-{slug}", btype)
+            if found:
+                tag, brief_type = found
+                self.send_json(200, {"exists": True, "url": f"/audio/brief-{tag}.mp3", "tag": tag, "week": week_tag, "brief_day": False, "brief_type": brief_type})
+            else:
+                self.send_json(200, {"exists": False, "week": week_tag, "brief_day": False, "brief_type": None})
 
     def handle_brief_generate(self):
         api_key = get_api_key()
@@ -159,25 +181,59 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
         if not voice_id:
             self.send_json(500, {"error": "ELEVENLABS_VOICE_ID not set — add to .env"}); return
 
+        today = datetime.date.today()
+        iso = today.isocalendar()
+        week_tag = f"{iso[0]}-W{iso[1]:02d}"
+        weekday = today.weekday()
+        BRIEF_DAYS = {0: ("Mon", "opener"), 2: ("Wed", "pulse"), 5: ("Sat", "wrap")}
+        if weekday in BRIEF_DAYS:
+            day_slug, brief_type = BRIEF_DAYS[weekday]
+        else:
+            day_slug, brief_type = ("Mon", "opener")  # fallback for testing on off-days
+        tag = f"{week_tag}-{day_slug}"
+
+        BRIEF_PROMPTS = {
+            "opener": (
+                "You are Waymaker, the internal AI assistant for Kamunity. "
+                "Write a punchy Monday Week Opener brief — spoken prose only. "
+                "STRICT RULES: No markdown, bullets, headers, or lists. Pure spoken prose. Maximum 250 words — hard limit. Think radio, not report. "
+                "Structure: 1. Crisp opener — name the week, fire up the energy (2 sentences). "
+                "2. What's live and working — one sentence. "
+                "3. The ONE priority this week — state it plainly and why it matters. "
+                "4. One honest risk or blocker to watch. "
+                "5. Kai nudge — one sentence on the most useful thing I can help with right now (tasks, strategy, writing, ally outreach, safety review). "
+                "6. Land it — warm close, 10 words max. No fluff. Every word earns its place."
+            ),
+            "pulse": (
+                "You are Waymaker, the internal AI assistant for Kamunity. "
+                "Write a punchy Wednesday Mid-Week Pulse check — spoken prose only. "
+                "STRICT RULES: No markdown, bullets, headers, or lists. Pure spoken prose. Maximum 250 words — hard limit. Think radio, not report. "
+                "Structure: 1. Quick mid-week check-in — where are we? (1-2 sentences). "
+                "2. What's moving — what got done or progressed since Monday (one sentence). "
+                "3. Course correction — is the week's priority still right, or has something shifted? Be honest. "
+                "4. One thing to push today to keep momentum. "
+                "5. Kai nudge — one sentence on what I can help unblock or move forward right now. "
+                "6. Land it — short, warm, mid-week energy. 10 words max. No fluff. Every word earns its place."
+            ),
+            "wrap": (
+                "You are Waymaker, the internal AI assistant for Kamunity. "
+                "Write a punchy Saturday Week Wrap — spoken prose only. "
+                "STRICT RULES: No markdown, bullets, headers, or lists. Pure spoken prose. Maximum 250 words — hard limit. Think radio, not report. "
+                "Structure: 1. Quick week reflection — how did this week actually go? Honest, not performative (1-2 sentences). "
+                "2. What landed — the real win or progress this week (one sentence). "
+                "3. What carries over — the one thing rolling into next week (be specific). "
+                "4. One thing to let go of — something to rest, close, or not carry into the weekend. "
+                "5. Kai nudge — one sentence on something useful I can help prep or think through before Monday. "
+                "6. Land it — warm, restorative close. 10 words max. No fluff. Every word earns its place."
+            ),
+        }
+
+        brief_system = BRIEF_PROMPTS[brief_type]
+
         state_path = Path(__file__).parent.parent / "BRAIN" / "STATE.md"
         if not state_path.exists():
             self.send_json(500, {"error": "BRAIN/STATE.md not found"}); return
         state_content = state_path.read_text(encoding="utf-8")
-
-        brief_system = (
-            "You are Waymaker, the internal AI assistant for Kamunity. "
-            "Write a punchy, spoken Monday morning brief based on the STATE.md content provided. "
-            "STRICT RULES: No markdown. No bullet points. No headers. No lists. Pure spoken prose only. "
-            "Maximum 250 words — that is a hard limit. Fast, energetic, warm. Think radio not report. "
-            "Structure: "
-            "1. One crisp opener — name the week, set the tone (2 sentences max). "
-            "2. What's firing — one sentence on what's live and working. "
-            "3. The ONE thing — the single most important priority this week, stated plainly. "
-            "4. Watch out — one critical risk or blocker, honest and direct. "
-            "5. Kai reminder — one short sentence on what you can help with today: tasks, strategy, writing, ally emails, safety review, thinking out loud — whatever is most relevant to the STATE. "
-            "6. Land it — one warm, grounding close. 10 words or less. "
-            "No fluff. No filler. Every word earns its place."
-        )
 
         claude_payload = json.dumps({
             "model": CLAUDE_MODEL,
@@ -221,14 +277,12 @@ class KitchenTableHandler(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             self.send_json(500, {"error": f"ElevenLabs error: {e}"}); return
 
-        iso = datetime.date.today().isocalendar()
-        week_tag = f"{iso[0]}-W{iso[1]:02d}"
         audio_dir = Path(__file__).parent / "audio"
         audio_dir.mkdir(exist_ok=True)
-        audio_path = audio_dir / f"brief-{week_tag}.mp3"
+        audio_path = audio_dir / f"brief-{tag}.mp3"
         audio_path.write_bytes(audio_data)
         print(f"Brief generated: {audio_path.name} ({len(audio_data)//1024}KB)", file=sys.stderr)
-        self.send_json(200, {"url": f"/audio/brief-{week_tag}.mp3", "week": week_tag, "text": brief_text})
+        self.send_json(200, {"url": f"/audio/brief-{tag}.mp3", "week": week_tag, "tag": tag, "brief_type": brief_type, "text": brief_text})
 
     def send_json(self, code, data):
         body = json.dumps(data).encode("utf-8")
