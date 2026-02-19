@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 19, 2026
+### Last Updated: Feb 19, 2026 (afternoon — post Campfire build session)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -9,6 +9,9 @@
 ## Current Period: Pre-Launch Sprint
 
 **Week of Feb 19-23, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
+
+### Session Highlight (Feb 19)
+Massive consolidation + build session. Campfire Architecture fully built. Waymaker AI chat live in Kitchen Table. 17 prototypes extracted from engine. Root directory cleaned. Version control initialized. Windsurf workflows created.
 
 Three meetings next week:
 1. ALIKE WA CEO — disability sector showcase
@@ -30,8 +33,9 @@ Three meetings next week:
 | Nonna's Knitting | ✅ Live | Proof of concept, community testing. |
 | Grants Hub | ✅ Live | Grant reporting tool, community testing. |
 | Wedding site | ✅ Live | Planning site, community rooms dogfood. |
-| Kitchen Table | 🏠 Local only | Internal ops dashboard. Not deployed. |
-| Campfire Architecture | 📐 Planning | BRAIN/ docs being written (this session). |
+| Kitchen Table | 🏠 Local only | Internal ops dashboard + Waymaker AI chat. Not yet deployed to Netlify. |
+| Waymaker (Kai) | 🔮 Live locally | AI ops assistant inside Kitchen Table. Claude-powered. Context-aware per page. |
+| Campfire Architecture | ✅ Complete | All 7 layers built. BRAIN/, PLAN/, ENGINE/, KNOWLEDGE/, PROJECTS/, WORKSHOP/, ARCHIVE/. |
 
 ---
 
@@ -135,13 +139,21 @@ Revenue target: $5-8K/month by April 2026.
 
 | Layer | Status | Files |
 |---|---|---|
-| BRAIN/ | 🔨 Writing now | CONSTITUTION.md ✅, ECOSYSTEM.md ✅, STATE.md ✅, SAFETY_GATES.md ⏳, WHO.md ⏳ |
-| PLAN/ | ⏳ Phase 2 | PHASE_QUEUE.md, RHYTHM.md, DECISION_LOG.md |
-| ENGINE/ | ⏳ Phase 2 | RUNNER.md (Vine-o-Code v2), TEMPLATES/ |
-| KNOWLEDGE/ | ⏳ Phase 3 | Extract from NeoKamunity, kamunity-engine, RAG Material |
-| PROJECTS/ | ⏳ Phase 3 | Move active codebases into structure |
-| WORKSHOP/ | ⏳ Phase 3 | Experiments, prototypes, media, chat exports |
-| ARCHIVE/ | ⏳ Phase 3 | Historical builds, zipped + indexed |
+| BRAIN/ | ✅ Complete | CONSTITUTION.md, ECOSYSTEM.md, STATE.md, SAFETY_GATES.md, WHO.md, kamunity-safety-threat-model.md |
+| PLAN/ | ✅ Complete | PHASE_QUEUE.md, RHYTHM.md, DECISION_LOG.md, kamunity-master-roadmap.md, campfire-phase-plan.md |
+| ENGINE/ | ✅ Complete | RUNNER.md (Vine-o-Code v2), TEMPLATES/ (3 templates) |
+| KNOWLEDGE/ | ✅ Complete | THREE_SPEEDS.md, engine-v1/, engine-v1-full/ (complete RALF engine), 10+ research/scope docs |
+| PROJECTS/ | ✅ Partial | ai-readiness/, sovereignty-audit/ moved. Git clones pending (kamunity-org, kamunity, wedding). |
+| WORKSHOP/ | ✅ Complete | 17 engine prototypes (auto1/2/3), HeroGameTest, Kamunity-Prototype, KamunityCardGame |
+| ARCHIVE/ | ✅ Complete | _HISTORY_INDEX.md, phase-0-audit-report.md, unified-recommendation.md, kitchen-table-v2.html, files.zip |
+
+### Infrastructure
+| System | Status |
+|---|---|
+| Version control | ✅ Git initialized. Initial commit done. Private GitHub repo pending. |
+| Windsurf workflows | ✅ 6 slash commands created (.windsurf/workflows/) |
+| Waymaker AI chat | ✅ Live in Kitchen Table (all 8 pages). Claude API via server.py. |
+| Root directory | ✅ Cleaned. Only NERVE_CENTRE_MAP.md + WHATS_NEXT.md at root. |
 
 ---
 
@@ -172,10 +184,12 @@ Revenue target: $5-8K/month by April 2026.
 - **Sites live:** 12 active + 1 playground + 4 pending archive
 - **GitHub repos:** 7 (3 active, 1 playground, 3 archive)
 - **Netlify projects:** 18 (target: reduce to ~14 after cleanup)
-- **Code folders:** 26 across 2 locations (target: consolidated into 1)
+- **Nerve centre:** 1 consolidated folder, git-tracked, 300+ files committed
 - **Tasks tracked:** 46 across 7 phases
 - **Safety items:** 13 (4 critical, 5 high, 4 medium)
 - **Allies mapped:** 16 (3 meetings imminent, 3 to contact, rest mapped)
+- **Engine prototypes:** 17 (11 built, 4 recommended, 2 escalated) — extracted to WORKSHOP/
+- **Waymaker:** Live in Kitchen Table, context-aware across all 8 pages
 - **Revenue:** $0
 - **Days to NLnet deadline:** ~41
 

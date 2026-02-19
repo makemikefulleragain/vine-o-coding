@@ -6,9 +6,9 @@
 
 ---
 
-## Current State: v1.0 — "It Exists"
+## Current State: v1.5 — "It Thinks"
 
-The nerve centre is a folder on OneDrive with markdown documents, project code, and a local-only dashboard. It works. It's already more organised than 99% of solo founder operations. But it can be much more.
+The nerve centre is a git-tracked folder on OneDrive with markdown documents, project code, a local dashboard with live AI chat (Waymaker), and Windsurf workflows for repeatable operations. It works. It's already more capable than most startup ops setups. And it's growing.
 
 ---
 
@@ -37,33 +37,35 @@ The dashboard is local-only. It should be accessible from any device.
 
 **Recommended:** Deploy to Netlify with basic auth. Mike should be able to check the dashboard from his phone.
 
-### 3. STATE.md Auto-Freshness
+### 3. STATE.md Auto-Freshness — ✅ DONE
 
-STATE.md goes stale fast. Two options to keep it honest:
-
-- **Manual:** Follow RHYTHM.md — update every Monday (15 min minimum)
-- **Semi-auto:** At the start of each Cascade session, ask "Read STATE.md — is this still true?" and update what's changed
+STATE.md freshness is now handled by:
+- **Windsurf workflow:** `/new-session` reads STATE.md first, flags if stale (>7 days)
+- **Weekly rhythm:** `/weekly-rhythm` workflow walks through the Monday 30-min cadence
+- **STATE.md updated:** Refreshed Feb 19, 2026 afternoon with full Campfire Architecture status
 
 ---
 
 ## Medium Term (This Month → Next Quarter)
 
-### 4. Kitchen Table v2 — The Real Waymaker
+### 4. Kitchen Table v2 — Live Data Round-Trip
 
-Kitchen Table is currently a read-mostly dashboard. It should become Waymaker — the internal AI assistant that actually helps run operations.
+Waymaker AI chat arrived early (v3 feature built Feb 19). The evolution path has been reordered:
 
-**Evolution path:**
+**Updated evolution path:**
 ```
-v1 (now)     Static dashboard. Data in data.js. Local storage.
-v2 (next)    Live data. Pulls from BRAIN/ + PLAN/. Editable.
-v3 (later)   Waymaker integration. AI suggests actions. Email drafts. Meeting prep.
-v4 (future)  Full operational copilot. Voice via ElevenLabs. Mobile-first.
+v1 (done)    Static dashboard. Data in data.js. Local storage.
+v1.5 (now)   Waymaker AI chat. Claude-powered. Context-aware per page.
+v2 (next)    Live data. Pulls from BRAIN/ + PLAN/ markdown. Editable. Round-trip writes.
+v3 (later)   Full operational copilot. Email drafts. Meeting prep. Audio briefings.
+v4 (future)  Mobile-first. Voice via ElevenLabs. Multi-device.
 ```
 
-**v2 specifics:**
-- Parse BRAIN/STATE.md and PLAN/PHASE_QUEUE.md as data sources
-- Let Mike edit task status, safety gate status directly from the UI
-- Write changes back to the markdown files (round-trip)
+**v2 specifics (still needed — FactoryK speed):**
+- Server reads BRAIN/STATE.md and PLAN/PHASE_QUEUE.md as data sources
+- Kitchen Table UI can edit task status, safety gate status directly
+- Write changes back to the markdown files (round-trip via server.py)
+- Requires version control in place first (✅ done) to prevent accidental overwrites
 - Add: weekly rhythm reminder, NLnet countdown, ally follow-up tracker
 
 ### 5. ElevenLabs Integration Points
@@ -80,32 +82,38 @@ With an ElevenLabs account, three immediate opportunities:
 
 **Audio Briefings are the sneaky-useful one.** Mike listens to a 3-minute summary while making coffee Monday morning. STATE.md → ElevenLabs TTS → audio file → Kitchen Table plays it. The rhythm becomes effortless.
 
-### 6. Windsurf Workflow Files
+### 6. Windsurf Workflow Files — ✅ DONE
 
-Create `.windsurf/workflows/` with reusable workflows:
+Created `.windsurf/workflows/` with 6 reusable workflows:
 
 ```
 .windsurf/workflows/
-├── new-session.md          "Read BRAIN/, check STATE.md, ask what to work on"
-├── weekly-rhythm.md        "Run the Monday 30-min cadence from RHYTHM.md"
-├── new-project.md          "Copy ENGINE/TEMPLATES/, fill blanks, create PROJECTS/[name]/"
-├── deploy-check.md         "Verify all live sites still respond, report failures"
-├── ally-email.md           "Draft outreach email using WHO.md ally data"
-├── safety-review.md        "Check all SAFETY_GATES.md, update STATE.md"
+├── new-session.md          ✅ "Read BRAIN/, check STATE.md, ask what to work on"
+├── weekly-rhythm.md        ✅ "Run the Monday 30-min cadence from RHYTHM.md"
+├── new-project.md          ✅ "Copy ENGINE/TEMPLATES/, fill blanks, create PROJECTS/[name]/"
+├── deploy-check.md         ✅ "Verify all live sites still respond, report failures"
+├── ally-email.md           ✅ "Draft outreach email using WHO.md ally data"
+└── safety-review.md        ✅ "Check all SAFETY_GATES.md, update STATE.md"
 ```
 
-These become slash commands: `/new-session`, `/weekly-rhythm`, `/new-project`, etc.
+These are now available as slash commands: `/new-session`, `/weekly-rhythm`, `/new-project`, etc.
 
-### 7. Version Control for the Nerve Centre
+### 7. Version Control for the Nerve Centre — ✅ DONE
 
-The nerve centre itself isn't git-tracked. It should be — at least the markdown documents.
+Git initialized Feb 19, 2026. Initial commit: 300+ files.
 
-**Options:**
-- **Git init** in Kamunity-Tabletop-Plan/ with `.gitignore` for node_modules, dist, .env
-- **Private GitHub repo** for backup + history
-- **Don't** track PROJECTS/ subfolders (they have their own repos) — use git submodules or just .gitignore them
+**What's tracked:**
+- All BRAIN/, PLAN/, ENGINE/, KNOWLEDGE/, WORKSHOP/ documents
+- Kitchen Table dashboard + Waymaker
+- .windsurf/workflows/
 
-**Benefit:** Every document change gets a commit history. You can see when STATE.md was last updated, when a decision was logged, when a safety gate changed.
+**What's ignored (.gitignore):**
+- `node_modules/`, `.env`, build artifacts
+- `PROJECTS/*/` (own repos — clone separately)
+- `ARCHIVE/*.zip` (large binaries)
+- OneDrive conflict files
+
+**Still pending:** Private GitHub repo for backup + remote history.
 
 ---
 
@@ -165,11 +173,14 @@ TODAY       A folder with good markdown documents and a local dashboard
 
 If you only do three things:
 
-1. **Deploy Kitchen Table to Netlify** — access from anywhere
-2. **Create Windsurf workflows** — make sessions start fast
+1. **Deploy Kitchen Table to Netlify** — access from anywhere (Waymaker needs server-side function for Claude API)
+2. ~~**Create Windsurf workflows**~~ ✅ DONE — 6 slash commands live
 3. **Generate Kai's voice** with ElevenLabs — differentiator, delight, accessibility
 
-Everything else follows from having those three things working.
+Updated top 3 (Feb 19):
+1. **Deploy Kitchen Table + Waymaker** — Netlify function already built, just needs deploy + env var
+2. **Push nerve centre to private GitHub repo** — backup + history + collaboration
+3. **ElevenLabs audio briefings** — STATE.md → voice → Monday coffee ritual
 
 ---
 
