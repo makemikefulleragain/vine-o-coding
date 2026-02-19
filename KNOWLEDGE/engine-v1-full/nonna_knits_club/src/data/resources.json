@@ -1,0 +1,72 @@
+[
+  {
+    "id": "r1",
+    "name": "Ravelry Pattern Search",
+    "description": "The most comprehensive database of knitting and crochet patterns anywhere. Free and paid patterns, filterable by craft, difficulty, yarn weight, and more.",
+    "url": "https://www.ravelry.com/patterns/search",
+    "category": "patterns"
+  },
+  {
+    "id": "r2",
+    "name": "Yarnspirations Free Patterns",
+    "description": "Over 11,000 free knitting and crochet patterns from Bernat, Caron, Lily, and Patons. Quality tested by professional designers.",
+    "url": "https://www.yarnspirations.com/collections/patterns",
+    "category": "patterns"
+  },
+  {
+    "id": "r3",
+    "name": "LoveCrafts Free Patterns",
+    "description": "Thousands of free knitting and crochet patterns. Good filtering by project type, skill level, and yarn weight.",
+    "url": "https://www.lovecrafts.com/en-gb/l/knitting/knitting-patterns/free-knitting-patterns",
+    "category": "patterns"
+  },
+  {
+    "id": "r4",
+    "name": "TL Yarn Crafts (YouTube)",
+    "description": "Toni Lipsey's channel with clear, well-paced crochet tutorials. Great for visual learners and beginners.",
+    "url": "https://www.youtube.com/@TLYarnCrafts",
+    "category": "tutorials"
+  },
+  {
+    "id": "r5",
+    "name": "Very Pink Knits (YouTube)",
+    "description": "Staci Perry's channel with detailed knitting tutorials. Excellent close-up shots and calm, clear teaching style.",
+    "url": "https://www.youtube.com/@verypinkknits",
+    "category": "tutorials"
+  },
+  {
+    "id": "r6",
+    "name": "Bella Coco Crochet (YouTube)",
+    "description": "Sarah-Jayne's beginner-friendly crochet tutorials. Very popular in the UK. Covers basics through advanced techniques.",
+    "url": "https://www.youtube.com/@BellaCoco",
+    "category": "tutorials"
+  },
+  {
+    "id": "r7",
+    "name": "Wool and the Gang",
+    "description": "Modern knitting and crochet kits with everything you need included. Great for beginners who want a complete project in a box.",
+    "url": "https://www.woolandthegang.com/",
+    "category": "supplies"
+  },
+  {
+    "id": "r8",
+    "name": "LoveKnitting / LoveCrafts",
+    "description": "Wide selection of yarn, needles, hooks, and accessories. Good prices and they deliver to most countries.",
+    "url": "https://www.lovecrafts.com/",
+    "category": "supplies"
+  },
+  {
+    "id": "r9",
+    "name": "Knitting Help",
+    "description": "Free instructional knitting videos covering every technique from casting on to complex stitch patterns. A classic learning resource.",
+    "url": "https://www.knittinghelp.com/",
+    "category": "tutorials"
+  },
+  {
+    "id": "r10",
+    "name": "All About Ami",
+    "description": "Beautiful blog focused on amigurumi (crocheted stuffed animals) with free patterns and detailed photo tutorials.",
+    "url": "https://www.allaboutami.com/",
+    "category": "patterns"
+  }
+]

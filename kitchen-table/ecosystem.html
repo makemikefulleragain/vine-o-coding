@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1714">
+<title>Ecosystem — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">The Ecosystem</h2>
+  <p class="section-sub">Everything Kamunity has built, is building, or will build. Click live sites to open.</p>
+  <div id="eco-out"></div>
+</main>
+
+<script type="module">
+import { initNav }    from './js/nav.js';
+import { initCompose } from './js/compose.js';
+import { SITES }      from './js/data.js';
+import { initWaymaker } from './js/waymaker.js';
+
+initNav('ecosystem');
+initCompose();
+initWaymaker('ecosystem');
+
+const GROUPS = [
+  { key: 'live',     label: '✅ Live',          badge: 'live' },
+  { key: 'building', label: '🔨 Building',       badge: 'building' },
+  { key: 'planned',  label: '📋 Planned',        badge: 'planned' },
+  { key: 'future',   label: '🔮 Future',         badge: 'future' },
+];
+
+function siteGroup(site) {
+  if (site.st === 'live')     return 'live';
+  if (site.st === 'building') return 'building';
+  if (['planned','p2','p3'].includes(site.st)) return 'planned';
+  return 'future';
+}
+
+function renderSite(s) {
+  const isLive = s.st === 'live';
+  const hasUrl = s.url && !['', '/constitution'].includes(s.url);
+  const clickable = isLive && hasUrl;
+  const badgeKey = siteGroup(s);
+  const badgeLabels = { live:'Live', building:'Building', planned:'Planned', future:'Future' };
+
+  return `
+<div class="site-card${clickable ? ' clickable' : ''}"
+  ${clickable ? `onclick="window.open('https://${s.url}','_blank')" role="button" aria-label="Open ${s.name}"` : ''}>
+  <div class="site-icon">${s.icon}</div>
+  <div class="site-name">${s.name}</div>
+  ${s.url ? `<div class="site-url">${s.url}</div>` : ''}
+  <div class="site-desc">${s.desc}</div>
+  <div style="margin-top:5px">
+    <span class="badge b-${badgeKey}">${badgeLabels[badgeKey]}</span>
+  </div>
+</div>`.trim();
+}
+
+function render() {
+  const grouped = {};
+  SITES.forEach(s => {
+    const g = siteGroup(s);
+    (grouped[g] = grouped[g] || []).push(s);
+  });
+
+  document.getElementById('eco-out').innerHTML = GROUPS
+    .filter(g => grouped[g.key]?.length)
+    .map(g => `
+      <h3 class="section-title sm">${g.label} (${grouped[g.key].length})</h3>
+      <div class="site-grid">${grouped[g.key].map(renderSite).join('')}</div>
+    `).join('');
+}
+
+render();
+</script>
+</body>
+</html>

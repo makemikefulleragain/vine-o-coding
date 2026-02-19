@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1714">
+<title>Money — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">Revenue &amp; Sustainability</h2>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-value" id="s-mtd" style="font-size:.95rem;cursor:pointer" onclick="editMTD()" title="Click to edit">$0</div>
+      <div class="stat-label">MTD Revenue</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">~$40</div>
+      <div class="stat-label">Costs/mo</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">$5–8K</div>
+      <div class="stat-label">Target/mo</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color:var(--sky)">€35K</div>
+      <div class="stat-label">NLnet Ask</div>
+    </div>
+  </div>
+
+  <div id="money-out"></div>
+</main>
+
+<script type="module">
+import { initNav }    from './js/nav.js';
+import { initCompose } from './js/compose.js';
+import { SERVICES, GRANTS, loadState } from './js/data.js';
+import { nlnetCountdown } from './js/utils.js';
+import { initWaymaker } from './js/waymaker.js';
+
+loadState();
+initNav('money');
+initCompose();
+initWaymaker('money');
+
+// MTD editable
+const MTD_KEY = 'kt-mtd';
+function getMTD() { try { return localStorage.getItem(MTD_KEY) || '$0'; } catch { return '$0'; } }
+function setMTD(v) { try { localStorage.setItem(MTD_KEY, v); } catch {} }
+document.getElementById('s-mtd').textContent = getMTD();
+
+window.editMTD = function() {
+  const cur = getMTD();
+  const val = prompt('Enter MTD revenue (e.g. $1,200):', cur);
+  if (val !== null) {
+    setMTD(val.trim() || '$0');
+    document.getElementById('s-mtd').textContent = val.trim() || '$0';
+  }
+};
+
+function render() {
+  const grantBadge = st => {
+    if (st === 'Drafting')        return '<span class="badge b-active">Drafting</span>';
+    if (st === 'Need auspicing')  return '<span class="badge b-high">Needs Auspicing</span>';
+    if (st === 'Monitoring')      return '<span class="badge b-waiting">Monitoring</span>';
+    return '<span class="badge b-waiting">' + st + '</span>';
+  };
+
+  document.getElementById('money-out').innerHTML = `
+    <h3 class="section-title sm">Consulting Services</h3>
+    <p class="section-sub">Transparent two-tier pricing — community rate / standard rate.</p>
+    ${SERVICES.map(s => `
+      <div class="card">
+        <div class="card-title">
+          ${s.name}
+          <span style="font-size:.65rem;color:var(--faint)">${s.dur}</span>
+        </div>
+        <div class="card-body">
+          <span style="color:var(--moss)">Community: ${s.nfp}</span>
+          &nbsp;·&nbsp;
+          Standard: ${s.std}
+        </div>
+      </div>`).join('')}
+
+    <h3 class="section-title sm" style="margin-top:20px">Grant Pipeline</h3>
+    ${GRANTS.map(g => `
+      <div class="card">
+        <div class="card-title">
+          ${g.name}
+          ${grantBadge(g.st)}
+        </div>
+        <div class="card-body">
+          <strong>${g.amt}</strong> &nbsp;·&nbsp; Deadline: ${g.deadline}
+        </div>
+      </div>`).join('')}
+
+    <h3 class="section-title sm" style="margin-top:20px">Revenue Trajectory</h3>
+    <div class="card">
+      <div class="card-body" style="line-height:1.9">
+        <strong style="color:var(--ember)">Now:</strong> Consulting — audits, workshops, strategy sessions<br>
+        <strong style="color:var(--moss)">3–6 months:</strong> Grants — NLnet, Lotterywest, Dept Communities<br>
+        <strong style="color:var(--sky)">6–12 months:</strong> Community Supported Software — monthly contributions<br>
+        <strong style="color:var(--violet)">Year 2:</strong> Methodology licensing, training-as-product, international delivery
+      </div>
+    </div>
+
+    <h3 class="section-title sm" style="margin-top:20px">Pricing Philosophy</h3>
+    <div class="card">
+      <div class="card-body">
+        Community organisations pay less because their work creates the commons we serve.
+        Standard pricing is used by for-profits and government. The difference funds access.
+        All pricing is published. No hidden fees. No lock-in.
+      </div>
+    </div>
+  `;
+}
+
+render();
+</script>
+</body>
+</html>

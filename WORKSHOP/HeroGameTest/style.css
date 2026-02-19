@@ -1,0 +1,239 @@
+:root {
+    --game-bg: #79c692;
+    --container-bg: #f0fff0;
+    --container-border: #4CAF50;
+    --card-bg: #ffffff;
+    --card-border: #a5d6a7;
+    --card-shadow: rgba(0,0,0,0.15);
+    --text-dark: #335C3D;
+    --text-light-on-dark-bg: #f8f8f8;
+    --accent-color: #FFC107;
+    --button-primary-bg: #4CAF50;
+    --button-primary-text: #ffffff;
+    --button-secondary-bg: #FF9800;
+    --grump-color: #f44336;
+    --hero-color: #2196F3;
+    --font-primary: 'Nunito', sans-serif;
+    --font-display: 'Fredoka One', cursive;
+    --guide-bg: #fffbe0;
+    --guide-border: #ffd700;
+}
+
+body {
+    font-family: var(--font-primary);
+    margin: 0;
+    padding: 20px;
+    background-color: var(--game-bg);
+    color: var(--text-dark);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+#game-container {
+    width: 98%;
+    max-width: 1400px;
+    background-color: var(--container-bg);
+    border-radius: 20px;
+    border: 5px solid var(--container-border);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.25);
+    padding: 20px;
+    display: grid;
+    grid-template-areas:
+        "header header header"
+        "game-controls-area game-log-area guide-area"       /* Row 2 */
+        "player-status-area project-display-area player-hand-area"; /* Row 3 */
+    grid-template-columns: 1fr 1.5fr 1fr; /* Adjust column ratios for balance */
+    grid-template-rows: auto auto minmax(400px, 1fr); /* Header | Row 2 | Row 3 (flexible height) */
+    gap: 15px;
+}
+
+header {
+    grid-area: header;
+    text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 3px dashed var(--accent-color);
+}
+header h1 {
+    font-family: var(--font-display);
+    color: var(--hero-color);
+    margin: 0 0 8px 0;
+    font-size: 2.2em;
+}
+.game-status div { font-size: 1em; margin: 3px 0; color: var(--text-dark); }
+
+/* Row 2 elements */
+#game-controls-area { grid-area: game-controls-area; text-align:center; display: flex; flex-direction: column; justify-content: space-between;}
+#game-log-container { grid-area: game-log-area; max-height: 220px; overflow-y: auto; }
+#guide-section { grid-area: guide-area; }
+
+/* Row 3 elements */
+#player-status-area { grid-area: player-status-area; display: flex; flex-direction: column; gap: 10px;}
+#project-display-area { grid-area: project-display-area; }
+#player-hand-area { grid-area: player-hand-area; }
+
+
+#guide-section {
+    background-color: var(--guide-bg);
+    border: 3px dashed var(--guide-border);
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100%; 
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#guide-section h2 {
+    font-family: var(--font-display);
+    color: #E67E22;
+    margin-top: 0;
+    font-size: 1.3em;
+}
+#guide-section p {
+    font-size: 1em;
+    line-height: 1.6;
+    color: #5D4037;
+    margin-bottom: 0;
+}
+
+#pass-turn-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.85); color: white;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; z-index: 1000;
+}
+#pass-turn-overlay h2 { font-family: var(--font-display); font-size: 2.5em; margin-bottom: 15px; color: var(--accent-color);}
+#pass-turn-overlay p { font-size: 1.2em; margin-bottom: 20px; }
+#pass-turn-overlay button {
+    padding: 15px 30px; font-size: 1.5em; background-color: var(--button-secondary-bg);
+    color: white; border: none; border-radius: 20px; cursor: pointer;
+    font-family: var(--font-display);
+}
+
+.section {
+    padding: 12px;
+    border-radius: 10px;
+    background-color: #fff;
+    border: 2px solid var(--container-border);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+.section h2, #player-status-area h3 { /* Target h3s inside player-status-area too */
+    font-family: var(--font-display);
+    margin-top: 0;
+    color: var(--hero-color);
+    border-bottom: 2px dashed var(--accent-color);
+    padding-bottom: 5px;
+    font-size: 1.1em;
+    text-align: center;
+    margin-bottom: 10px;
+}
+#player-status-area > section { /* Style for sections nested in player-status-area */
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    background-color: transparent; /* Children sections don't need own bg */
+}
+#player-status-area > section > h3 {
+    font-size: 1em;
+    color: #555;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: #ddd;
+    text-align: left; /* Align subsection titles left */
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+
+.deck-pile {
+    background-color: #e8f5e9; border: 2px dashed var(--hero-color);
+    border-radius: 8px; padding: 8px; margin-bottom: 6px;
+    text-align: center; min-height: 30px; font-size: 0.85em;
+}
+.info-box {
+    padding: 8px; border-radius: 6px; background-color: #f5f5f5; margin-bottom:5px;
+    font-size: 0.9em; color: var(--text-dark); border: 1px solid #ddd;
+}
+.info-box span { font-weight: bold; color: var(--hero-color); }
+#grump-score-display span { color: var(--grump-color); }
+
+.card-display-area {
+    display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; padding: 5px;
+    border: 1px dashed #ccc; border-radius: 5px; min-height: 60px; background-color: #f9f9f9;
+    flex-grow: 1;
+}
+.card {
+    border: 2px solid var(--card-border); padding: 8px; border-radius: 8px; background-color: var(--card-bg);
+    color: var(--text-dark); width: 85px; height: 110px;
+    box-shadow: 1px 1px 3px var(--card-shadow); display: flex; flex-direction: column;
+    justify-content: space-around; font-size: 0.75em; text-align: center; cursor: pointer;
+}
+.card.grump-card { border-color: var(--grump-color); background-color: #ffebee; }
+.card.helper-card { border-color: var(--hero-color); background-color: #e3f2fd; }
+.card h4 { font-family: var(--font-display); font-size: 0.85em; margin: 0 0 3px 0; color: var(--text-dark); }
+.card p { margin: 0; font-size: 0.7em; color: #555; }
+.card.selected { border-color: var(--accent-color) !important; border-width: 3px; transform: scale(1.05); }
+
+.project-step {
+    border: 2px solid var(--accent-color); padding: 10px; margin-bottom: 8px;
+    border-radius: 8px; background-color: #fffacd; box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+.project-step h4 { font-family: var(--font-display); color: var(--text-dark); font-size: 1em; margin: 0 0 5px 0; }
+.project-step p { font-size: 0.85em; margin: 3px 0; }
+.project-step.completed { background-color: #c8e6c9; border-color: var(--hero-color); text-decoration: line-through;}
+.project-step button { font-size: 0.8em; padding: 5px 8px;}
+.project-step button.selected-step-action { background-color: var(--accent-color); color: var(--text-dark); }
+
+button {
+    padding: 10px 15px; font-size: 0.9em; font-weight: bold; background-color: var(--button-primary-bg);
+    color: var(--button-primary-text); border: none; border-radius: 20px;
+    cursor: pointer; margin: 5px; font-family: var(--font-display);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2); transition: background-color 0.2s, transform 0.1s;
+}
+button:hover { background-color: #388E3C; transform: translateY(-1px); }
+button:disabled { background-color: #BDBDBD; color: #757575; cursor: not-allowed; box-shadow: none; transform: none; }
+#play-grump-card-button { background-color: var(--grump-color); }
+#play-grump-card-button:hover { background-color: #d32f2f; }
+
+#game-log {
+    font-size: 0.8em; line-height: 1.4; color: #555;
+}
+#game-log p { margin: 2px 0; padding: 2px 4px; border-bottom: 1px dotted #eee; }
+#game-log p:last-child { border-bottom: none; }
+
+#dice-result-display { margin-top: 10px; padding: 8px; font-size: 1em;}
+#dice-result { font-weight: bold; color: var(--hero-color); font-size: 1.2em; }
+
+#player-status-area .player-compact-info {
+    padding: 6px; margin-bottom: 6px; background-color: #f0f0f0;
+    border-radius:5px; font-size: 0.85em; border: 1px solid #ddd;
+}
+#player-status-area .player-compact-info span { margin-right: 8px; }
+#player-status-area .player-compact-info strong { color: var(--hero-color); }
+#grump-status-compact strong { color: var(--grump-color); }
+#all-heroes-overview h4 {font-family: var(--font-display); font-size: 1em; margin-bottom: 5px;}
+#all-heroes-energy-display p { margin: 2px 0; font-size: 0.9em;}
+
+#energy-commitment-area input { width: 50px; text-align: center; margin: 0 5px; padding: 5px; border-radius: 5px; border: 1px solid #ccc;}
+#energy-commitment-area label {font-size: 0.9em;}
+
+#active-perks-display ul { padding-left: 0; list-style: none; font-size: 0.8em; }
+#active-perks-display li::before { content: "⭐ "; color: var(--accent-color); }
+#active-perks-display { margin-top: 10px; font-size: 0.9em;}
+#active-perks-display h4 { font-size: 0.9em; margin-bottom: 3px;}
+
+.hand-zone {min-height: 130px;}
+
+#player-specific-actions-area button, #player-specific-actions-area input, #player-specific-actions-area label {
+    font-size: 0.85em; padding: 6px 10px;
+}
+#player-specific-actions-area input[type="number"] { padding: 6px; }
+
+.capitalist-info-hidden #grump-card-hand-display { opacity: 0.3; filter: blur(3px); pointer-events: none; }

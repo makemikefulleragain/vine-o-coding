@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1714">
+<title>Phases — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">Build Roadmap</h2>
+  <p class="section-sub">Each phase deployable independently. Each makes the previous more valuable. Click a phase to see its tasks.</p>
+  <div class="timeline" id="phases-out"></div>
+</main>
+
+<script type="module">
+import { initNav }    from './js/nav.js';
+import { initCompose } from './js/compose.js';
+import { TASKS, PHASES, loadState } from './js/data.js';
+import { completionBar } from './js/utils.js';
+import { initWaymaker } from './js/waymaker.js';
+
+loadState();
+initNav('phases');
+initCompose();
+initWaymaker('phases');
+
+const container = document.getElementById('phases-out');
+
+function render() {
+  container.innerHTML = PHASES.map(p => {
+    const pTasks = TASKS.filter(t => t.phase === p.key);
+    const done   = pTasks.filter(t => t.done).length;
+    const total  = pTasks.length;
+    const isGoal = p.status === 'goal';
+    const clickAttr = p.key
+      ? `onclick="window.location.href='tasks.html?phase=${p.key}'" title="View ${p.title} tasks"`
+      : '';
+
+    return `
+<div class="phase ${p.status}" ${clickAttr}>
+  <div class="phase-title">
+    ${p.title}
+    ${total ? `<span style="font-size:.65rem;color:var(--dim);font-family:'DM Sans',sans-serif">&nbsp;(${done}/${total})</span>` : ''}
+  </div>
+  ${p.time ? `<div class="phase-time">${p.time}</div>` : ''}
+  ${total ? `<div class="phase-meta">${completionBar(done, total)}</div>` : ''}
+  <ul class="phase-items">
+    ${p.items.map(i => `<li>${i}</li>`).join('')}
+  </ul>
+  ${p.key ? `<div style="margin-top:6px;font-size:.65rem;color:var(--faint)">Click to view tasks →</div>` : ''}
+</div>`;
+  }).join('');
+}
+
+render();
+</script>
+</body>
+</html>

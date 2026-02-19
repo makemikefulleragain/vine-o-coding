@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kamunity AI Audit — Digital Sovereignty Self-Assessment</title>
+    <meta name="description" content="Free 2-minute self-assessment for community organisations. Understand your digital sovereignty position — where you're locked in, leaking data, or overpaying." />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Kamunity AI Audit — Digital Sovereignty Self-Assessment" />
+    <meta property="og:description" content="Free 2-minute self-assessment for community organisations. Understand your digital sovereignty position — where you're locked in, leaking data, or overpaying." />
+    <meta property="og:site_name" content="Kamunity AI Audit" />
+    <meta property="og:locale" content="en_AU" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Kamunity AI Audit — Digital Sovereignty Self-Assessment" />
+    <meta name="twitter:description" content="Free 2-minute self-assessment for community organisations. Where are you locked in, leaking data, or overpaying?" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Kamunity Consulting",
+      "url": "https://kamunityconsulting.com",
+      "description": "Digital sovereignty consulting for community organisations in Australia. Workshops, audits, and transition support for NFPs.",
+      "sameAs": [
+        "https://kamunity.ai",
+        "https://kamunity.org",
+        "https://kamunityconsulting.com"
+      ],
+      "areaServed": {
+        "@type": "Country",
+        "name": "Australia"
+      },
+      "knowsAbout": ["digital sovereignty", "nonprofit technology", "data ownership", "vendor lock-in", "AI safety for nonprofits"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Kamunity AI Audit",
+      "url": "https://audit.kamunity.ai",
+      "description": "Free digital sovereignty self-assessment for community organisations. 10 questions, 2 minutes, personalised sovereignty score with recommendations.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Kamunity Consulting"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is digital sovereignty?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Digital sovereignty means having control over your organisation's digital tools, data, and costs. It's about knowing where your data is, who can access it, whether you could leave your current tools if you needed to, and whether you're paying a fair price."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my data safe with the Kamunity AI Audit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The audit runs entirely in your web browser. Your answers are never sent to any server. We have no database, no user accounts, no analytics, and no tracking. When you close the tab, your data is gone."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does the audit take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "About 2 minutes. There are 10 questions, each with 3-4 answer options. No typing required — just select the option that best fits your situation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Who is this audit for?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Community organisations, NFPs, volunteer-led groups, neighbourhood centres, Aboriginal community organisations, local sporting clubs — anyone running on a mix of free tools and paid subscriptions who suspects they could be doing better."
+          }
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <!-- Hidden form for Netlify Forms bot detection (React submits via AJAX) -->
+    <form method="post" name="feedback" style="display:none" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="feedback" />
+      <input name="bot-field" />
+      <input name="page" />
+      <input name="reaction" />
+      <textarea name="message"></textarea>
+    </form>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

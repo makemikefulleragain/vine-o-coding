@@ -1,0 +1,110 @@
+[
+  {
+    "id": "g1",
+    "name": "Ravelry",
+    "description": "The world's largest knitting and crochet community. Search patterns, track projects, join groups by interest or location.",
+    "type": "online",
+    "location": "Online",
+    "url": "https://www.ravelry.com",
+    "tags": ["knitting", "crochet", "patterns"]
+  },
+  {
+    "id": "g2",
+    "name": "r/knitting (Reddit)",
+    "description": "Friendly Reddit community for knitters of all levels. Great for questions, showing off projects, and finding inspiration.",
+    "type": "online",
+    "location": "Online",
+    "url": "https://www.reddit.com/r/knitting/",
+    "tags": ["knitting", "community"]
+  },
+  {
+    "id": "g3",
+    "name": "r/crochet (Reddit)",
+    "description": "Active Reddit community for crocheters. Pattern sharing, troubleshooting, and plenty of 'finished object' posts to admire.",
+    "type": "online",
+    "location": "Online",
+    "url": "https://www.reddit.com/r/crochet/",
+    "tags": ["crochet", "community"]
+  },
+  {
+    "id": "g4",
+    "name": "Knitting Paradise Forum",
+    "description": "Bustling online forum for knitters and crocheters. Discussion boards, pattern links, and a warm community of mostly experienced crafters.",
+    "type": "online",
+    "location": "Online",
+    "url": "https://www.knittingparadise.com/",
+    "tags": ["knitting", "crochet", "forum"]
+  },
+  {
+    "id": "g5",
+    "name": "The Knitting Guild Association (TKGA)",
+    "description": "National guild with a directory to find local knitting guilds near you. Great for finding in-person groups.",
+    "type": "in-person",
+    "location": "Various (USA & International)",
+    "url": "https://tkga.org/guild-finder/",
+    "tags": ["knitting", "guilds", "in-person"]
+  },
+  {
+    "id": "g6",
+    "name": "Meetup — Knitting Groups",
+    "description": "Search for local knitting and crochet meetups in your area. Many cities have regular pub knitting nights and craft circles.",
+    "type": "in-person",
+    "location": "Various (Worldwide)",
+    "url": "https://www.meetup.com/topics/knitting/",
+    "tags": ["knitting", "crochet", "meetup", "in-person"]
+  },
+  {
+    "id": "g7",
+    "name": "Knit & Natter UK",
+    "description": "Network of informal knitting groups that meet in cafes, pubs, and community centres across the UK. Very welcoming to newcomers.",
+    "type": "in-person",
+    "location": "United Kingdom",
+    "url": "https://www.meetup.com/topics/knitting/gb/",
+    "tags": ["knitting", "UK", "in-person"]
+  },
+  {
+    "id": "g8",
+    "name": "Craft Yarn Council",
+    "description": "Industry group that promotes knitting and crochet. Offers certified instructor programs and resources for teaching others.",
+    "type": "online",
+    "location": "Online",
+    "url": "https://www.craftyarncouncil.com/",
+    "tags": ["knitting", "crochet", "learning"]
+  },
+  {
+    "id": "g9",
+    "name": "Lion Brand Yarn — Group Finder",
+    "description": "Search tool to find knit and crochet clubs and groups in your area. User-submitted directory.",
+    "type": "in-person",
+    "location": "Various (USA focus)",
+    "url": "https://blog.lionbrand.com/want-to-find-a-knit-or-crochet-group-in-your-area-our-search-tool-can-help-you/",
+    "tags": ["knitting", "crochet", "groups", "directory"]
+  },
+  {
+    "id": "g10",
+    "name": "Crochet UK Facebook Group",
+    "description": "Large Facebook group for UK-based crocheters. Pattern sharing, questions, and show-and-tell.",
+    "type": "online",
+    "location": "Online (UK focus)",
+    "url": "https://www.facebook.com/groups/crochetuk/",
+    "tags": ["crochet", "UK", "facebook"]
+  },
+  {
+    "id": "g11",
+    "name": "I Like Knitting — Guild Directory",
+    "description": "Directory of knitting guilds and clubs organised by region. Helpful for finding established groups near you.",
+    "type": "in-person",
+    "location": "Various (USA)",
+    "url": "https://www.ilikeknitting.com/knitting-guilds-clubs-directory/",
+    "tags": ["knitting", "guilds", "directory"]
+  },
+  {
+    "id": "g12",
+    "name": "Stitch 'n Bitch Groups",
+    "description": "Informal crafting circles inspired by the Stitch 'n Bitch book series. Many local groups worldwide — search for one near you.",
+    "type": "in-person",
+    "location": "Various (Worldwide)",
+    "url": "https://www.meetup.com/topics/stitch-n-bitch/",
+    "tags": ["knitting", "crochet", "social", "in-person"]
+  }
+]

@@ -1,0 +1,23 @@
+# Kamunity AI Readiness
+> A free AI readiness self-assessment for community organisations.
+
+## About
+Kamunity AI Readiness helps community organisations, NFPs, neighbourhood centres, and volunteer groups understand their readiness to adopt AI tools. Users answer 12 questions in about 2 minutes and receive a personalised readiness map across four dimensions (Understanding, Current Use, Safety & Ethics, Readiness to Act) with specific recommendations.
+
+## Key Facts
+- Free tool, no login required
+- No data collected or stored
+- Designed for the Australian community sector
+- Companion to kamunity-audit.netlify.app
+- Built by Kamunity (kamunity.org)
+
+## Dimensions
+- Understanding: How well the team understands AI capabilities and limitations
+- Current Use: Whether the organisation is experimenting with AI tools
+- Safety & Ethics: Preparedness for safe, responsible AI use
+- Readiness to Act: Organisational support and capacity for next steps
+
+## Links
+- Website: https://kamunity-ai-readiness.netlify.app
+- Parent: https://kamunity.org
+- Companion: https://kamunity-audit.netlify.app

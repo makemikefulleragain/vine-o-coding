@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1714">
+<title>Safety — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">Safety &amp; Security</h2>
+  <p class="section-sub">From the threat model. Tracked, not forgotten. Click status to cycle: open → in-progress → done.</p>
+  <div class="filter-bar" id="safety-filters"></div>
+  <div id="safety-out"></div>
+</main>
+
+<script type="module">
+import { initNav }    from './js/nav.js';
+import { initCompose } from './js/compose.js';
+import { SAFETY_ITEMS, loadState, saveSafetyStatus } from './js/data.js';
+import { initWaymaker } from './js/waymaker.js';
+
+loadState();
+initNav('safety');
+initCompose();
+initWaymaker('safety');
+
+const STATUS_CYCLE = ['open', 'in-progress', 'done'];
+const STATUS_LABELS = {
+  'open':         '⬤ Open',
+  'in-progress':  '◑ In Progress',
+  'done':         '✓ Done',
+  'designed':     '✎ Designed',
+  'needs-design': '? Needs Design',
+  'recurring':    '↻ Recurring',
+};
+
+function sevBadge(sev) {
+  const cls = sev === 'critical' ? 'b-critical' : sev === 'high' ? 'b-high' : 'b-medium';
+  return `<span class="badge ${cls}">${sev}</span>`;
+}
+
+function renderItem(s) {
+  const label = STATUS_LABELS[s.st] || s.st;
+  const cls   = `st-${s.st.replace('-','_').toLowerCase()}`;
+  return `
+<div class="card safety-card" data-id="${s.id}">
+  <div class="card-title">
+    <span>${s.id}: ${s.text}</span>
+    ${sevBadge(s.sev)}
+  </div>
+  <div class="card-body" style="display:flex;align-items:center;gap:8px;margin-top:4px">
+    <button class="st-btn ${cls}" onclick="cycleStatus('${s.id}')">${label}</button>
+    <span style="font-size:.65rem;color:var(--faint)">click to advance</span>
+  </div>
+</div>`.trim();
+}
+
+window.cycleStatus = function(id) {
+  const item = SAFETY_ITEMS.find(x => x.id === id);
+  if (!item) return;
+  const idx = STATUS_CYCLE.indexOf(item.st);
+  item.st = idx >= 0 ? STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length] : 'in-progress';
+  saveSafetyStatus(id, item.st);
+  render();
+};
+
+const FILTERS = [
+  { k: 'all',      l: 'All' },
+  { k: 'critical', l: 'Critical' },
+  { k: 'high',     l: 'High' },
+  { k: 'open',     l: 'Open' },
+  { k: 'progress', l: 'In Progress' },
+  { k: 'done',     l: 'Done' },
+];
+let active = 'all';
+
+function getFiltered() {
+  if (active === 'all')       return SAFETY_ITEMS;
+  if (active === 'critical')  return SAFETY_ITEMS.filter(s => s.sev === 'critical');
+  if (active === 'high')      return SAFETY_ITEMS.filter(s => s.sev === 'high');
+  if (active === 'open')      return SAFETY_ITEMS.filter(s => s.st === 'open');
+  if (active === 'progress')  return SAFETY_ITEMS.filter(s => s.st === 'in-progress');
+  if (active === 'done')      return SAFETY_ITEMS.filter(s => s.st === 'done');
+  return SAFETY_ITEMS;
+}
+
+function renderFilters() {
+  document.getElementById('safety-filters').innerHTML = FILTERS.map(f =>
+    `<button class="fbtn${f.k === active ? ' active' : ''}" onclick="setSF('${f.k}')">${f.l}</button>`
+  ).join('');
+}
+
+window.setSF = function(f) {
+  active = f;
+  renderFilters();
+  render();
+};
+
+function render() {
+  const items = getFiltered();
+  const open  = SAFETY_ITEMS.filter(s => s.st === 'open' || s.st === 'needs-design').length;
+  const done  = SAFETY_ITEMS.filter(s => s.st === 'done').length;
+
+  document.getElementById('safety-out').innerHTML = `
+    <div style="font-size:.72rem;color:var(--dim);margin-bottom:12px">
+      ${open} open &nbsp;·&nbsp; ${done}/${SAFETY_ITEMS.length} resolved
+    </div>
+    ${items.length ? items.map(renderItem).join('') : '<p class="empty-msg">No items match this filter.</p>'}
+  `;
+}
+
+renderFilters();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cream text-gray-800 font-body leading-relaxed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-rose-deep text-white px-5 py-2.5 rounded-lg hover:bg-rose-warm transition-colors duration-200 font-medium;
+  }
+
+  .btn-secondary {
+    @apply bg-sage text-white px-5 py-2.5 rounded-lg hover:bg-sage-deep transition-colors duration-200 font-medium;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-earth-light/30 p-5 hover:shadow-md transition-shadow duration-200;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 rounded-lg border border-earth-light focus:border-sage focus:ring-2 focus:ring-sage/20 outline-none transition-all duration-200 bg-white;
+  }
+
+  .badge {
+    @apply inline-block px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-show {
+    @apply badge bg-amber-warm/30 text-amber-deep;
+  }
+
+  .badge-question {
+    @apply badge bg-sage-light/50 text-sage-deep;
+  }
+
+  .badge-chat {
+    @apply badge bg-rose-warm/20 text-rose-deep;
+  }
+}

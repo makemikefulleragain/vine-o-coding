@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1714">
+<title>Gaps — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">Gaps &amp; Open Questions</h2>
+  <p class="section-sub">Things we haven't solved. Honest unknowns. Toggle resolved to track progress.</p>
+  <div class="filter-bar" id="gap-filters"></div>
+  <div id="gaps-out"></div>
+</main>
+
+<script type="module">
+import { initNav }    from './js/nav.js';
+import { initCompose } from './js/compose.js';
+import { GAPS, loadState, saveGapResolved } from './js/data.js';
+import { initWaymaker } from './js/waymaker.js';
+
+loadState();
+initNav('gaps');
+initCompose();
+initWaymaker('gaps');
+
+window.toggleResolved = function(id) {
+  const g = GAPS.find(x => x.id === id);
+  if (!g) return;
+  g.resolved = !g.resolved;
+  saveGapResolved(id, g.resolved);
+  render();
+};
+
+const FILTERS = [
+  { k: 'all',       l: 'All' },
+  { k: 'gaps',      l: 'Gaps' },
+  { k: 'questions', l: 'Questions' },
+  { k: 'open',      l: 'Open' },
+  { k: 'resolved',  l: 'Resolved' },
+];
+let active = 'all';
+
+function getFiltered() {
+  if (active === 'gaps')      return GAPS.filter(g => g.type === 'gap');
+  if (active === 'questions') return GAPS.filter(g => g.type === 'q');
+  if (active === 'open')      return GAPS.filter(g => !g.resolved);
+  if (active === 'resolved')  return GAPS.filter(g => g.resolved);
+  return GAPS;
+}
+
+function renderItem(g) {
+  return `
+<div class="gap-card${g.type === 'q' ? ' q' : ''}${g.resolved ? ' resolved' : ''}">
+  <div class="gap-title">
+    <span>${g.title}</span>
+    <button class="resolve-btn" onclick="toggleResolved('${g.id}')">
+      ${g.resolved ? '✓ Resolved' : 'Mark resolved'}
+    </button>
+  </div>
+  <div class="gap-body">${g.body}</div>
+</div>`.trim();
+}
+
+function renderFilters() {
+  document.getElementById('gap-filters').innerHTML = FILTERS.map(f =>
+    `<button class="fbtn${f.k === active ? ' active' : ''}" onclick="setGF('${f.k}')">${f.l}</button>`
+  ).join('');
+}
+
+window.setGF = function(f) {
+  active = f;
+  renderFilters();
+  render();
+};
+
+function render() {
+  const items = getFiltered();
+  const gaps  = GAPS.filter(g => g.type === 'gap');
+  const qs    = GAPS.filter(g => g.type === 'q');
+  const resolved = GAPS.filter(g => g.resolved).length;
+
+  const summary = `<div style="font-size:.72rem;color:var(--dim);margin-bottom:12px">
+    ${gaps.length} known gaps &nbsp;·&nbsp; ${qs.length} open questions &nbsp;·&nbsp; ${resolved}/${GAPS.length} resolved
+  </div>`;
+
+  // If showing all or mixed, split into sections
+  if (active === 'all') {
+    const gapItems = items.filter(g => g.type === 'gap');
+    const qItems   = items.filter(g => g.type === 'q');
+    document.getElementById('gaps-out').innerHTML = summary +
+      (gapItems.length ? `<h3 class="section-title sm">⚠️ Known Gaps</h3>${gapItems.map(renderItem).join('')}` : '') +
+      (qItems.length   ? `<h3 class="section-title sm">❓ Open Questions</h3>${qItems.map(renderItem).join('')}` : '');
+  } else {
+    document.getElementById('gaps-out').innerHTML = summary +
+      (items.length ? items.map(renderItem).join('') : '<p class="empty-msg">Nothing here.</p>');
+  }
+}
+
+renderFilters();
+render();
+</script>
+</body>
+</html>

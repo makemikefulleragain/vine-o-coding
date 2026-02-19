@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1714">
+<title>Today — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-value" id="s-done">—</div>
+      <div class="stat-label">Done</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="s-total">—</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value crit" id="s-crit">—</div>
+      <div class="stat-label">Critical</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value moss" id="s-sites">9</div>
+      <div class="stat-label">Sites Live</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="s-nlnet">—</div>
+      <div class="stat-label">NLnet</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="s-meetings">—</div>
+      <div class="stat-label">Meetings</div>
+    </div>
+  </div>
+
+  <div id="today-out"></div>
+
+  <div class="data-bar">
+    <p>State saved locally. Export to share with other devices or instances.</p>
+    <button class="btn btn-ghost" onclick="doExport()">⬇ Export State</button>
+    <button class="btn btn-ghost" onclick="doImport()">⬆ Import State</button>
+    <button class="btn btn-danger" onclick="doClear()">✕ Clear All</button>
+  </div>
+</main>
+
+<script type="module">
+import { initNav }           from './js/nav.js';
+import { initCompose }       from './js/compose.js';
+import { TASKS, SITES, loadState, exportState, importState, clearState } from './js/data.js';
+import { nlnetCountdown }    from './js/utils.js';
+import { renderTodayGroups, updateStats } from './js/tasks.js';
+import { initWaymaker }      from './js/waymaker.js';
+
+loadState();
+initNav('today');
+initCompose();
+initWaymaker('today');
+
+function render() {
+  renderTodayGroups(document.getElementById('today-out'));
+  updateStats({ done: 's-done', total: 's-total', crit: 's-crit' });
+  document.getElementById('s-nlnet').textContent    = nlnetCountdown();
+  document.getElementById('s-sites').textContent    = SITES.filter(s => s.st === 'live').length;
+  document.getElementById('s-meetings').textContent = TASKS.filter(t => t.tags.includes('meeting') && !t.done).length;
+}
+
+render();
+
+// Re-render stats after any checkbox toggle
+window.KT = window.KT || {};
+const _origTogDone = window.KT.togDone;
+window.KT.togDone = function(id) {
+  _origTogDone(id, render);
+};
+
+// Export / Import / Clear
+window.doExport = function() {
+  const json = exportState();
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `kitchen-table-state-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+window.doImport = function() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      if (importState(ev.target.result)) {
+        render();
+        alert('State imported successfully.');
+      } else {
+        alert('Import failed — invalid file.');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+};
+
+window.doClear = function() {
+  if (confirm('Clear all saved state? Task progress, safety updates, and resolved gaps will reset.')) {
+    clearState();
+    location.reload();
+  }
+};
+</script>
+</body>
+</html>

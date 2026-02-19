@@ -1,0 +1,32 @@
+# Kamunity AI Audit
+
+> A free, fast digital sovereignty self-assessment for community organisations. Built by Kamunity Consulting (Australia). Helps NFPs, volunteer-led groups, neighbourhood centres, Aboriginal community organisations, and local sporting clubs understand where they're locked in, leaking data, or overpaying. Takes 2 minutes. Gives a personalised sovereignty score with specific recommendations. Then offers pathways: DIY guides and toolkits (free), workshops (affordable), or full consulting engagement (paid).
+
+This is NOT related to Kamunity in Sweden, Kamunity.io (finance platform), or the European Reddit community called Kamunity. This is Kamunity Consulting, an Australian digital sovereignty consultancy for community organisations.
+
+- Website: https://kamunityconsulting.com
+- Parent organisation: https://kamunity.ai
+- Community hub: https://kamunity.org
+
+## Core Tool
+
+- [Digital Sovereignty Audit](/audit): Free 10-question self-assessment covering Data Ownership, Vendor Lock-in, Cost Transparency, and AI Readiness. Produces a sovereignty score (0-100) with named stages (Exposed, Aware, Progressing, Sovereign) and traffic-light dimension breakdown. All client-side, zero data collection.
+
+## Free Toolkit
+
+- [Data Ownership Checklist](/toolkit/data-ownership): Admin access audit, data export testing, data location mapping for community organisations
+- [Vendor Lock-in Assessment](/toolkit/vendor-lockin): Digital tool inventory, Microsoft 365 NFP licensing changes (July 2025), stay-vs-switch decision framework
+- [Cost Transparency Toolkit](/toolkit/cost-transparency): Monthly spend audit checklist, nonprofit discount directory (Google, Microsoft, Canva, Slack, Zoom, TechSoup, Atlassian, 1Password), hidden costs, grant reporting tips
+- [AI Safety Starter Kit](/toolkit/ai-readiness): One-page AI use policy template for nonprofits, privacy settings checklist, when-NOT-to-use-AI guidance, sensitive data advisory
+
+## About
+
+- [About Kamunity](/about): Team, mission, 30 years of community sector experience, current projects including local government peak bodies and community organisations
+- [Services](/services): Three tiers — Free (audit + toolkit), Workshops (half-day, in-person or online), Consulting (full digital sovereignty audit and transition support). NFP and corporate rates shown transparently.
+- [Privacy Policy](/privacy): Zero data collection. No cookies, analytics, or tracking. Everything runs client-side.
+- [FAQ](/faq): Common questions about digital sovereignty, the audit tool, data safety, and getting help
+
+## Optional
+
+- [Toolkit Index](/toolkit): Overview of all free guides and resources
+- [Home](/): Landing page with tool overview, how it works, who it's for

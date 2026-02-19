@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1714">
+<title>Allies — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">The Constellation</h2>
+  <p class="section-sub">Allies, partners, connections. Tier 1 = ember. Tier 2 = moss. Click Draft Email to compose outreach.</p>
+  <div class="filter-bar" id="ally-filters"></div>
+  <div class="ally-grid" id="allies-out"></div>
+</main>
+
+<script type="module">
+import { initNav }    from './js/nav.js';
+import { initCompose } from './js/compose.js';
+import { ALLIES }     from './js/data.js';
+import { statusBadge } from './js/utils.js';
+import { initWaymaker } from './js/waymaker.js';
+
+initNav('allies');
+initCompose();
+initWaymaker('allies');
+
+const STATUS_STEPS = ['To Map','To Contact','Meeting Scheduled','Active','Engaged'];
+
+function statusStep(status) {
+  const s = status.toLowerCase();
+  if (s.includes('map'))       return 0;
+  if (s.includes('contact'))   return 1;
+  if (s.includes('meeting') || s.includes('interview') || s.includes('proposal') || s.includes('submit')) return 2;
+  if (s.includes('active'))    return 3;
+  if (s.includes('engaged'))   return 4;
+  return 1;
+}
+
+function renderAlly(a) {
+  const step = statusStep(a.status);
+  const track = STATUS_STEPS.map((s, i) =>
+    `<span class="status-step${i === step ? ' current' : ''}">${s}</span>`
+  ).join('');
+
+  return `
+<div class="ally-card t${a.tier}">
+  <div class="ally-name">${a.name}</div>
+  <div class="ally-role">${a.role}</div>
+  <div style="margin:4px 0">${statusBadge(a.status)}</div>
+  <div class="status-track">${track}</div>
+  <div class="ally-action">${a.action}</div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="KT.openCM('${a.name.replace(/'/g,"\\'")}','${a.type}')">✉ Draft Email</button>
+  </div>
+</div>`.trim();
+}
+
+const FILTERS = [
+  { k: 'all',    l: 'All' },
+  { k: 't1',     l: 'Tier 1' },
+  { k: 't2',     l: 'Tier 2' },
+  { k: 'perth',  l: 'Perth' },
+  { k: 'meeting',l: 'Meeting' },
+  { k: 'intl',   l: 'International' },
+  { k: 'national',l: 'National' },
+];
+
+let active = 'all';
+
+function render() {
+  let allies = ALLIES;
+  if (active === 't1')       allies = allies.filter(a => a.tier === 1);
+  else if (active === 't2')  allies = allies.filter(a => a.tier === 2);
+  else if (active !== 'all') allies = allies.filter(a => a.tags.includes(active));
+
+  document.getElementById('allies-out').innerHTML =
+    allies.length ? allies.map(renderAlly).join('') : '<p class="empty-msg">No allies match this filter.</p>';
+}
+
+function renderFilters() {
+  document.getElementById('ally-filters').innerHTML = FILTERS.map(f =>
+    `<button class="fbtn${f.k === active ? ' active' : ''}" onclick="setFilter('${f.k}')">${f.l}</button>`
+  ).join('');
+}
+
+window.setFilter = function(f) {
+  active = f;
+  renderFilters();
+  render();
+};
+
+renderFilters();
+render();
+</script>
+</body>
+</html>

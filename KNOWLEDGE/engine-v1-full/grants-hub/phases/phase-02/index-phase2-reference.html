@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grant Acquittal Helper</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; font-size: 11pt; }
+            .print-break { page-break-before: always; }
+        }
+        .print-only { display: none; }
+        .tab-active { border-bottom: 3px solid #4f46e5; color: #4f46e5; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div id="root"></div>
+    <script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ─── Supabase helpers ───────────────────────────────────────
+const SUPABASE_CONFIGURED = !!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY
+  && !window.SUPABASE_URL.includes('your-project')
+  && window.SUPABASE_URL.startsWith('https://'));
+
+let supabase = null;
+function ensureSupabase() {
+  if (!supabase && SUPABASE_CONFIGURED && window.supabase && window.supabase.createClient) {
+    supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+  }
+  return !!supabase;
+}
+
+// ─── localStorage helpers (fallback + migration source) ─────
+function lsLoad(key, fallback) {
+  try { const v = localStorage.getItem("gah_" + key); return v ? JSON.parse(v) : fallback; }
+  catch(e) { return fallback; }
+}
+function lsSave(key, val) {
+  try { localStorage.setItem("gah_" + key, JSON.stringify(val)); } catch(e) {}
+}
+function genId() { return crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+const EMPTY_GRANT = {
+  funder: "", grantName: "", amount: 0, deadline: "", narrative: "",
+  categories: [], expenses: [],
+};
+
+// ─── Supabase data operations ───────────────────────────────
+function dbGrantToLocal(g, cats, exps) {
+  return {
+    _dbId: g.id, id: g.id,
+    funder: g.funder || '', grantName: g.grant_name || '',
+    amount: parseFloat(g.amount) || 0, deadline: g.deadline || '',
+    narrative: g.narrative || '',
+    categories: (cats || []).map(c => ({
+      id: c.id, name: c.name || '', budgeted: parseFloat(c.budgeted) || 0,
+    })),
+    expenses: (exps || []).map(e => ({
+      id: e.id, date: e.date || '', desc: e.description || '',
+      amount: parseFloat(e.amount) || 0, catId: e.category_id || '', receipt: e.receipt_ref || '',
+    })),
+  };
+}
+
+async function sbLoadAllGrants(userId) {
+  const { data: grants, error: gErr } = await supabase
+    .from('grants').select('*').eq('user_id', userId).order('created_at', { ascending: true });
+  if (gErr) throw gErr;
+  if (!grants || grants.length === 0) return [];
+
+  const results = [];
+  for (const g of grants) {
+    const { data: cats, error: cErr } = await supabase
+      .from('budget_categories').select('*').eq('grant_id', g.id).order('sort_order');
+    if (cErr) throw cErr;
+    const { data: exps, error: eErr } = await supabase
+      .from('expenses').select('*').eq('grant_id', g.id).order('date');
+    if (eErr) throw eErr;
+    results.push(dbGrantToLocal(g, cats, exps));
+  }
+  return results;
+}
+
+async function sbDeleteGrant(grantId) {
+  const { error } = await supabase.from('grants').delete().eq('id', grantId);
+  if (error) throw error;
+}
+
+async function sbSaveGrant(userId, grant) {
+  let grantId = grant._dbId;
+
+  // Upsert the grant row
+  if (grantId) {
+    const { error } = await supabase.from('grants').update({
+      funder: grant.funder, grant_name: grant.grantName,
+      amount: grant.amount, deadline: grant.deadline || null,
+      narrative: grant.narrative || '',
+    }).eq('id', grantId);
+    if (error) throw error;
+  } else {
+    const { data, error } = await supabase.from('grants').insert({
+      user_id: userId, funder: grant.funder, grant_name: grant.grantName,
+      amount: grant.amount, deadline: grant.deadline || null,
+      narrative: grant.narrative || '',
+    }).select().single();
+    if (error) throw error;
+    grantId = data.id;
+  }
+
+  // Sync categories: delete removed, upsert remaining
+  const { data: existingCats } = await supabase
+    .from('budget_categories').select('id').eq('grant_id', grantId);
+  const existingCatIds = new Set((existingCats || []).map(c => c.id));
+  const currentCatIds = new Set(grant.categories.filter(c => existingCatIds.has(c.id)).map(c => c.id));
+
+  // Delete removed categories
+  const catsToDelete = [...existingCatIds].filter(id => !currentCatIds.has(id));
+  if (catsToDelete.length > 0) {
+    await supabase.from('budget_categories').delete().in('id', catsToDelete);
+  }
+
+  // Upsert categories
+  for (let i = 0; i < grant.categories.length; i++) {
+    const c = grant.categories[i];
+    if (existingCatIds.has(c.id)) {
+      await supabase.from('budget_categories').update({
+        name: c.name, budgeted: c.budgeted, sort_order: i,
+      }).eq('id', c.id);
+    } else {
+      const { data, error } = await supabase.from('budget_categories').insert({
+        grant_id: grantId, name: c.name, budgeted: c.budgeted, sort_order: i,
+      }).select().single();
+      if (error) throw error;
+      // Update the in-memory ID to match the DB-generated UUID
+      c.id = data.id;
+    }
+  }
+
+  // Sync expenses: delete removed, upsert remaining
+  const { data: existingExps } = await supabase
+    .from('expenses').select('id').eq('grant_id', grantId);
+  const existingExpIds = new Set((existingExps || []).map(e => e.id));
+  const currentExpIds = new Set(grant.expenses.filter(e => existingExpIds.has(e.id)).map(e => e.id));
+
+  const expsToDelete = [...existingExpIds].filter(id => !currentExpIds.has(id));
+  if (expsToDelete.length > 0) {
+    await supabase.from('expenses').delete().in('id', expsToDelete);
+  }
+
+  for (const e of grant.expenses) {
+    if (existingExpIds.has(e.id)) {
+      await supabase.from('expenses').update({
+        category_id: e.catId || null, date: e.date || null,
+        description: e.desc, amount: e.amount, receipt_ref: e.receipt,
+      }).eq('id', e.id);
+    } else {
+      const { data, error } = await supabase.from('expenses').insert({
+        grant_id: grantId, category_id: e.catId || null, date: e.date || null,
+        description: e.desc, amount: e.amount, receipt_ref: e.receipt,
+      }).select().single();
+      if (error) throw error;
+      e.id = data.id;
+    }
+  }
+
+  return grantId;
+}
+
+// ─── localStorage multi-grant migration ─────────────────────
+function lsLoadGrants() {
+  // Try new multi-grant key first
+  const multi = lsLoad("grants", null);
+  if (multi && Array.isArray(multi)) return multi;
+  // Migrate from single-grant key
+  const single = lsLoad("grant", null);
+  if (single && single.funder) {
+    const migrated = [{ ...single, id: single.id || genId() }];
+    lsSave("grants", migrated);
+    return migrated;
+  }
+  return [];
+}
+
+// ─── JSON export ────────────────────────────────────────────
+function exportJSON(grants) {
+  const data = {
+    exportDate: new Date().toISOString(),
+    exportedFrom: "Grant Acquittal Helper",
+    grantCount: grants.length,
+    grants: grants.map(g => ({
+      funder: g.funder, grantName: g.grantName, amount: g.amount,
+      deadline: g.deadline, narrative: g.narrative,
+      categories: g.categories, expenses: g.expenses,
+    })),
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `grants-hub-export-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+// ─── Main App ───────────────────────────────────────────────
+function App() {
+  const [grants, setGrants] = useState([]);
+  const [selectedGrantId, setSelectedGrantId] = useState(null);
+  const [tab, setTab] = useState("setup");
+  const [storageMode, setStorageMode] = useState("loading");
+  const [saveStatus, setSaveStatus] = useState("");
+  const [migrating, setMigrating] = useState(false);
+  const [toast, setToast] = useState(null);
+  const userIdRef = useRef(null);
+  const saveTimerRef = useRef(null);
+  const initialLoadDone = useRef(false);
+
+  const showToast = useCallback((msg, type = "info", duration = 4000) => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), duration);
+  }, []);
+
+  const selectedGrant = grants.find(g => g.id === selectedGrantId) || null;
+
+  const updateGrant = useCallback((updated) => {
+    setGrants(prev => prev.map(g => g.id === updated.id ? updated : g));
+  }, []);
+
+  // ── Initialize auth + load data ──
+  useEffect(() => {
+    let cancelled = false;
+    async function init() {
+      if (!ensureSupabase()) {
+        const saved = lsLoadGrants();
+        setGrants(saved);
+        setStorageMode("local");
+        initialLoadDone.current = true;
+        return;
+      }
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        let userId = session?.user?.id;
+        if (!userId) {
+          const { data, error } = await supabase.auth.signInAnonymously();
+          if (error) throw error;
+          userId = data.user.id;
+        }
+        if (cancelled) return;
+        userIdRef.current = userId;
+
+        // Check for localStorage data to migrate
+        const lsData = lsLoadGrants();
+        const alreadyMigrated = localStorage.getItem("gah_migrated") === "true";
+
+        const dbGrants = await sbLoadAllGrants(userId);
+
+        if (dbGrants.length > 0) {
+          setGrants(dbGrants);
+          setStorageMode("cloud");
+        } else if (lsData.length > 0 && !alreadyMigrated) {
+          if (cancelled) return;
+          setMigrating(true);
+          try {
+            const migrated = [];
+            for (const lsGrant of lsData) {
+              const catIdMap = {};
+              const newCats = (lsGrant.categories || []).map(c => {
+                const newId = genId(); catIdMap[c.id] = newId;
+                return { id: newId, name: c.name, budgeted: c.budgeted };
+              });
+              const newExps = (lsGrant.expenses || []).map(e => ({
+                id: genId(), date: e.date, desc: e.desc,
+                amount: e.amount, catId: catIdMap[e.catId] || '', receipt: e.receipt || '',
+              }));
+              const mg = {
+                ...EMPTY_GRANT, id: genId(),
+                funder: lsGrant.funder || '', grantName: lsGrant.grantName || '',
+                amount: lsGrant.amount || 0, deadline: lsGrant.deadline || '',
+                narrative: lsGrant.narrative || '',
+                categories: newCats, expenses: newExps,
+              };
+              const dbId = await sbSaveGrant(userId, mg);
+              mg._dbId = dbId; mg.id = dbId;
+              migrated.push(mg);
+            }
+            localStorage.setItem("gah_migrated", "true");
+            setGrants(migrated);
+            setStorageMode("cloud");
+            showToast("Your existing data has been saved to the cloud!", "success", 5000);
+          } catch (err) {
+            console.error("Migration failed:", err);
+            setGrants(lsData);
+            setStorageMode("local");
+            showToast("Migration failed — working in browser-only mode", "error", 6000);
+          } finally { setMigrating(false); }
+        } else {
+          setStorageMode("cloud");
+        }
+        initialLoadDone.current = true;
+      } catch (err) {
+        console.error("Supabase init failed:", err);
+        setGrants(lsLoadGrants());
+        setStorageMode("local");
+        initialLoadDone.current = true;
+        showToast("Could not connect to cloud — working in browser-only mode", "error", 6000);
+      }
+    }
+    init();
+    return () => { cancelled = true; };
+  }, []);
+
+  // ── Debounced save on grants change ──
+  useEffect(() => {
+    if (!initialLoadDone.current) return;
+    lsSave("grants", grants);
+
+    if (storageMode !== "cloud" || !userIdRef.current || !selectedGrant) return;
+
+    clearTimeout(saveTimerRef.current);
+    setSaveStatus("saving");
+    saveTimerRef.current = setTimeout(async () => {
+      try {
+        const g = grants.find(g => g.id === selectedGrantId);
+        if (!g) return;
+        const dbId = await sbSaveGrant(userIdRef.current, { ...g, _dbId: g._dbId || g.id });
+        setGrants(prev => prev.map(gr => gr.id === g.id ? { ...gr, _dbId: dbId, id: dbId } : gr));
+        if (selectedGrantId === g.id && dbId !== g.id) setSelectedGrantId(dbId);
+        setSaveStatus("saved");
+        setTimeout(() => setSaveStatus(""), 2000);
+      } catch (err) {
+        console.error("Save failed:", err);
+        setSaveStatus("error");
+        showToast("Save failed — changes kept locally", "error");
+      }
+    }, 800);
+    return () => clearTimeout(saveTimerRef.current);
+  }, [grants, storageMode]);
+
+  // ── Grant CRUD operations ──
+  const createGrant = useCallback(async () => {
+    const newGrant = { ...EMPTY_GRANT, id: genId() };
+    if (storageMode === "cloud" && userIdRef.current) {
+      try {
+        const dbId = await sbSaveGrant(userIdRef.current, newGrant);
+        newGrant._dbId = dbId; newGrant.id = dbId;
+      } catch (err) {
+        console.error("Create grant failed:", err);
+        showToast("Could not save new grant to cloud", "error");
+      }
+    }
+    setGrants(prev => [...prev, newGrant]);
+    setSelectedGrantId(newGrant.id);
+    setTab("setup");
+  }, [storageMode, showToast]);
+
+  const deleteGrant = useCallback(async (grantId) => {
+    if (storageMode === "cloud") {
+      try { await sbDeleteGrant(grantId); } catch (err) {
+        console.error("Delete failed:", err);
+        showToast("Could not delete grant from cloud", "error");
+        return;
+      }
+    }
+    setGrants(prev => prev.filter(g => g.id !== grantId));
+    if (selectedGrantId === grantId) setSelectedGrantId(null);
+    showToast("Grant deleted", "info", 2000);
+  }, [storageMode, selectedGrantId, showToast]);
+
+  // ── Render ──
+  if (storageMode === "loading" || migrating) {
+    return (
+      <div className="max-w-4xl mx-auto p-4 text-center mt-20">
+        <div className="animate-pulse">
+          <h1 className="text-2xl font-bold text-indigo-800 mb-2">Grant Acquittal Helper</h1>
+          <p className="text-gray-500">{migrating ? "Migrating your data to the cloud..." : "Loading..."}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const storageIndicator = storageMode === "cloud"
+    ? { icon: "☁️", label: "Cloud", color: "text-green-600 bg-green-50", detail: "Data saved to cloud" }
+    : { icon: "💾", label: "Browser only", color: "text-amber-600 bg-amber-50", detail: "Data saved to this browser only" };
+  const saveIndicator = saveStatus === "saving" ? "Saving..." : saveStatus === "saved" ? "✓ Saved" : saveStatus === "error" ? "⚠ Save failed" : "";
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <header className="text-center mb-6 no-print">
+        <h1 className="text-3xl font-bold text-indigo-800">Grant Acquittal Helper</h1>
+        <p className="text-gray-500 mt-1">Track spending and generate acquittal reports for your grants</p>
+        <p className="text-xs text-amber-600 mt-1">This tool helps organise your data. It does not constitute financial advice. Verify requirements with your funder.</p>
+        <div className="flex items-center justify-center gap-2 mt-2">
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${storageIndicator.color}`}
+            title={storageIndicator.detail}>
+            {storageIndicator.icon} {storageIndicator.label}
+          </span>
+          {saveIndicator && (
+            <span className={`text-xs ${saveStatus === "error" ? "text-red-500" : "text-gray-400"}`}>{saveIndicator}</span>
+          )}
+        </div>
+      </header>
+
+      {storageMode === "local" && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-sm text-amber-800 no-print">
+          <strong>Browser-only mode:</strong> Your data is saved in this browser. It will be lost if you clear your browser data.
+        </div>
+      )}
+
+      {toast && (
+        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-sm max-w-sm no-print ${
+          toast.type === "error" ? "bg-red-50 text-red-800 border border-red-200" :
+          toast.type === "success" ? "bg-green-50 text-green-800 border border-green-200" :
+          "bg-blue-50 text-blue-800 border border-blue-200"
+        }`}>
+          {toast.msg}
+        </div>
+      )}
+
+      {selectedGrant ? (
+        <GrantDetailView grant={selectedGrant} setGrant={updateGrant} tab={tab} setTab={setTab}
+          onBack={() => setSelectedGrantId(null)} />
+      ) : (
+        <GrantListView grants={grants} onSelect={id => { setSelectedGrantId(id); setTab("setup"); }}
+          onCreate={createGrant} onDelete={deleteGrant} onExport={() => exportJSON(grants)} />
+      )}
+    </div>
+  );
+}
+
+// ─── Grant List View ────────────────────────────────────────
+function GrantListView({ grants, onSelect, onCreate, onDelete, onExport }) {
+  const [confirmDelete, setConfirmDelete] = useState(null);
+
+  return (
+    <div className="no-print">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold text-gray-800">Your Grants ({grants.length})</h2>
+        <div className="flex gap-2">
+          {grants.length > 0 && (
+            <button onClick={onExport} className="px-3 py-2 bg-gray-100 rounded-lg text-sm hover:bg-gray-200 transition-colors">
+              Export All Data
+            </button>
+          )}
+          <button onClick={onCreate} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 transition-colors">
+            + New Grant
+          </button>
+        </div>
+      </div>
+
+      {grants.length === 0 ? (
+        <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="text-4xl mb-3">📋</div>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">No grants yet</h3>
+          <p className="text-gray-500 text-sm mb-4">Create your first grant to start tracking expenses and generating acquittal reports.</p>
+          <button onClick={onCreate} className="px-6 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">
+            Create Your First Grant
+          </button>
+        </div>
+      ) : (
+        <div className="grid gap-3">
+          {grants.map(g => {
+            const totalBudgeted = g.categories.reduce((s, c) => s + c.budgeted, 0);
+            const totalSpent = g.expenses.reduce((s, e) => s + e.amount, 0);
+            const pct = g.amount > 0 ? (totalSpent / g.amount) * 100 : 0;
+            const daysLeft = g.deadline ? Math.ceil((new Date(g.deadline) - new Date()) / 86400000) : null;
+            const deadlineColor = daysLeft === null ? "text-gray-400" : daysLeft > 30 ? "text-green-600" : daysLeft > 0 ? "text-amber-600" : "text-red-600";
+
+            return (
+              <div key={g.id} className="bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => onSelect(g.id)}>
+                <div className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-800 truncate">{g.grantName || "Untitled Grant"}</h3>
+                      <p className="text-sm text-gray-500 truncate">{g.funder || "No funder set"}</p>
+                    </div>
+                    <div className="text-right ml-4 flex-shrink-0">
+                      <div className="font-semibold text-gray-800">${g.amount.toLocaleString()}</div>
+                      <div className="text-xs text-gray-500">${totalSpent.toLocaleString()} spent</div>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className={`h-full rounded-full transition-all ${pct > 100 ? "bg-red-500" : pct > 80 ? "bg-amber-500" : "bg-indigo-500"}`}
+                        style={{ width: `${Math.min(pct, 100)}%` }}></div>
+                    </div>
+                    <div className="flex justify-between mt-1">
+                      <span className="text-xs text-gray-400">{pct.toFixed(0)}% spent</span>
+                      <span className={`text-xs ${deadlineColor}`}>
+                        {daysLeft === null ? "No deadline" : daysLeft > 0 ? `${daysLeft} days left` : "Overdue"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center mt-3 pt-2 border-t">
+                    <span className="text-xs text-gray-400">{g.categories.length} categories · {g.expenses.length} expenses</span>
+                    <button onClick={(e) => { e.stopPropagation(); setConfirmDelete(g.id); }}
+                      className="text-xs text-red-400 hover:text-red-600 px-2 py-1">Delete</button>
+                  </div>
+                </div>
+                {confirmDelete === g.id && (
+                  <div className="bg-red-50 border-t border-red-200 p-3 rounded-b-lg" onClick={e => e.stopPropagation()}>
+                    <p className="text-sm text-red-800 mb-2">Delete "{g.grantName || "Untitled Grant"}"? This cannot be undone.</p>
+                    <div className="flex gap-2">
+                      <button onClick={() => { onDelete(g.id); setConfirmDelete(null); }}
+                        className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">Delete</button>
+                      <button onClick={() => setConfirmDelete(null)}
+                        className="px-3 py-1 bg-white border rounded text-sm hover:bg-gray-50">Cancel</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Grant Detail View ──────────────────────────────────────
+function GrantDetailView({ grant, setGrant, tab, setTab, onBack }) {
+  const catSpent = (catId) => grant.expenses.filter(e => e.catId === catId).reduce((s, e) => s + e.amount, 0);
+  const totalBudgeted = grant.categories.reduce((s, c) => s + c.budgeted, 0);
+  const totalSpent = grant.expenses.reduce((s, e) => s + e.amount, 0);
+
+  const tabs = [
+    { id: "setup", label: "📋 Setup" },
+    { id: "expenses", label: "💰 Expenses" },
+    { id: "dashboard", label: "📊 Dashboard" },
+    { id: "report", label: "📄 Report" },
+  ];
+
+  return (
+    <div>
+      <button onClick={onBack} className="text-sm text-indigo-600 hover:text-indigo-800 mb-3 no-print">
+        ← Back to Grants
+      </button>
+      <div className="mb-4 no-print">
+        <h2 className="text-lg font-semibold text-gray-800">{grant.grantName || "Untitled Grant"}</h2>
+        <p className="text-sm text-gray-500">{grant.funder || "No funder set"}</p>
+      </div>
+
+      <nav className="flex border-b mb-6 overflow-x-auto no-print">
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            className={`px-4 py-3 text-sm whitespace-nowrap transition-colors ${tab === t.id ? "tab-active" : "text-gray-500 hover:text-indigo-600"}`}>
+            {t.label}
+          </button>
+        ))}
+      </nav>
+
+      {tab === "setup" && <SetupTab grant={grant} setGrant={setGrant} />}
+      {tab === "expenses" && <ExpensesTab grant={grant} setGrant={setGrant} />}
+      {tab === "dashboard" && <DashboardTab grant={grant} catSpent={catSpent} totalBudgeted={totalBudgeted} totalSpent={totalSpent} />}
+      {tab === "report" && <ReportTab grant={grant} catSpent={catSpent} totalBudgeted={totalBudgeted} totalSpent={totalSpent} setGrant={setGrant} />}
+    </div>
+  );
+}
+
+function SetupTab({ grant, setGrant }) {
+  const updateField = (f, v) => setGrant({ ...grant, [f]: f === "amount" ? parseFloat(v) || 0 : v });
+  const addCat = () => setGrant({ ...grant, categories: [...grant.categories, { id: genId(), name: "", budgeted: 0 }] });
+  const updateCat = (id, f, v) => setGrant({ ...grant, categories: grant.categories.map(c => c.id === id ? { ...c, [f]: f === "budgeted" ? parseFloat(v) || 0 : v } : c) });
+  const removeCat = (id) => setGrant({ ...grant, categories: grant.categories.filter(c => c.id !== id), expenses: grant.expenses.filter(e => e.catId !== id) });
+  const totalBudgeted = grant.categories.reduce((s, c) => s + c.budgeted, 0);
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Grant Details</h2>
+        <div className="grid md:grid-cols-2 gap-3">
+          <div><label className="block text-sm font-medium text-gray-600 mb-1">Funder</label>
+            <input className="w-full border rounded px-3 py-2 text-sm" value={grant.funder} onChange={e => updateField("funder", e.target.value)} /></div>
+          <div><label className="block text-sm font-medium text-gray-600 mb-1">Grant Name</label>
+            <input className="w-full border rounded px-3 py-2 text-sm" value={grant.grantName} onChange={e => updateField("grantName", e.target.value)} /></div>
+          <div><label className="block text-sm font-medium text-gray-600 mb-1">Total Amount ($)</label>
+            <input type="number" className="w-full border rounded px-3 py-2 text-sm" value={grant.amount} onChange={e => updateField("amount", e.target.value)} /></div>
+          <div><label className="block text-sm font-medium text-gray-600 mb-1">Reporting Deadline</label>
+            <input type="date" className="w-full border rounded px-3 py-2 text-sm" value={grant.deadline} onChange={e => updateField("deadline", e.target.value)} /></div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-800">Budget Categories</h2>
+          <span className={`text-sm font-medium ${Math.abs(totalBudgeted - grant.amount) < 0.01 ? "text-green-600" : "text-amber-600"}`}>
+            Allocated: ${totalBudgeted.toLocaleString()} / ${grant.amount.toLocaleString()}
+          </span>
+        </div>
+        {grant.categories.map(c => (
+          <div key={c.id} className="flex gap-2 mb-2 items-center">
+            <input className="flex-1 border rounded px-3 py-2 text-sm" placeholder="Category name" value={c.name} onChange={e => updateCat(c.id, "name", e.target.value)} />
+            <div className="relative">
+              <span className="absolute left-3 top-2 text-gray-400 text-sm">$</span>
+              <input type="number" className="w-32 border rounded pl-7 pr-3 py-2 text-sm" value={c.budgeted} onChange={e => updateCat(c.id, "budgeted", e.target.value)} />
+            </div>
+            <button onClick={() => removeCat(c.id)} className="text-red-400 hover:text-red-600 px-2">✕</button>
+          </div>
+        ))}
+        <button onClick={addCat} className="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium">+ Add Category</button>
+      </div>
+    </div>
+  );
+}
+
+function ExpensesTab({ grant, setGrant }) {
+  const [form, setForm] = useState({ date: "", desc: "", amount: "", catId: grant.categories[0]?.id || "", receipt: "" });
+
+  const addExpense = (e) => {
+    e.preventDefault();
+    if (!form.desc || !form.amount || !form.catId) return;
+    const exp = { ...form, id: genId(), amount: parseFloat(form.amount) };
+    setGrant({ ...grant, expenses: [...grant.expenses, exp] });
+    setForm({ date: "", desc: "", amount: "", catId: form.catId, receipt: "" });
+  };
+
+  const removeExpense = (id) => setGrant({ ...grant, expenses: grant.expenses.filter(e => e.id !== id) });
+
+  const exportCSV = () => {
+    const header = "Date,Description,Amount,Category,Receipt Ref\n";
+    const rows = grant.expenses.map(e => {
+      const cat = grant.categories.find(c => c.id === e.catId);
+      return `"${e.date}","${e.desc}",${e.amount},"${cat?.name || ""}","${e.receipt}"`;
+    }).join("\n");
+    const blob = new Blob([header + rows], { type: "text/csv" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = "grant_expenses.csv"; a.click();
+  };
+
+  return (
+    <div className="space-y-4">
+      <form onSubmit={addExpense} className="bg-white rounded-lg shadow p-4">
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">Add Expense</h2>
+        <div className="grid md:grid-cols-5 gap-2">
+          <input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})} className="border rounded px-3 py-2 text-sm" />
+          <input placeholder="Description *" value={form.desc} onChange={e => setForm({...form, desc: e.target.value})} className="border rounded px-3 py-2 text-sm md:col-span-2" required />
+          <input type="number" step="0.01" placeholder="Amount *" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} className="border rounded px-3 py-2 text-sm" required />
+          <select value={form.catId} onChange={e => setForm({...form, catId: e.target.value})} className="border rounded px-3 py-2 text-sm">
+            {grant.categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
+        </div>
+        <div className="flex gap-2 mt-2">
+          <input placeholder="Receipt reference" value={form.receipt} onChange={e => setForm({...form, receipt: e.target.value})} className="border rounded px-3 py-2 text-sm flex-1" />
+          <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">Add</button>
+        </div>
+      </form>
+
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="flex justify-between items-center p-4">
+          <h2 className="text-lg font-semibold text-gray-800">Expenses ({grant.expenses.length})</h2>
+          <button onClick={exportCSV} className="px-3 py-1 bg-gray-100 rounded text-sm hover:bg-gray-200">📥 Export CSV</button>
+        </div>
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="text-left p-3 font-semibold">Date</th>
+              <th className="text-left p-3 font-semibold">Description</th>
+              <th className="text-right p-3 font-semibold">Amount</th>
+              <th className="text-left p-3 font-semibold">Category</th>
+              <th className="text-left p-3 font-semibold">Receipt</th>
+              <th className="p-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {grant.expenses.sort((a,b) => a.date.localeCompare(b.date)).map(e => {
+              const cat = grant.categories.find(c => c.id === e.catId);
+              return (
+                <tr key={e.id} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-gray-500">{e.date}</td>
+                  <td className="p-3">{e.desc}</td>
+                  <td className="p-3 text-right font-medium">${e.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                  <td className="p-3"><span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-xs">{cat?.name || "—"}</span></td>
+                  <td className="p-3 text-gray-400">{e.receipt || "—"}</td>
+                  <td className="p-3"><button onClick={() => removeExpense(e.id)} className="text-red-400 hover:text-red-600">✕</button></td>
+                </tr>
+              );
+            })}
+            {grant.expenses.length === 0 && <tr><td colSpan="6" className="p-6 text-center text-gray-400">No expenses logged yet</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function DashboardTab({ grant, catSpent, totalBudgeted, totalSpent }) {
+  const remaining = grant.amount - totalSpent;
+  const daysLeft = Math.ceil((new Date(grant.deadline) - new Date()) / 86400000);
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StatCard label="Grant Amount" value={`$${grant.amount.toLocaleString()}`} color="indigo" />
+        <StatCard label="Total Spent" value={`$${totalSpent.toLocaleString()}`} color="blue" />
+        <StatCard label="Remaining" value={`$${remaining.toLocaleString()}`} color={remaining >= 0 ? "green" : "red"} />
+        <StatCard label="Days to Deadline" value={daysLeft > 0 ? daysLeft : "Overdue"} color={daysLeft > 30 ? "gray" : daysLeft > 0 ? "amber" : "red"} />
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Budget vs Actual</h2>
+        {grant.categories.map(c => {
+          const spent = catSpent(c.id);
+          const pct = c.budgeted > 0 ? (spent / c.budgeted) * 100 : 0;
+          const color = pct > 100 ? "bg-red-500" : pct > 80 ? "bg-amber-500" : "bg-green-500";
+          return (
+            <div key={c.id} className="mb-4">
+              <div className="flex justify-between text-sm mb-1">
+                <span className="font-medium">{c.name}</span>
+                <span className="text-gray-500">${spent.toLocaleString()} / ${c.budgeted.toLocaleString()} ({pct.toFixed(0)}%)</span>
+              </div>
+              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                <div className={`h-full rounded-full ${color} transition-all`} style={{ width: `${Math.min(pct, 100)}%` }}></div>
+              </div>
+              <div className="text-xs text-gray-400 mt-0.5">Remaining: ${(c.budgeted - spent).toLocaleString()}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function StatCard({ label, value, color }) {
+  const colors = { indigo: "bg-indigo-50 text-indigo-700", blue: "bg-blue-50 text-blue-700", green: "bg-green-50 text-green-700", red: "bg-red-50 text-red-700", amber: "bg-amber-50 text-amber-700", gray: "bg-gray-50 text-gray-700" };
+  return (
+    <div className={`rounded-lg p-4 text-center ${colors[color] || colors.gray}`}>
+      <div className="text-2xl font-bold">{value}</div>
+      <div className="text-xs mt-1 opacity-75">{label}</div>
+    </div>
+  );
+}
+
+// ─── Narrative helpers ──────────────────────────────────────
+const NARRATIVE_FIELDS = [
+  { key: "activities", label: "Activities Delivered", placeholder: "What activities, programs, or services were delivered during this period? Include specific dates, locations, and descriptions.", hint: "Be specific — funders look for concrete details, not vague summaries." },
+  { key: "reach", label: "Reach & Participation", placeholder: "How many people participated or benefited? Break down by group if relevant (e.g., 45 youth aged 12-18, 12 volunteers).", hint: "Include numbers. 'Many people attended' is a red flag for funders." },
+  { key: "challenges", label: "Challenges & Changes", placeholder: "Were there any challenges, delays, or changes to the original plan? How were they addressed?", hint: "Honest reflection builds trust. Reporting only success can raise concerns." },
+  { key: "learnings", label: "Learnings & Improvements", placeholder: "What would you do differently next time? What did you learn from this project?", hint: "Funders value organisations that learn and adapt." },
+  { key: "additional", label: "Additional Notes (optional)", placeholder: "Any other information relevant to the acquittal.", hint: "" },
+];
+
+function parseNarrative(raw) {
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw);
+    if (typeof parsed === "object" && !Array.isArray(parsed)) return parsed;
+  } catch(e) {}
+  // Legacy plain text: put it in 'additional'
+  return { additional: raw };
+}
+
+function serializeNarrative(fields) {
+  return JSON.stringify(fields);
+}
+
+function narrativeToPlainText(fields) {
+  return NARRATIVE_FIELDS
+    .filter(f => fields[f.key])
+    .map(f => `${f.label}\n${fields[f.key]}`)
+    .join("\n\n");
+}
+
+function ReportTab({ grant, catSpent, totalBudgeted, totalSpent, setGrant }) {
+  const [narrativeFields, setNarrativeFields] = useState(() => parseNarrative(grant.narrative));
+
+  const updateField = (key, value) => {
+    const updated = { ...narrativeFields, [key]: value };
+    setNarrativeFields(updated);
+  };
+
+  const syncNarrative = () => {
+    const serialized = serializeNarrative(narrativeFields);
+    if (serialized !== grant.narrative) {
+      setGrant({ ...grant, narrative: serialized });
+    }
+  };
+
+  const handlePrint = () => window.print();
+
+  return (
+    <div>
+      <div className="no-print mb-4 flex gap-2">
+        <button onClick={handlePrint} className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">Print / Save as PDF</button>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-8" id="report">
+        <div className="text-center mb-6 border-b pb-4">
+          <h1 className="text-2xl font-bold text-gray-800">Grant Acquittal Report</h1>
+          <p className="text-gray-500 mt-1">Generated {new Date().toLocaleDateString()}</p>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-2 text-gray-700">Grant Details</h2>
+          <table className="w-full text-sm">
+            <tbody>
+              <tr className="border-b"><td className="py-2 font-medium w-40">Funder</td><td className="py-2">{grant.funder}</td></tr>
+              <tr className="border-b"><td className="py-2 font-medium">Grant Name</td><td className="py-2">{grant.grantName}</td></tr>
+              <tr className="border-b"><td className="py-2 font-medium">Total Amount</td><td className="py-2">${grant.amount.toLocaleString()}</td></tr>
+              <tr className="border-b"><td className="py-2 font-medium">Reporting Period</td><td className="py-2">To {grant.deadline}</td></tr>
+              <tr><td className="py-2 font-medium">Total Expenditure</td><td className="py-2 font-semibold">${totalSpent.toLocaleString()}</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-2 text-gray-700">Financial Summary — Budget vs Actual</h2>
+          <table className="w-full text-sm border">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-2 border">Budget Category</th>
+                <th className="text-right p-2 border">Budgeted</th>
+                <th className="text-right p-2 border">Actual</th>
+                <th className="text-right p-2 border">Variance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {grant.categories.map(c => {
+                const spent = catSpent(c.id);
+                const variance = c.budgeted - spent;
+                return (
+                  <tr key={c.id}>
+                    <td className="p-2 border">{c.name}</td>
+                    <td className="p-2 border text-right">${c.budgeted.toLocaleString()}</td>
+                    <td className="p-2 border text-right">${spent.toLocaleString()}</td>
+                    <td className={`p-2 border text-right ${variance < 0 ? "text-red-600" : ""}`}>${variance.toLocaleString()}</td>
+                  </tr>
+                );
+              })}
+              <tr className="font-semibold bg-gray-50">
+                <td className="p-2 border">TOTAL</td>
+                <td className="p-2 border text-right">${totalBudgeted.toLocaleString()}</td>
+                <td className="p-2 border text-right">${totalSpent.toLocaleString()}</td>
+                <td className="p-2 border text-right">${(totalBudgeted - totalSpent).toLocaleString()}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-2 text-gray-700">Expenditure Detail</h2>
+          <table className="w-full text-sm border">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-2 border">Date</th>
+                <th className="text-left p-2 border">Description</th>
+                <th className="text-left p-2 border">Category</th>
+                <th className="text-right p-2 border">Amount</th>
+                <th className="text-left p-2 border">Receipt Ref</th>
+              </tr>
+            </thead>
+            <tbody>
+              {grant.expenses.sort((a,b) => a.date.localeCompare(b.date)).map(e => (
+                <tr key={e.id}>
+                  <td className="p-2 border">{e.date}</td>
+                  <td className="p-2 border">{e.desc}</td>
+                  <td className="p-2 border">{grant.categories.find(c => c.id === e.catId)?.name || "—"}</td>
+                  <td className="p-2 border text-right">${e.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                  <td className="p-2 border">{e.receipt || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-2 text-gray-700">Program Narrative</h2>
+
+          <div className="no-print space-y-4">
+            <p className="text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded p-2">
+              These prompts help you write a stronger acquittal narrative. Funders look for specific details, honest reflection, and measurable outcomes.
+            </p>
+            {NARRATIVE_FIELDS.map(f => (
+              <div key={f.key}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
+                {f.hint && <p className="text-xs text-gray-400 mb-1">{f.hint}</p>}
+                <textarea className="w-full border rounded p-3 text-sm min-h-[80px]"
+                  value={narrativeFields[f.key] || ""} placeholder={f.placeholder}
+                  onChange={e => updateField(f.key, e.target.value)} onBlur={syncNarrative} />
+              </div>
+            ))}
+          </div>
+
+          <div className="print-only">
+            {NARRATIVE_FIELDS.filter(f => narrativeFields[f.key]).map(f => (
+              <div key={f.key} className="mb-3">
+                <h3 className="text-sm font-semibold text-gray-700">{f.label}</h3>
+                <p className="text-sm whitespace-pre-wrap">{narrativeFields[f.key]}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t pt-4 mt-6">
+          <p className="text-sm text-gray-500">Prepared by: ________________________________</p>
+          <p className="text-sm text-gray-500 mt-2">Position: ________________________________</p>
+          <p className="text-sm text-gray-500 mt-2">Date: ________________________________</p>
+          <p className="text-sm text-gray-500 mt-2">Signature: ________________________________</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+</body>
+</html>

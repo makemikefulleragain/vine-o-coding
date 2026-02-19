@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1714">
+<title>All Tasks — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">All Tasks — Every Phase</h2>
+  <p class="section-sub">The full roadmap as tasks. Filter by phase, type, or status. Click any task to expand detail.</p>
+  <div class="filter-bar" id="task-filters"></div>
+  <div id="tasks-out"></div>
+</main>
+
+<script type="module">
+import { initNav }    from './js/nav.js';
+import { initCompose } from './js/compose.js';
+import { loadState }  from './js/data.js';
+import { renderAllTaskGroups, renderFilterBar } from './js/tasks.js';
+import { initWaymaker } from './js/waymaker.js';
+
+loadState();
+initNav('tasks');
+initWaymaker('tasks');
+initCompose();
+
+// Read phase param from URL (e.g. tasks.html?phase=p1)
+const params = new URLSearchParams(location.search);
+let activeFilter = params.get('phase') || 'all';
+
+const container = document.getElementById('tasks-out');
+const filterBar = document.getElementById('task-filters');
+
+function render() {
+  renderAllTaskGroups(container, activeFilter);
+}
+
+renderFilterBar(filterBar, activeFilter, f => {
+  activeFilter = f;
+  // Update URL without reload
+  const url = new URL(location.href);
+  if (f === 'all') url.searchParams.delete('phase');
+  else url.searchParams.set('phase', f);
+  history.replaceState({}, '', url);
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

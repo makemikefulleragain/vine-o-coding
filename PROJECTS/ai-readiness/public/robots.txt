@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kamunity-ai-readiness.netlify.app/sitemap.xml

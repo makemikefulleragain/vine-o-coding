@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Free AI readiness self-assessment for community organisations. 12 questions, 2 minutes, personalised results." />
+    <meta property="og:title" content="AI Readiness — Kamunity" />
+    <meta property="og:description" content="Free AI readiness self-assessment for community organisations. 12 questions, 2 minutes, personalised results and recommendations." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kamunity-ai-readiness.netlify.app" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="AI Readiness — Kamunity" />
+    <meta name="twitter:description" content="Free AI readiness self-assessment for community organisations. 12 questions, 2 minutes, personalised results." />
+    <link rel="canonical" href="https://kamunity-ai-readiness.netlify.app" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Kamunity",
+        "url": "https://kamunity.org",
+        "description": "AI readiness assessment and consulting for community organisations in Australia.",
+        "sameAs": [
+          "https://www.kamunityconsulting.com",
+          "https://kamunity-audit.netlify.app"
+        ]
+      }
+    </script>
+    <title>AI Readiness — Kamunity</title>
+  </head>
+  <body class="bg-warmwhite text-charcoal antialiased">
+    <div id="root"></div>
+    <form name="feedback" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="bot-field" />
+      <input type="text" name="emoji" />
+      <textarea name="message"></textarea>
+    </form>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
