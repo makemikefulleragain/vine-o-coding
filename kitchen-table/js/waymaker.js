@@ -295,9 +295,9 @@ function initVoiceInput() {
   micBtn.style.display = 'flex';
 
   const recognition = new SpeechRecognition();
-  recognition.continuous = false;
+  recognition.continuous = true;
   recognition.interimResults = true;
-  recognition.lang = 'en-AU';
+  recognition.maxAlternatives = 1;
 
   let isRecording = false;
   let finalTranscript = '';
