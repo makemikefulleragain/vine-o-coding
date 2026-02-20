@@ -313,7 +313,7 @@ function initVoiceInput() {
   recognition.onresult = (e) => {
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
-      const t = e.results[i].transcript;
+      const t = e.results[i][0].transcript;
       if (e.results[i].isFinal) {
         finalTranscript += (finalTranscript ? ' ' : '') + t.trim();
       } else {
