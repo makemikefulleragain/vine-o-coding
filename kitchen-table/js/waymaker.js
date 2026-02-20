@@ -452,7 +452,8 @@ async function handleSend() {
   let text = input.value.trim();
   if (!text) return;
 
-  // Shortcut expansion
+  // Shortcut expansion — show original command in chat, send expanded text to Claude
+  let displayText = text;
   const matchedKey = Object.keys(SHORTCUTS).find(k => text.toLowerCase().startsWith(k));
   if (matchedKey) {
     const extra = text.slice(matchedKey.length).trim();
@@ -462,7 +463,7 @@ async function handleSend() {
 
   input.value = '';
   input.style.height = 'auto';
-  appendMessage('user', text);
+  appendMessage('user', displayText);
   setLoading(true);
 
   try {
