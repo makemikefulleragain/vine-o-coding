@@ -1,6 +1,6 @@
 # KAMUNITY UNIFIED PHASE QUEUE
 ## Cross-Project Priority Queue
-### Last Updated: Feb 19, 2026
+### Last Updated: Feb 20, 2026
 
 *This queue is a hypothesis, not a contract. Evidence changes the plan. Phases can be reordered, split, or replaced based on what reality reveals.*
 
@@ -90,11 +90,11 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 **Goal:** Kai knows the full ecosystem and can run tools conversationally.
 
 **Done When:**
-- [ ] ecosystem-state-full.json deployed to Kai's data source
-- [ ] Kai can describe all ecosystem sites (not just link — explain what each does)
+- [x] ecosystem-state-full.json deployed to Kai's data source — v0.2.0 with 11-site full_site_registry. Feb 20.
+- [x] Kai can describe all ecosystem sites — full_site_registry in ecosystem-state.json + strengthened system prompt. Feb 20.
 - [ ] Kai runs AI Readiness quiz inline (questions as cards, results interpreted)
 - [ ] Kai runs Vine-o-Code 6 questions conversationally (outputs foundation doc pack)
-- [ ] All ecosystem sites cross-linked + llms.txt updated
+- [x] All ecosystem sites cross-linked + llms.txt updated — sovereignty-audit + ai-readiness footers + llms.txt updated. Feb 20.
 
 **Dependencies:** KP-01 (safety first)
 
@@ -244,6 +244,8 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 | 2026-02-19 | KP-06 (Consolidation) added | Campfire Architecture decision |
 | 2026-02-19 | KP-07 (WALGA) added | Live client project needs tracking |
 | 2026-02-19 | WORKSHOP/ concept added to KP-06 | Mike needs a creative sandbox folder |
+| 2026-02-20 | KP-04: 3 of 5 items ticked — ecosystem-state v0.2.0, cross-links, Kai system prompt strengthened | Evening session completing Opus gap analysis tasks |
+| 2026-02-20 | KP-02: AI Safety Checklist leave-behind created (tools/ai-safety-checklist.html) | Done in earlier session |
 
 ---
 

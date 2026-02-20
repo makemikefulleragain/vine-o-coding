@@ -26,6 +26,13 @@ This is NOT related to Kamunity in Sweden, Kamunity.io (finance platform), or th
 - [Privacy Policy](/privacy): Zero data collection. No cookies, analytics, or tracking. Everything runs client-side.
 - [FAQ](/faq): Common questions about digital sovereignty, the audit tool, data safety, and getting help
 
+## Kamunity Ecosystem — Related Free Tools
+
+- [Sovereignty Calculator](https://kamunity.org/calculator): See the true annual cost of "free" corporate tools. Select Google, Slack, Facebook, Microsoft 365, WhatsApp, etc. See direct costs, data extraction value, lock-in scores, and switching costs. 3 minutes.
+- [Copilot Risk Check](https://kamunity.org/copilot-check): Is Microsoft Copilot processing your organisation's data without governance? 5 questions, risk level (Low/Medium/High/Critical), specific action steps. Free.
+- [AI Readiness Assessment](https://kamunity-ai-readiness.netlify.app/): 12-question quiz mapping AI understanding, current use, safety posture, and readiness to act. Includes free toolkit.
+- [Kai — AI Encounter Interface](https://kamunity.org): Ask questions about digital sovereignty, AI risk, and community tech. Free, constitutionally-grounded AI assistant.
+
 ## Optional
 
 - [Toolkit Index](/toolkit): Overview of all free guides and resources

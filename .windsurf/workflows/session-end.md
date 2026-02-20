@@ -41,14 +41,25 @@ Every Cascade session should end here. This ensures nothing drifts and the sourc
    - Were any files or folders added/moved?
    - If yes: update the map to reflect the new structure
 
-8. **Uncommitted changes check:**
-   - Run `git status` — are there uncommitted changes?
+8. **Kitchen Table data sync:**
+   - Copy the updated source-of-truth files to the Kitchen Table snapshot folder so the deployed Netlify version stays current:
+   - `Copy-Item "BRAIN/STATE.md" "kitchen-table/data/STATE.md" -Force`
+   - `Copy-Item "PLAN/PHASE_QUEUE.md" "kitchen-table/data/PHASE_QUEUE.md" -Force`
+   - `Copy-Item "BRAIN/SAFETY_GATES.md" "kitchen-table/data/SAFETY_GATES.md" -Force`
+   - Then commit and push the kitchen-table repo:
+// turbo
+   - `git -C kitchen-table add -A`
+   - `git -C kitchen-table commit -m "sync: data snapshots updated [date]"`
+   - `git -C kitchen-table push origin main`
+
+9. **Uncommitted changes check (nerve centre):**
+   - Run `git status` in the main repo — are there uncommitted changes?
    - If yes: stage and commit with a descriptive message
 // turbo
    - `git add -A`
    - `git commit -m "[session summary]"`
 
-9. **Handoff note:**
+10. **Handoff note:**
    - Is there anything the next session needs to know that isn't in STATE.md?
    - If yes: add a "Next Session Should..." note to STATE.md
    - Confirm: "Source of truth confirmed. Everything committed. Ready for next session."

@@ -108,15 +108,17 @@
 ## The Kitchen Table
 
 The Kitchen Table PWA (`kitchen-table/`) is the internal operations dashboard. It tracks:
-- 46 tasks across 7 phases
-- 16 ecosystem sites (this list)
+- 47 tasks across 7 phases (41 with pre-generated task specs)
+- 17+ ecosystem sites (this list + prototypes + recommended tools)
 - 16 allies in the Constellation
 - 13 safety items
 - 13 gaps/open questions
 - 4 consulting services
 - 4 grant opportunities
 
-It is not publicly deployed. It runs locally via `python -m http.server 8732`.
+**Deployed:** [kamunity-kitchen-table.netlify.app](https://kamunity-kitchen-table.netlify.app) — password protected.
+**Local:** `python server.py` from `kitchen-table/` → `localhost:8732` (adds live BRAIN/PLAN file editing + ElevenLabs audio briefs).
+**Features:** Waymaker AI chat (Claude-powered, reads full BRAIN/PLAN markdown), Source editor (5-file browser editor), Today widgets (rhythm reminder, NLnet countdown, ally radar), Mon/Wed/Sat audio briefs (local only).
 
 ---
 

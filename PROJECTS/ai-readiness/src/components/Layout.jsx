@@ -65,18 +65,16 @@ export default function Layout({ children }) {
             </a>
             . No data is collected or stored.
           </p>
-          <p className="mt-1">
-            Companion to{' '}
-            <a
-              href="https://kamunity-audit.netlify.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-moss-500 hover:text-moss-600 underline"
-            >
-              Kamunity Audit
-            </a>
-          </p>
-          <p className="mt-2 text-xs text-gray-400">
+          <div className="mt-3 flex items-center justify-center gap-3 flex-wrap text-xs">
+            <a href="https://kamunity-audit.netlify.app" target="_blank" rel="noopener noreferrer" className="text-moss-500 hover:text-moss-600 no-underline">🧭 Sovereignty Audit</a>
+            <span className="text-gray-300">·</span>
+            <a href="https://kamunity.org/calculator" target="_blank" rel="noopener noreferrer" className="text-moss-500 hover:text-moss-600 no-underline">💰 Sovereignty Calculator</a>
+            <span className="text-gray-300">·</span>
+            <a href="https://kamunity.org/copilot-check" target="_blank" rel="noopener noreferrer" className="text-moss-500 hover:text-moss-600 no-underline">🪟 Copilot Check</a>
+            <span className="text-gray-300">·</span>
+            <a href="https://kamunity.org" target="_blank" rel="noopener noreferrer" className="text-moss-500 hover:text-moss-600 no-underline">🔥 Kai</a>
+          </div>
+          <p className="mt-3 text-xs text-gray-400">
             Kamunity is a community project, not a certified professional service. This tool is a starting point, not professional advice.
             For legal, financial, health, or safety matters, consult a qualified professional.
           </p>

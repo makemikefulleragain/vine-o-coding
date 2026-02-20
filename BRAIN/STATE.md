@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 20, 2026 (afternoon — Opus handoff fully closed, Kai encounter cards live, Waymaker abilities + voice fixed)
+### Last Updated: Feb 20, 2026 (evening — Gap analysis tasks complete: ecosystem-state v0.2.0, cross-links, Kai card surfacing strengthened, showcase URLs fixed)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -9,6 +9,9 @@
 ## Current Period: Pre-Launch Sprint
 
 **Week of Feb 19-23, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
+
+### Session Highlight (Feb 20 — Evening)
+Cascade completed the 4 Opus-identified gap tasks (KNOWLEDGE/KAMUNITY_GAP_ANALYSIS_20260220.md): (1) /calculator + /copilot-check confirmed live on kamunity.org — merged with remote implementations (remote had working pages from previous session; this session added correct /calculator + /copilot-check internal URLs to showcase.ts, fixed sovereignty-calculator + copilot-check kai-cards, strengthened Kai system prompt with explicit Microsoft/Copilot card surfacing triggers). (2) ecosystem-state.json updated to v0.2.0 with full 11-site registry (full_site_registry block) so Kai can answer "what do you have?" accurately. (3) llms-full.txt updated on kamunity.org + llms.txt on sovereignty-audit + ai-readiness updated with ecosystem cross-links. (4) sovereignty-audit + ai-readiness footers updated with Sovereignty Calculator + Copilot Check + Kai cross-links. All 3 repos committed + pushed to GitHub → Netlify CI/CD deploying. t12 ✅ t15 ✅ t29 ✅ (constitution page was already built; public/data/constitution.md confirmed present).
 
 ### Session Highlight (Feb 20 — Afternoon)
 Opus handoff KNOWLEDGE/OPUS_HANDOFF_20250220.md reviewed in full — all Cascade build tasks confirmed done. Five items completed: (1) Voice recording transcript bug fixed (e.results[i][0].transcript). (2) Waymaker honesty rules added to system prompt — no more fake agency claims. (3) Abilities modal + /shortcuts added to Waymaker chat header — full discoverability layer with 8 commands. (4) Sovereignty Calculator + Copilot Check promoted to kamunity.org as full Next.js pages (/calculator, /copilot-check) and as Kai encounter cards — Kai now surfaces them when users mention Microsoft/Copilot/tool costs. (5) t47 formally queued with spec file. Code review caught 4 bugs (missing animation class, external Link→a, font-sans→font-fraunces, shortcut displayText) — all fixed and committed. kamunity.org now has 5 live showcase tools + /calculator + /copilot-check.

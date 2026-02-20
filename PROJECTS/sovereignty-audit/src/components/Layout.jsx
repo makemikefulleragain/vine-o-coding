@@ -150,9 +150,11 @@ export default function Layout({ children }) {
             <div>
               <p className="font-semibold text-white/90 text-sm mb-3">Ecosystem</p>
               <ul className="space-y-2">
+                <li><a href="https://kamunity.org" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-ku-teal-light no-underline transition-colors">🔥 Kai (kamunity.org)</a></li>
+                <li><a href="https://kamunity.org/calculator" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-ku-teal-light no-underline transition-colors">💰 Sovereignty Calculator</a></li>
+                <li><a href="https://kamunity.org/copilot-check" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-ku-teal-light no-underline transition-colors">🪟 Copilot Risk Check</a></li>
+                <li><a href="https://kamunity-ai-readiness.netlify.app" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-ku-teal-light no-underline transition-colors">🤖 AI Readiness</a></li>
                 <li><a href="https://kamunity.ai" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-ku-teal-light no-underline transition-colors">kamunity.ai</a></li>
-                <li><a href="https://kamunity.org" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-ku-teal-light no-underline transition-colors">kamunity.org</a></li>
-                <li><a href="https://kamunityconsulting.com" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-ku-teal-light no-underline transition-colors">kamunityconsulting.com</a></li>
               </ul>
             </div>
             <div>

@@ -20,4 +20,14 @@ Kamunity AI Readiness helps community organisations, NFPs, neighbourhood centres
 ## Links
 - Website: https://kamunity-ai-readiness.netlify.app
 - Parent: https://kamunity.org
-- Companion: https://kamunity-audit.netlify.app
+- Companion (Sovereignty Audit): https://kamunity-audit.netlify.app
+- Sovereignty Calculator: https://kamunity.org/calculator
+- Copilot Risk Check: https://kamunity.org/copilot-check
+- Kai (AI encounter interface): https://kamunity.org
+
+## Kamunity Ecosystem — Related Free Tools
+
+- Sovereignty Calculator (kamunity.org/calculator): See the true annual cost of "free" corporate tools. Google, Slack, Facebook, Microsoft 365, WhatsApp. Direct costs + data extraction value + lock-in scores. 3 minutes.
+- Copilot Risk Check (kamunity.org/copilot-check): Microsoft Copilot data risk assessment for community orgs. 5 questions, risk rating, specific action steps.
+- Digital Sovereignty Audit (kamunity-audit.netlify.app): Free 2-minute full sovereignty self-assessment across all digital tools.
+- Kai — AI Encounter Interface (kamunity.org): Ask questions about AI readiness, digital sovereignty, and community tech.

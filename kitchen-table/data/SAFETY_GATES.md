@@ -165,10 +165,10 @@ Before any build phase begins across any Kamunity project:
 
 | Gate | Severity | Status | Blocking? |
 |---|---|---|---|
-| G1 Crisis Protocol | Critical | ⚠️ Open | YES — blocks public showcase |
+| G1 Crisis Protocol | Critical | ✅ PASS | No — UAT signed off Feb 19 |
 | G2 No PII in localStorage | Critical | ✅ Designed | No |
-| G3 Prompt Injection | Critical | ⚠️ Open | YES — blocks public showcase |
-| G4 Honest Disclaimers | Critical | ⚠️ Open | YES — blocks public showcase |
+| G3 Prompt Injection | Critical | ✅ PASS | No — UAT signed off Feb 19 |
+| G4 Honest Disclaimers | Critical | ✅ PASS | No — UAT signed off Feb 19 |
 | G5 Insurance | High | ⚠️ Open | YES — blocks paid consulting |
 | G6 Cultural Safety | High | ⚠️ Open | YES — blocks ACCO engagement |
 | G7 Vine-o-Code Data Warning | High | ⚠️ Open | YES — blocks Vine-o-Code promotion |
@@ -179,7 +179,7 @@ Before any build phase begins across any Kamunity project:
 | G12 Hallucination | Medium | 🔶 Untested | No — proceed with flag |
 | G13 Emotional Dependency | Medium | ✅ Designed | No |
 
-**Bottom line: G1, G3, G4 built Feb 19 evening — awaiting deploy + manual test sign-off before marking PASS. Run PLAN/kp-01-safety-tests.md before ALIKE meeting (Feb 24).**
+**Bottom line: G1, G3, G4 PASSED — UAT signed off Feb 19. Next critical blocker: G5 (insurance) blocks paid consulting. G6 (cultural safety) blocks ACCO engagement.**
 
 ---
 

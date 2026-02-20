@@ -1,5 +1,9 @@
 // Kitchen Table — Simple password gate
-// Change KT_PASSWORD to whatever you want. This runs before page content renders.
+// NOTE: This is a convenience gate, not real security. The password is visible in source.
+// For proper auth, use Netlify Identity or make the GitHub repo private.
+// See: https://docs.netlify.com/visitor-access/password-protection/
+//
+// SECURITY STATUS: Repo should be PRIVATE. If public, this password is exposed.
 
 const KT_PASSWORD = 'kamunity2026';
 const SESSION_KEY = 'kt-auth';

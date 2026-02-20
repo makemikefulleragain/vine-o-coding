@@ -14,8 +14,8 @@ build/
 
 # ===== Projects (own repos — use git clone separately) =====
 PROJECTS/kamunity-org/
-PROJECTS/kamunity/
-PROJECTS/NeoKamunityWedding/
+PROJECTS/kamunity-ai/
+PROJECTS/wedding/
 
 # ===== Archive zips (large binaries) =====
 ARCHIVE/*.zip
