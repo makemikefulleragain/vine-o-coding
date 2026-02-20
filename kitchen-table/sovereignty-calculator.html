@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="./js/auth.js"></script>
+<meta name="theme-color" content="#1a1714">
+<title>Sovereignty Calculator — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.calc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-bottom:24px; }
+.calc-tool { border:2px solid var(--border); border-radius:var(--r); padding:12px; cursor:pointer; transition:all .2s; background:var(--surface); text-align:center; }
+.calc-tool:hover { border-color:var(--violet); }
+.calc-tool.selected { border-color:var(--ember); background:rgba(230,126,34,.1); }
+.calc-tool-icon { font-size:1.8rem; margin-bottom:4px; }
+.calc-tool-name { font-size:.8rem; font-weight:600; }
+.calc-tool-cat { font-size:.65rem; opacity:.6; margin-top:2px; }
+.results-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin-bottom:24px; }
+.result-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:16px; }
+.result-card-name { font-weight:700; font-size:.95rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.result-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:.78rem; }
+.result-row:last-child { border-bottom:none; }
+.result-label { opacity:.7; }
+.result-val { font-weight:600; color:var(--ember); }
+.result-val.ok { color:#27ae60; }
+.lockin-bar { height:6px; background:var(--surface2); border-radius:3px; margin-top:4px; overflow:hidden; }
+.lockin-fill { height:100%; background:var(--ember); border-radius:3px; transition:width .4s; }
+.summary-box { background:var(--surface); border:2px solid var(--ember); border-radius:var(--r); padding:20px; margin-bottom:24px; }
+.summary-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:.85rem; }
+.summary-row:last-child { border-bottom:none; font-weight:700; font-size:1rem; color:var(--ember); }
+.summary-label { opacity:.7; }
+.holy-shit { background:linear-gradient(135deg,rgba(230,126,34,.15),rgba(155,89,182,.15)); border:2px solid var(--ember); border-radius:var(--r); padding:20px; margin-bottom:24px; text-align:center; }
+.holy-shit .big-num { font-size:2.5rem; font-weight:700; color:var(--ember); font-family:'Fraunces',serif; }
+.holy-shit .big-label { font-size:.85rem; opacity:.7; margin-top:4px; }
+.empty-state { text-align:center; padding:40px 20px; opacity:.5; }
+</style>
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">Sovereignty Calculator</h2>
+  <p class="section-sub">Select the tools your organisation uses. See the true cost of "free." — <em>From WORKSHOP/engine-prototypes-auto1/sovereignty-calculator</em></p>
+
+  <h3 class="section-title sm" style="margin-bottom:10px">1. Select your tools</h3>
+  <div class="calc-grid" id="tool-grid"></div>
+
+  <div id="results-section" style="display:none">
+    <div class="holy-shit" id="holy-shit-box"></div>
+    <h3 class="section-title sm" style="margin-bottom:10px">2. Summary</h3>
+    <div class="summary-box" id="summary-box"></div>
+    <h3 class="section-title sm" style="margin-bottom:10px">3. Tool breakdown</h3>
+    <div class="results-grid" id="results-grid"></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;font-size:.78rem;opacity:.7;margin-bottom:24px">
+      <strong>Methodology note:</strong> Direct costs reflect typical organisational spend including likely upgrade triggers. Lock-in scores assess migration difficulty (1=easy, 10=trapped). Data extraction values are estimates based on publicly available ARPU data and platform business models. These are illustrative figures — real values vary by organisation size and usage. This tool is for awareness, not legal or financial advice.
+    </div>
+    <div style="text-align:center;margin-bottom:24px">
+      <a href="https://kamunity-audit.netlify.app" target="_blank" class="btn btn--primary">Take the full Sovereignty Audit →</a>
+    </div>
+  </div>
+
+  <div class="empty-state" id="empty-state">
+    <div style="font-size:2rem;margin-bottom:8px">💰</div>
+    <div>Select tools above to see the true cost of "free"</div>
+  </div>
+</main>
+
+<script type="module">
+import { initNav }     from './js/nav.js';
+import { initCompose } from './js/compose.js';
+import { initWaymaker } from './js/waymaker.js';
+
+initNav('ecosystem');
+initCompose();
+initWaymaker('sovereignty-calculator');
+
+const TOOLS = [
+  {id:'google-workspace',name:'Google Workspace',icon:'🔵',cat:'Productivity',cost:{free:'Free tier',monthly:14,trigger:'Storage & advanced features'},lockIn:{score:8,ease:'Hard',time:'80+ hrs',alts:['Microsoft 365','Zoho','Nextcloud'],why:'Docs/Sheets format lock, email/calendar/contacts are separate migrations'},dataEx:{annual:180,types:['Email content','Document content','Search queries','Usage patterns'],why:"Google is an advertising company. Your org's data trains their models."}},
+  {id:'slack',name:'Slack',icon:'🟣',cat:'Communication',cost:{free:'Free (90-day history)',monthly:12,trigger:'90-day message limit forces upgrade'},lockIn:{score:7,ease:'Medium',time:'20–40 hrs',alts:['Mattermost','Element/Matrix','Zulip'],why:'Message history export requires paid plan. Integrations need rebuilding.'},dataEx:{annual:120,types:['Message content','File content','User behaviour','Network graph'],why:'Slack (Salesforce) analyses your conversations for product improvement.'}},
+  {id:'canva',name:'Canva',icon:'🎨',cat:'Design',cost:{free:'Free tier',monthly:20,trigger:'Premium templates, brand kit, team features'},lockIn:{score:5,ease:'Medium',time:'10–20 hrs',alts:['GIMP','Inkscape','Adobe Express'],why:'Designs in Canva format, export quality limited on free tier.'},dataEx:{annual:60,types:['Design content','Brand assets','Usage patterns'],why:'Your designs and brand assets are processed by Canva AI systems.'}},
+  {id:'eventbrite',name:'Eventbrite',icon:'🎟️',cat:'Events',cost:{free:'Free for free events',monthly:0,trigger:'3.7% + $1.79 per paid ticket'},lockIn:{score:4,ease:'Medium',time:'5–10 hrs',alts:['Humanitix','TryBooking','Stripe'],why:'Attendee data export available but manual process.'},dataEx:{annual:90,types:['Attendee data','Event content','Transaction data','Behaviour analytics'],why:'Eventbrite sells attendee data insights to the event industry.'}},
+  {id:'facebook-groups',name:'Facebook Groups',icon:'📘',cat:'Community',cost:{free:'Free',monthly:0,trigger:'Free until Meta changes policy'},lockIn:{score:9,ease:'Hard',time:'60–100 hrs',alts:['Discord','Element/Matrix','Mighty Networks'],why:'No data export for posts, comments, or member lists. Community is trapped.'},dataEx:{annual:240,types:['Posts','Comments','Reactions','Member behaviour','Network graph','Content analysis'],why:"Facebook is the world's largest ad platform. Your community is the product."}},
+  {id:'whatsapp',name:'WhatsApp',icon:'📱',cat:'Communication',cost:{free:'Free',monthly:0,trigger:'Free (Meta subsidises via data)'},lockIn:{score:8,ease:'Hard',time:'30–50 hrs',alts:['Signal','Element/Matrix','Telegram'],why:'No useful group history export. Contacts trapped in Meta ecosystem.'},dataEx:{annual:200,types:['Metadata','Contact graphs','Usage patterns','Message content (from 2024 policy)'],why:'Meta now uses WhatsApp data for AI training by default (opt-out required).'}},
+  {id:'zoom',name:'Zoom',icon:'📹',cat:'Video',cost:{free:'Free (40-min limit)',monthly:22,trigger:'40-min limit forces upgrade for any real meeting'},lockIn:{score:4,ease:'Easy',time:'2–5 hrs',alts:['Jitsi Meet','BigBlueButton','Google Meet'],why:'Easy to switch — recordings download, no persistent community.'},dataEx:{annual:80,types:['Meeting content','Transcripts','Usage patterns','Participant data'],why:'Zoom uses meeting data including transcripts for AI model training.'}},
+  {id:'mailchimp',name:'Mailchimp',icon:'🐒',cat:'Email',cost:{free:'Free (500 contacts)',monthly:35,trigger:'Contact limits hit fast for active orgs'},lockIn:{score:6,ease:'Medium',time:'15–30 hrs',alts:['Brevo','Mautic','Listmonk'],why:'List export available but automations, templates, analytics stay on Mailchimp.'},dataEx:{annual:100,types:['Contact data','Email engagement','Open/click behaviour','Revenue attribution'],why:'Mailchimp (Intuit) sells aggregate insights and uses data for product improvement.'}},
+  {id:'trello',name:'Trello',icon:'📋',cat:'Project',cost:{free:'Free tier',monthly:10,trigger:'View limits, automation limits, file sizes'},lockIn:{score:4,ease:'Easy',time:'5–10 hrs',alts:['Wekan','Planka','Nextcloud Deck'],why:'JSON export available, some migration tools exist.'},dataEx:{annual:40,types:['Board content','Task data','User behaviour'],why:'Atlassian (Trello) uses product data for improvement. Lower risk than social tools.'}},
+  {id:'discord',name:'Discord',icon:'🎮',cat:'Community',cost:{free:'Free',monthly:0,trigger:'Free (Discord monetises via Nitro)'},lockIn:{score:7,ease:'Hard',time:'30–60 hrs',alts:['Element/Matrix','Mattermost','Zulip'],why:'No server data export. Message history stays on Discord.'},dataEx:{annual:150,types:['Message content','Voice usage','Server activity','User behaviour'],why:'Discord uses all platform data including voice for product improvement and AI.'}},
+];
+
+const selected = new Set();
+
+function renderTools() {
+  document.getElementById('tool-grid').innerHTML = TOOLS.map(t => `
+    <div class="calc-tool${selected.has(t.id) ? ' selected' : ''}" onclick="toggle('${t.id}')">
+      <div class="calc-tool-icon">${t.icon}</div>
+      <div class="calc-tool-name">${t.name}</div>
+      <div class="calc-tool-cat">${t.cat}</div>
+    </div>
+  `).join('');
+}
+
+window.toggle = function(id) {
+  if (selected.has(id)) selected.delete(id);
+  else selected.add(id);
+  renderTools();
+  renderResults();
+};
+
+function lockInColor(score) {
+  if (score <= 3) return '#27ae60';
+  if (score <= 6) return '#f39c12';
+  return '#c0392b';
+}
+
+function renderResults() {
+  const tools = TOOLS.filter(t => selected.has(t.id));
+  const empty = document.getElementById('empty-state');
+  const section = document.getElementById('results-section');
+
+  if (!tools.length) {
+    empty.style.display = 'block';
+    section.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  section.style.display = 'block';
+
+  const totalMonthly = tools.reduce((s, t) => s + t.cost.monthly, 0);
+  const totalAnnual = tools.reduce((s, t) => s + t.dataEx.annual, 0);
+  const avgLockIn = Math.round(tools.reduce((s, t) => s + t.lockIn.score, 0) / tools.length);
+  const totalMigrationHrs = tools.map(t => {
+    const match = t.lockIn.time.match(/(\d+)/);
+    return match ? parseInt(match[1]) : 10;
+  }).reduce((s, v) => s + v, 0);
+  const switchingCost = Math.round(totalMigrationHrs * 75);
+
+  document.getElementById('holy-shit-box').innerHTML = `
+    <div style="font-size:.85rem;opacity:.7;margin-bottom:8px">Your ${tools.length} "free" tool${tools.length > 1 ? 's' : ''} actually cost your org:</div>
+    <div class="big-num">$${(totalMonthly * 12 + totalAnnual + switchingCost / 5).toLocaleString()}</div>
+    <div class="big-label">estimated annual true cost (direct + data extraction + amortised switching risk)</div>
+  `;
+
+  document.getElementById('summary-box').innerHTML = `
+    <div class="summary-row"><span class="summary-label">Direct annual cost (likely spend)</span><span><strong>$${(totalMonthly * 12).toLocaleString()}/yr</strong></span></div>
+    <div class="summary-row"><span class="summary-label">Estimated data extraction value</span><span><strong>$${totalAnnual.toLocaleString()}/yr</strong></span></div>
+    <div class="summary-row"><span class="summary-label">Migration time if you needed to switch</span><span><strong>${totalMigrationHrs}+ hours</strong></span></div>
+    <div class="summary-row"><span class="summary-label">Switching cost estimate (@ $75/hr)</span><span><strong>$${switchingCost.toLocaleString()}</strong></span></div>
+    <div class="summary-row"><span class="summary-label">Average lock-in score</span><span><strong>${avgLockIn}/10 — ${avgLockIn <= 3 ? 'Low' : avgLockIn <= 6 ? 'Medium' : 'High'} risk</strong></span></div>
+    <div class="summary-row"><span>Total true cost (annual)</span><span>~$${(totalMonthly * 12 + totalAnnual).toLocaleString()}/yr + $${switchingCost.toLocaleString()} switching risk</span></div>
+  `;
+
+  document.getElementById('results-grid').innerHTML = tools.map(t => `
+    <div class="result-card">
+      <div class="result-card-name">${t.icon} ${t.name}</div>
+      <div class="result-row">
+        <span class="result-label">Direct cost</span>
+        <span class="result-val${t.cost.monthly === 0 ? ' ok' : ''}">$${t.cost.monthly === 0 ? '0 + fees' : t.cost.monthly + '/mo'}</span>
+      </div>
+      <div style="font-size:.65rem;opacity:.6;padding:2px 0 6px">⚠️ ${t.cost.trigger}</div>
+      <div class="result-row">
+        <span class="result-label">Lock-in score</span>
+        <span style="font-weight:600;color:${lockInColor(t.lockIn.score)}">${t.lockIn.score}/10 · ${t.lockIn.ease}</span>
+      </div>
+      <div class="lockin-bar"><div class="lockin-fill" style="width:${t.lockIn.score * 10}%;background:${lockInColor(t.lockIn.score)}"></div></div>
+      <div style="font-size:.65rem;opacity:.6;padding:2px 0 6px">Migration: ${t.lockIn.time} · Alternatives: ${t.lockIn.alts.slice(0,2).join(', ')}</div>
+      <div class="result-row">
+        <span class="result-label">Data extraction value</span>
+        <span class="result-val">~$${t.dataEx.annual}/yr</span>
+      </div>
+      <div style="font-size:.65rem;opacity:.6;padding:2px 0 0">${t.dataEx.why}</div>
+    </div>
+  `).join('');
+}
+
+renderTools();
+renderResults();
+</script>
+</body>
+</html>

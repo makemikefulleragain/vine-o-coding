@@ -246,6 +246,7 @@ function createChatUI() {
     </div>
     <div class="wm-input-row">
       <textarea class="wm-input" id="wm-input" placeholder="Ask Waymaker..." rows="1"></textarea>
+      <button class="wm-mic" id="wm-mic" title="Voice input" style="display:none">🎤</button>
       <button class="wm-send" id="wm-send" title="Send">→</button>
     </div>
     <div class="wm-status" id="wm-status"></div>
@@ -279,6 +280,74 @@ function createChatUI() {
     input.style.height = 'auto';
     input.style.height = Math.min(input.scrollHeight, 120) + 'px';
   });
+}
+
+// ─── Voice Input ────────────────────────────────────────────────
+
+function initVoiceInput() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return; // not supported — mic button stays hidden
+
+  const micBtn = document.getElementById('wm-mic');
+  const input  = document.getElementById('wm-input');
+  if (!micBtn || !input) return;
+
+  micBtn.style.display = 'flex';
+
+  const recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.lang = 'en-AU';
+
+  let isRecording = false;
+  let finalTranscript = '';
+
+  recognition.onstart = () => {
+    isRecording = true;
+    finalTranscript = input.value; // preserve any existing text
+    micBtn.classList.add('wm-mic--recording');
+    micBtn.title = 'Stop recording';
+    setStatus('Listening...');
+  };
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i].transcript;
+      if (e.results[i].isFinal) {
+        finalTranscript += (finalTranscript ? ' ' : '') + t.trim();
+      } else {
+        interim = t;
+      }
+    }
+    input.value = finalTranscript + (interim ? ' ' + interim : '');
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    micBtn.classList.remove('wm-mic--recording');
+    micBtn.title = 'Voice input';
+    setStatus('');
+    input.focus();
+  };
+
+  recognition.onerror = (e) => {
+    isRecording = false;
+    micBtn.classList.remove('wm-mic--recording');
+    setStatus(e.error === 'not-allowed' ? '⚠️ Microphone permission denied' : `⚠️ Voice error: ${e.error}`);
+    setTimeout(() => setStatus(''), 3000);
+  };
+
+  micBtn.onclick = () => {
+    if (isRecording) {
+      recognition.stop();
+    } else {
+      finalTranscript = input.value.trim();
+      recognition.start();
+    }
+  };
 }
 
 function toggleChat() {
@@ -402,5 +471,6 @@ export function initWaymaker(pageId = 'today') {
   currentPage = pageId;
   loadHistory();
   createChatUI();
+  initVoiceInput(); // attach mic button if browser supports Web Speech API
   fetchLiveFiles(); // pre-fetch in background — ready for first message
 }

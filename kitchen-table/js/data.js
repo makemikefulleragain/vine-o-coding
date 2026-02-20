@@ -140,7 +140,8 @@ export const GAPS = [
 ];
 
 export const PROTOTYPES = [
-  {icon:"💰",name:"Sovereignty Calculator",path:"engine-prototypes-auto1/sovereignty-calculator",desc:"True cost of 'free' tools — direct cost, hidden time cost, data extraction value, switching cost",potential:"Highest priority — embed in Kai as encounter card",batch:"auto1"},
+  {icon:"💰",name:"Sovereignty Calculator",path:"engine-prototypes-auto1/sovereignty-calculator",desc:"True cost of 'free' tools — direct cost, hidden time cost, data extraction value, switching cost",potential:"Highest priority — embed in Kai as encounter card",batch:"auto1",localUrl:"sovereignty-calculator.html"},
+  {icon:"🛡️",name:"Copilot Check",path:"(kitchen-table tool)",desc:"5-question data risk assessment for organisations using Microsoft 365 Copilot — findings + recommended actions",potential:"Ready for sector panic. Deploy to sovereignty-audit site when panic arrives.",batch:"auto1",localUrl:"copilot-check.html"},
   {icon:"🏠",name:"Room Type Templates",path:"engine-prototypes-auto1/room-type-templates",desc:"Community room configuration templates — different room types for different purposes",potential:"Integrate into kamunity.ai community rooms",batch:"auto1"},
   {icon:"🔔",name:"Notification Preferences",path:"engine-prototypes-auto1/notification-preferences",desc:"User notification settings UI — granular control over what gets surfaced",potential:"Integrate into kamunity.ai",batch:"auto1"},
   {icon:"❤️",name:"Six Reactions",path:"engine-prototypes-auto1/six-reactions",desc:"Community reaction system — six context-appropriate responses beyond a like",potential:"Community testing — integrate into rooms",batch:"auto1"},

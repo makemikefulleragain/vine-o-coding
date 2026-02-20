@@ -13,6 +13,11 @@ const FILES = [
   { key: 'SAFETY_GATES',   label: '🛡️ SAFETY_GATES.md',   desc: 'Safety gate status — critical/high/medium gates and PASS/FAIL' },
   { key: 'ECOSYSTEM',      label: '🌿 ECOSYSTEM.md',       desc: 'Ecosystem map — all live sites, repos, domains, tech stacks' },
   { key: 'MEETING_BRIEFS', label: '⭐ MEETING_BRIEFS.md',  desc: 'Upcoming meeting prep — ALIKE, Activate MH, AI Speaker' },
+  { key: 'ROADMAP_KAMUNITY_ORG',      label: '🔥 Kai ROADMAP',              desc: 'kamunity.org development queue — user feedback, now/next/later, research' },
+  { key: 'ROADMAP_AI_READINESS',      label: '🧭 AI Readiness ROADMAP',      desc: 'AI Readiness site development queue — user feedback, now/next/later' },
+  { key: 'ROADMAP_SOVEREIGNTY_AUDIT', label: '🛡️ Sovereignty Audit ROADMAP', desc: 'Sovereignty Audit development queue — user feedback, now/next/later' },
+  { key: 'ROADMAP_KAMUNITY_AI',       label: '🤖 kamunity.ai ROADMAP',       desc: 'kamunity.ai development queue — user feedback, now/next/later' },
+  { key: 'ROADMAP_WEDDING',           label: '💍 Wedding ROADMAP',           desc: 'Wedding site development queue — dogfood learnings, now/next/later' },
 ];
 
 let currentKey = 'STATE';

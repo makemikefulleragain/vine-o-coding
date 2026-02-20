@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="./js/auth.js"></script>
+<meta name="theme-color" content="#1a1714">
+<title>Copilot Check — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.cc-question { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:18px; margin-bottom:12px; }
+.cc-q-text { font-weight:600; font-size:.9rem; margin-bottom:10px; }
+.cc-q-sub { font-size:.75rem; opacity:.6; margin-bottom:12px; }
+.cc-options { display:flex; gap:8px; flex-wrap:wrap; }
+.cc-opt { border:2px solid var(--border); border-radius:var(--r); padding:8px 14px; cursor:pointer; font-size:.8rem; transition:all .2s; background:var(--surface2); }
+.cc-opt:hover { border-color:var(--violet); }
+.cc-opt.selected { border-color:var(--ember); background:rgba(230,126,34,.12); font-weight:600; }
+.risk-meter { height:12px; background:var(--surface2); border-radius:6px; margin:12px 0; overflow:hidden; }
+.risk-fill { height:100%; border-radius:6px; transition:width .6s; }
+.risk-low  { background:#27ae60; }
+.risk-med  { background:#f39c12; }
+.risk-high { background:#e67e22; }
+.risk-crit { background:#c0392b; }
+.finding { border-left:3px solid var(--border); padding:10px 14px; margin:8px 0; font-size:.8rem; border-radius:0 var(--r) var(--r) 0; background:var(--surface); }
+.finding.critical { border-color:#c0392b; }
+.finding.high     { border-color:#e67e22; }
+.finding.medium   { border-color:#f39c12; }
+.finding.low      { border-color:#27ae60; }
+.finding-title { font-weight:700; margin-bottom:4px; }
+.finding-body  { opacity:.8; line-height:1.4; }
+.action-item { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border); font-size:.82rem; }
+.action-item:last-child { border-bottom:none; }
+.action-num { background:var(--ember); color:#fff; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:700; flex-shrink:0; margin-top:1px; }
+.cc-intro-box { background:linear-gradient(135deg,rgba(230,126,34,.1),rgba(155,89,182,.1)); border:1px solid var(--border); border-radius:var(--r); padding:20px; margin-bottom:24px; }
+</style>
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="section-title">Copilot Check</h2>
+  <p class="section-sub">Is Microsoft Copilot putting your organisation's data at risk? 5 minutes. Free. No sign-up.</p>
+
+  <div class="cc-intro-box">
+    <strong>Why this matters:</strong> Microsoft is rolling out Copilot across Microsoft 365 — including to NFP licence holders. Many organisations have it activated without knowing. Copilot processes your emails, documents, meetings, and Teams chats to generate AI responses. Your client data, case notes, and confidential documents may be in scope.
+    <br><br>
+    <span style="opacity:.7;font-size:.8rem">This check helps you understand your current exposure and what to do about it. It is not legal advice — consult your legal team for specific obligations.</span>
+  </div>
+
+  <div id="questions-section">
+    <h3 class="section-title sm" style="margin-bottom:12px">Answer these 5 questions</h3>
+    <div id="questions-mount"></div>
+    <button class="btn btn--primary" id="check-btn" onclick="runCheck()" style="margin-top:8px;width:100%">Run Copilot Check →</button>
+  </div>
+
+  <div id="results-section" style="display:none">
+    <h3 class="section-title sm" style="margin-bottom:4px">Your Copilot Risk Assessment</h3>
+
+    <div id="risk-summary" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:700;font-size:1.1rem" id="risk-label">Assessing...</div>
+        <div style="font-size:1.5rem" id="risk-score-display"></div>
+      </div>
+      <div class="risk-meter"><div class="risk-fill" id="risk-fill" style="width:0%"></div></div>
+      <div style="font-size:.78rem;opacity:.7;margin-top:8px" id="risk-desc"></div>
+    </div>
+
+    <h3 class="section-title sm" style="margin-bottom:8px">Findings</h3>
+    <div id="findings-mount" style="margin-bottom:20px"></div>
+
+    <h3 class="section-title sm" style="margin-bottom:8px">Recommended Actions</h3>
+    <div id="actions-mount" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px"></div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
+      <a href="https://kamunity-audit.netlify.app" target="_blank" class="btn btn--primary">Take the Full Sovereignty Audit →</a>
+      <button class="btn" onclick="resetCheck()">Start Over</button>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;font-size:.75rem;opacity:.65">
+      <strong>Disclaimer:</strong> This assessment is for awareness purposes only. Findings are based on your answers and general knowledge of Microsoft Copilot's data handling practices as of early 2026. Microsoft's data processing terms change frequently. For legally binding advice about your data obligations, consult a qualified legal professional. Built by Kamunity — kamunity.org/constitution (Principle 10: Ontological Honesty).
+    </div>
+  </div>
+</main>
+
+<script type="module">
+import { initNav }     from './js/nav.js';
+import { initCompose } from './js/compose.js';
+import { initWaymaker } from './js/waymaker.js';
+
+initNav('ecosystem');
+initCompose();
+initWaymaker('copilot-check');
+
+const QUESTIONS = [
+  {
+    id: 'q1',
+    text: 'Does your organisation use Microsoft 365 (formerly Office 365)?',
+    sub: 'This includes Teams, Outlook, SharePoint, OneDrive, Word, Excel.',
+    opts: [
+      { val: 'yes-paid', label: 'Yes — paid subscription', risk: 3 },
+      { val: 'yes-nfp', label: 'Yes — NFP/charity licence', risk: 4 },
+      { val: 'no',       label: 'No — we use Google/other', risk: 0 },
+      { val: 'unsure',   label: "Not sure / some staff do", risk: 3 },
+    ]
+  },
+  {
+    id: 'q2',
+    text: 'Has anyone in your organisation checked whether Copilot is enabled on your M365 account?',
+    sub: 'Copilot may be enabled by default depending on your licence tier. Check in Microsoft 365 Admin Centre.',
+    opts: [
+      { val: 'yes-off',   label: 'Yes — we checked, it\'s off', risk: 0 },
+      { val: 'yes-on',    label: 'Yes — it\'s enabled', risk: 5 },
+      { val: 'no',        label: 'No — nobody has checked', risk: 5 },
+      { val: 'unsure',    label: 'Not sure', risk: 4 },
+    ]
+  },
+  {
+    id: 'q3',
+    text: 'Does your organisation handle sensitive data in Microsoft 365?',
+    sub: 'Sensitive data includes: client case notes, health information, financial records, confidential communications, personal details of service users.',
+    opts: [
+      { val: 'yes-high',  label: 'Yes — health/case notes/legal', risk: 6 },
+      { val: 'yes-med',   label: 'Yes — financial/personal data', risk: 4 },
+      { val: 'yes-low',   label: 'Yes — basic org admin only', risk: 2 },
+      { val: 'no',        label: 'No sensitive data in M365', risk: 0 },
+    ]
+  },
+  {
+    id: 'q4',
+    text: 'Do you have a policy governing AI tool use by staff?',
+    sub: 'A policy would specify which AI tools are approved, what data can be used with them, and who approves exceptions.',
+    opts: [
+      { val: 'yes-full',  label: 'Yes — written, staff trained', risk: 0 },
+      { val: 'yes-draft', label: 'Draft exists but not finalised', risk: 2 },
+      { val: 'informal',  label: 'Informal understanding only', risk: 4 },
+      { val: 'no',        label: 'No policy exists', risk: 5 },
+    ]
+  },
+  {
+    id: 'q5',
+    text: 'Has your board or leadership been briefed on Microsoft Copilot and what it can access?',
+    sub: 'Board oversight of AI data risk is increasingly expected by funders, regulators, and insurers.',
+    opts: [
+      { val: 'yes-full',  label: 'Yes — fully briefed and aware', risk: 0 },
+      { val: 'yes-some',  label: 'Partial awareness only', risk: 2 },
+      { val: 'no',        label: 'Not yet briefed', risk: 3 },
+      { val: 'na',        label: 'We\'re very small / no board', risk: 1 },
+    ]
+  },
+];
+
+const answers = {};
+
+function renderQuestions() {
+  document.getElementById('questions-mount').innerHTML = QUESTIONS.map(q => `
+    <div class="cc-question">
+      <div class="cc-q-text">${q.text}</div>
+      <div class="cc-q-sub">${q.sub}</div>
+      <div class="cc-options">
+        ${q.opts.map(o => `
+          <div class="cc-opt${answers[q.id] === o.val ? ' selected' : ''}"
+               onclick="selectOpt('${q.id}','${o.val}')">${o.label}</div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+window.selectOpt = function(qid, val) {
+  answers[qid] = val;
+  renderQuestions();
+};
+
+window.runCheck = function() {
+  const answered = Object.keys(answers).length;
+  if (answered < QUESTIONS.length) {
+    alert(`Please answer all ${QUESTIONS.length} questions (${QUESTIONS.length - answered} remaining).`);
+    return;
+  }
+
+  const totalRisk = QUESTIONS.reduce((sum, q) => {
+    const opt = q.opts.find(o => o.val === answers[q.id]);
+    return sum + (opt ? opt.risk : 0);
+  }, 0);
+  const maxRisk = QUESTIONS.reduce((sum, q) => sum + Math.max(...q.opts.map(o => o.risk)), 0);
+  const pct = Math.round((totalRisk / maxRisk) * 100);
+
+  document.getElementById('questions-section').style.display = 'none';
+  document.getElementById('results-section').style.display = 'block';
+
+  let level, label, desc, fillClass;
+  if (pct < 20) {
+    level = 'low'; label = '✅ Low Risk'; desc = 'Your organisation appears to have reasonable controls in place. Keep monitoring as Microsoft\'s AI features evolve.'; fillClass = 'risk-low';
+  } else if (pct < 45) {
+    level = 'medium'; label = '⚠️ Medium Risk'; desc = 'Some gaps identified. Action recommended before Copilot is widely used by staff.'; fillClass = 'risk-med';
+  } else if (pct < 70) {
+    level = 'high'; label = '🔴 High Risk'; desc = 'Significant data governance gaps. Immediate action recommended, especially if you handle sensitive client data.'; fillClass = 'risk-high';
+  } else {
+    level = 'critical'; label = '🚨 Critical Risk'; desc = 'Urgent attention required. Your sensitive data may already be processed by Copilot without governance, consent, or oversight.'; fillClass = 'risk-crit';
+  }
+
+  document.getElementById('risk-label').textContent = label;
+  document.getElementById('risk-score-display').textContent = `${pct}%`;
+  document.getElementById('risk-desc').textContent = desc;
+  const fill = document.getElementById('risk-fill');
+  fill.style.width = pct + '%';
+  fill.className = 'risk-fill ' + fillClass;
+
+  const findings = [];
+  const actions = [];
+
+  if (['yes-on','no','unsure'].includes(answers.q2)) {
+    findings.push({sev:'critical',title:'Copilot status unknown or enabled without review',body:'If Copilot is enabled and your staff use M365, it may already be processing emails, documents, and Teams conversations. This is happening now, not in the future.'});
+    actions.push('Check Copilot status now: Microsoft 365 Admin Centre → Settings → Copilot. Document what you find.');
+  }
+  if (['yes-high','yes-med'].includes(answers.q3) && ['yes-on','no','unsure'].includes(answers.q2)) {
+    findings.push({sev:'critical',title:'Sensitive data in scope of Copilot processing',body:'You handle sensitive data (health/case notes or financial/personal) in M365, and Copilot status is unclear or enabled. This creates potential consent, privacy, and regulatory obligations.'});
+    actions.push('Conduct a data mapping exercise: identify which sensitive data lives in M365 (emails, SharePoint, Teams). This is your risk surface.');
+  }
+  if (['no','informal'].includes(answers.q4)) {
+    findings.push({sev:'high',title:'No AI governance policy',body:'Without a policy, staff may use Copilot (and other AI tools) with sensitive data without any guardrails. Funders and regulators are beginning to ask about this.'});
+    actions.push('Draft a one-page AI Use Policy. Minimum: which tools are approved, what data is prohibited, who approves exceptions. Kamunity can help.');
+  }
+  if (['no','yes-some'].includes(answers.q5)) {
+    findings.push({sev:'medium',title:'Board not fully informed on Copilot data risk',body:'Boards are increasingly responsible for AI governance. Informing them is both good governance and funder due diligence protection.'});
+    actions.push('Add a 10-minute AI governance briefing to the next board meeting. Use the Kamunity AI Safety Checklist as the agenda.');
+  }
+  if (answers.q1 === 'no') {
+    findings.push({sev:'low',title:'Not using Microsoft 365 — lower immediate Copilot risk',body:"You're not on M365, so Copilot is not your immediate concern. However, check whether any staff use personal M365 accounts for work purposes."});
+  }
+  if (!findings.length) {
+    findings.push({sev:'low',title:'Good baseline controls in place',body:'Your answers suggest reasonable AI governance awareness. Keep monitoring — Microsoft\'s AI features evolve rapidly and your risk profile can change.'});
+  }
+
+  document.getElementById('findings-mount').innerHTML = findings.map(f => `
+    <div class="finding ${f.sev}">
+      <div class="finding-title">${f.title}</div>
+      <div class="finding-body">${f.body}</div>
+    </div>
+  `).join('');
+
+  actions.push('Take the full Kamunity Digital Sovereignty Audit (kamunity-audit.netlify.app) for a comprehensive assessment.');
+  actions.push('Review Microsoft\'s data processing documentation: learn exactly what Copilot accesses on your licence tier.');
+
+  document.getElementById('actions-mount').innerHTML = actions.map((a, i) => `
+    <div class="action-item">
+      <div class="action-num">${i + 1}</div>
+      <div>${a}</div>
+    </div>
+  `).join('');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.resetCheck = function() {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('questions-section').style.display = 'block';
+  renderQuestions();
+};
+
+renderQuestions();
+</script>
+</body>
+</html>

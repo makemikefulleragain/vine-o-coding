@@ -67,15 +67,18 @@ function renderSite(s) {
 const BATCH_LABELS = { auto1: 'Auto-Run 1', auto2: 'Auto-Run 2', auto3: 'Auto-Run 3' };
 
 function renderPrototype(p) {
+  const clickable = !!p.localUrl;
   return `
-<div class="site-card">
+<div class="site-card${clickable ? ' clickable' : ''}"
+  ${clickable ? `onclick="window.location.href='${p.localUrl}'" role="button" aria-label="Open ${p.name}"` : ''}>
   <div class="site-icon">${p.icon}</div>
   <div class="site-name">${p.name}</div>
-  <div class="site-url">WORKSHOP/${p.path}</div>
+  <div class="site-url">${p.localUrl ? p.localUrl : 'WORKSHOP/' + p.path}</div>
   <div class="site-desc">${p.desc}</div>
   <div class="site-desc" style="margin-top:4px;opacity:0.7">→ ${p.potential}</div>
   <div style="margin-top:5px">
     <span class="badge b-building">${BATCH_LABELS[p.batch] || p.batch}</span>
+    ${clickable ? '<span class="badge" style="margin-left:4px;background:#27ae60;color:#fff">▶ Open</span>' : ''}
   </div>
 </div>`.trim();
 }

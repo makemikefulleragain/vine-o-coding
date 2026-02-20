@@ -826,6 +826,32 @@ body {
 .wm-send:hover { background: var(--ember); }
 .wm-send:disabled { opacity: .4; cursor: default; }
 
+.wm-mic {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: .95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.wm-mic:hover { background: var(--surface3); }
+.wm-mic--recording {
+  background: #c0392b;
+  border-color: #c0392b;
+  animation: wmMicPulse 1s ease-in-out infinite;
+}
+@keyframes wmMicPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(192,57,43,.5); }
+  50%       { box-shadow: 0 0 0 6px rgba(192,57,43,0); }
+}
+
 .wm-status {
   font-size: .6rem;
   color: var(--violet);

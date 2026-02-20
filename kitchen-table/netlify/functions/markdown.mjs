@@ -14,7 +14,12 @@ const FILE_KEYS = {
   PHASE_QUEUE:    'data/PHASE_QUEUE.md',
   SAFETY_GATES:   'data/SAFETY_GATES.md',
   ECOSYSTEM:      'data/ECOSYSTEM.md',
-  MEETING_BRIEFS: 'data/MEETING_BRIEFS.md',
+  MEETING_BRIEFS:           'data/MEETING_BRIEFS.md',
+  ROADMAP_KAMUNITY_ORG:      'data/PROJECTS/kamunity-org/ROADMAP.md',
+  ROADMAP_AI_READINESS:      'data/PROJECTS/ai-readiness/ROADMAP.md',
+  ROADMAP_SOVEREIGNTY_AUDIT: 'data/PROJECTS/sovereignty-audit/ROADMAP.md',
+  ROADMAP_KAMUNITY_AI:       'data/PROJECTS/kamunity-ai/ROADMAP.md',
+  ROADMAP_WEDDING:           'data/PROJECTS/wedding/ROADMAP.md',
 };
 
 function findFile(relPath) {
