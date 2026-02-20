@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 20, 2026 (evening — Gap analysis tasks complete: ecosystem-state v0.2.0, cross-links, Kai card surfacing strengthened, showcase URLs fixed)
+### Last Updated: Feb 20, 2026 (late evening — MIKE_FULLER_PROFILE.md fully populated from LinkedIn + Tech'o'Space Ep 27)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -9,6 +9,9 @@
 ## Current Period: Pre-Launch Sprint
 
 **Week of Feb 19-23, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
+
+### Session Highlight (Feb 20 — Late Evening)
+MIKE_FULLER_PROFILE.md created in KNOWLEDGE/ as verified source of truth for Mike's professional identity. Full LinkedIn experience + projects integrated: dated career timeline 1999–present, Perth relocation confirmed April 2007 (Joy Global start), The Pack Music Co-op documented (Founding Partner 2017, Deputy Chair 2021), WALGA scope confirmed (3 separate engagements Apr–Jan 2025), “chugger” origin corrected (was Regional Best Practice Manager at Fruitful On-Street Fundraising, Edinburgh), 10-project consulting table added, Open Questions: 4 of 5 answered and closed. Profile committed to nerve centre git.
 
 ### Session Highlight (Feb 20 — Evening)
 Cascade completed the 4 Opus-identified gap tasks (KNOWLEDGE/KAMUNITY_GAP_ANALYSIS_20260220.md): (1) /calculator + /copilot-check confirmed live on kamunity.org — merged with remote implementations (remote had working pages from previous session; this session added correct /calculator + /copilot-check internal URLs to showcase.ts, fixed sovereignty-calculator + copilot-check kai-cards, strengthened Kai system prompt with explicit Microsoft/Copilot card surfacing triggers). (2) ecosystem-state.json updated to v0.2.0 with full 11-site registry (full_site_registry block) so Kai can answer "what do you have?" accurately. (3) llms-full.txt updated on kamunity.org + llms.txt on sovereignty-audit + ai-readiness updated with ecosystem cross-links. (4) sovereignty-audit + ai-readiness footers updated with Sovereignty Calculator + Copilot Check + Kai cross-links. All 3 repos committed + pushed to GitHub → Netlify CI/CD deploying. t12 ✅ t15 ✅ t29 ✅ (constitution page was already built; public/data/constitution.md confirmed present).
@@ -242,6 +245,7 @@ Revenue target: $5-8K/month by April 2026.
 6. **NLnet draft** — April 1 deadline is ~40 days away. KNOWLEDGE/nlnet-application-draft.md needs finishing.
 7. **server.py FILE_MAP** — add 5 ROADMAP.md entries (manual step — see kitchen-table/netlify/functions/markdown.mjs FILE_KEYS for format)
 8. **Priya audio story** — 400-word script + ElevenLabs generation before ALIKE meeting (Opus handoff Part 3 Move 1)
+9. **MIKE_FULLER_PROFILE.md is ready** — use it for NLnet bio section, ALIKE meeting prep, ally emails. Key pitch facts: RAC $500K in 9 months, WA Health Hackathon win, WALGA 3-engagement relationship, Captain America = the Kamunity archetype.
 
 ---
 

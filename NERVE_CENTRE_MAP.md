@@ -17,7 +17,8 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 │   ├── STATE.md                              Current pulse — safety, money, blockers
 │   ├── SAFETY_GATES.md                       16 binary gates, 3 blocking ALIKE
 │   ├── WHO.md                                Priya, the Triad, allies, anti-personas
-│   └── kamunity-safety-threat-model.md       Full threat model across all surfaces
+│   ├── kamunity-safety-threat-model.md       Full threat model across all surfaces
+│   └── INCIDENT_RESPONSE.md                 Operationalised incident response plan (Feb 20)
 │
 ├── PLAN/                                  ← The Strategy. What we're doing and when.
 │   ├── PHASE_QUEUE.md                        11 phases, KP-01 to KP-11, prioritised
@@ -47,6 +48,8 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 │   ├── Local Area Nerd Network bios.docx     LANN concept bios
 │   ├── vine-o-code-improvement-review.md     Engine methodology review
 │   ├── kitchen-table-windy-scope.md          Kitchen Table build scope doc
+│   ├── MIKE_FULLER_PROFILE.md                Verified profile: career, methodology, philosophy (Feb 20)
+│   ├── KAMUNITY_GAP_ANALYSIS_20260220.md     Gap analysis from Opus strategic session (Feb 20)
 │   ├── engine-v1/                            Vine-o-Code v1 key docs (6 files)
 │   ├── engine-v1-full/                       Complete RALF engine with all trails
 │   │   ├── research/ (5 iterations)          Raw research findings
@@ -328,12 +331,12 @@ These are working prototypes sitting in WORKSHOP/ waiting to be tested, polished
 | Documents in BRAIN/ | 5 |
 | Documents in PLAN/ | 3 |
 | Documents in ENGINE/ | 4 |
-| Documents in KNOWLEDGE/ | 19 + full engine archive |
+| Documents in KNOWLEDGE/ | 21 + full engine archive |
 | Live Netlify sites | 18 |
 | GitHub repos | 7 |
 | Working prototypes | 11 |
 | Research iterations | 5 (with full audit trails) |
-| Decisions logged | 29 |
+| Decisions logged | 32 |
 | Safety gates defined | 16 |
 | Phases in queue | 11 |
 | Allies mapped | 16 |

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="./js/auth.js"></script>
+<meta name="theme-color" content="#1a1714">
+<title>Ecosystem Map — The Kitchen Table</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/kitchen.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--con:#f97316;--cb:rgba(255,255,255,0.07);}
+.map-title{font-family:'Fraunces',serif;font-size:1.3rem;color:rgba(245,240,232,0.95);margin-bottom:3px;}
+.map-sub{font-size:0.75rem;color:rgba(245,240,232,0.5);margin-bottom:14px;}
+/* Controls */
+.mc{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:16px;}
+.vg,.tg{display:flex;gap:4px;flex-wrap:wrap;}
+.mc-div{width:1px;height:26px;background:rgba(255,255,255,0.13);margin:0 2px;}
+.vbtn{padding:5px 13px;border-radius:16px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.04);color:rgba(245,240,232,0.6);font-size:0.76rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.vbtn.active{background:var(--con);border-color:var(--con);color:#fff;}
+.tbtn{padding:4px 10px;border-radius:12px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(245,240,232,0.42);font-size:0.68rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.tbtn.on{border-color:rgba(255,255,255,0.35);color:rgba(245,240,232,0.85);background:rgba(255,255,255,0.06);}
+/* Constitution banner */
+.cbanner{border:1px solid rgba(249,115,22,0.35);border-radius:8px;background:rgba(249,115,22,0.05);padding:9px 14px;margin-bottom:12px;font-size:0.73rem;color:rgba(245,240,232,0.8);line-height:1.5;}
+.cbanner strong{color:var(--con);}
+.cbanner a{color:var(--con);opacity:.7;font-size:0.67rem;margin-left:8px;text-decoration:none;}
+/* Blueprint grid */
+.bpscroll{overflow-x:auto;}
+.bpgrid{display:grid;grid-template-columns:105px repeat(4,minmax(172px,1fr));min-width:820px;}
+.bpch{padding:7px 9px;font-size:0.7rem;font-weight:600;letter-spacing:.04em;color:rgba(245,240,232,0.42);text-transform:uppercase;text-align:center;border-bottom:1px solid var(--cb);}
+.bpch.e{border-bottom:1px solid var(--cb);background:transparent;}
+.bplh{padding:10px 7px;font-size:0.68rem;font-weight:600;color:rgba(245,240,232,0.55);border-right:1px solid var(--cb);border-bottom:1px solid var(--cb);display:flex;flex-direction:column;gap:2px;justify-content:center;}
+.bplh .sl{font-size:0.6rem;font-weight:400;opacity:.52;font-style:italic;}
+.bpcell{padding:10px 9px;border-right:1px solid var(--cb);border-bottom:1px solid var(--cb);font-size:0.7rem;color:rgba(245,240,232,0.7);min-height:85px;}
+.bpcell:last-child,.bplh:last-child{border-right:none;}
+.bpsep{grid-column:1/-1;padding:3px 10px;font-size:0.6rem;color:rgba(245,240,232,0.22);letter-spacing:.08em;font-style:italic;background:rgba(255,255,255,.02);border-top:1px dashed rgba(255,255,255,.08);border-bottom:1px dashed rgba(255,255,255,.08);}
+/* Lane colours */
+.l1{background:rgba(251,191,36,.04);}
+.l2{background:rgba(16,185,129,.04);}
+.l3{background:rgba(59,130,246,.04);}
+.l4{background:rgba(139,92,246,.04);}
+/* Cell content */
+.emo{font-size:1rem;margin-bottom:4px;display:block;}
+.jtext{font-style:italic;font-size:0.68rem;opacity:.76;margin-bottom:6px;line-height:1.4;}
+.chips{display:flex;flex-wrap:wrap;gap:3px;}
+.chip{padding:2px 7px;border-radius:9px;font-size:0.63rem;font-weight:500;cursor:default;}
+.cl{background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.26);}
+.cp{background:rgba(99,102,241,.13);color:#a5b4fc;border:1px solid rgba(99,102,241,.26);}
+.cd{background:rgba(59,130,246,.13);color:#93c5fd;border:1px solid rgba(59,130,246,.26);}
+.co{background:rgba(139,92,246,.13);color:#c4b5fd;border:1px solid rgba(139,92,246,.26);}
+/* Toggleable layers */
+.fi{display:none;margin-top:4px;padding:2px 6px;border-radius:5px;background:rgba(59,130,246,.09);border:1px dashed rgba(59,130,246,.35);font-size:0.6rem;color:#93c5fd;}
+.show-flows .fi{display:block;}
+.si{display:none;margin-top:4px;padding:2px 6px;border-radius:5px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.26);font-size:0.6rem;color:#fca5a5;}
+.show-safety .si{display:block;}
+.pi{}
+.hide-planned .pi{display:none;}
+/* Priya strip */
+.priya-intro{margin-bottom:14px;padding:11px 15px;background:rgba(249,115,22,.05);border:1px solid rgba(249,115,22,.2);border-radius:8px;font-size:0.72rem;color:rgba(245,240,232,.55);}
+.pstrip{display:flex;flex-wrap:wrap;border:1px solid var(--cb);border-radius:8px;overflow:hidden;}
+.pstep{flex:1;min-width:150px;padding:22px 13px;text-align:center;border-right:1px solid var(--cb);}
+.pstep:last-child{border-right:none;}
+.pemo{font-size:1.8rem;margin-bottom:8px;display:block;}
+.ptitle{font-family:'Fraunces',serif;font-size:.9rem;color:rgba(245,240,232,.92);margin-bottom:6px;}
+.pdesc{font-size:0.7rem;color:rgba(245,240,232,.58);line-height:1.45;}
+.ptime{margin-top:6px;font-size:0.63rem;color:var(--con);opacity:.72;}
+/* VSM stub */
+.vsm-stub{text-align:center;padding:60px 20px;color:rgba(245,240,232,0.4);border:1px dashed rgba(255,255,255,0.1);border-radius:8px;margin-top:10px;}
+.vsm-stub .vsm-stub-title{font-family:'Fraunces',serif;font-size:1.1rem;color:rgba(245,240,232,0.7);margin:10px 0 8px;}
+.vsm-stub p{font-size:0.76rem;max-width:440px;margin:0 auto;line-height:1.6;}
+/* VSM */
+.vsmscroll{overflow-x:auto;}
+.vsmgrid{display:grid;min-width:900px;}
+.vph{padding:7px 9px;font-size:0.7rem;font-weight:600;text-align:center;border-bottom:2px solid rgba(255,255,255,0.1);border-right:1px solid var(--cb);}
+.vph.now{color:#10b981;border-bottom-color:#10b981;}.vph.near{color:#f59e0b;border-bottom-color:#f59e0b;}
+.vph.mid{color:#6366f1;border-bottom-color:#6366f1;}.vph.fut{color:#475569;border-bottom-color:#475569;}
+.vll{padding:8px 5px;font-size:0.6rem;font-weight:600;letter-spacing:.04em;color:rgba(245,240,232,0.35);text-transform:uppercase;border-right:1px solid var(--cb);border-bottom:1px solid var(--cb);writing-mode:vertical-rl;display:flex;align-items:center;justify-content:center;}
+.vcell{padding:9px 8px;border-right:1px solid var(--cb);border-bottom:1px solid var(--cb);font-size:0.7rem;color:rgba(245,240,232,0.68);min-height:78px;}
+.vph:last-child,.vcell:last-child{border-right:none;}
+.pc1{background:rgba(16,185,129,.04);}.pc2{background:rgba(245,158,11,.03);}
+.pc3{background:rgba(99,102,241,.03);}.pcf{background:rgba(71,85,105,.05);}
+.wlabel{display:none;padding:6px 4px;font-size:0.58rem;font-weight:600;color:rgba(239,68,68,.65);border-right:1px solid var(--cb);letter-spacing:.04em;text-transform:uppercase;writing-mode:vertical-rl;align-items:center;justify-content:center;}
+.show-waste .wlabel{display:flex;}
+.wcell{display:none;padding:7px;border-right:1px solid var(--cb);min-height:52px;}
+.show-waste .wcell{display:block;}
+.kz{display:inline-block;padding:2px 7px;margin:2px;border-radius:5px;font-size:0.62rem;font-weight:600;line-height:1.4;}
+.kz.crit{background:rgba(239,68,68,.16);color:#fca5a5;border:1px solid rgba(239,68,68,.32);}
+.kz.high{background:rgba(245,158,11,.14);color:#fcd34d;border:1px solid rgba(245,158,11,.32);}
+.kz.med{background:rgba(100,116,139,.18);color:#94a3b8;border:1px solid rgba(100,116,139,.32);}
+.vflow-label{display:none;padding:6px 4px;font-size:0.58rem;font-weight:600;color:rgba(59,130,246,.55);border-right:1px solid var(--cb);border-bottom:1px solid var(--cb);writing-mode:vertical-rl;align-items:center;justify-content:center;}
+.show-flows .vflow-label{display:flex;}
+.vfcell{display:none;padding:6px 8px;border-right:1px solid var(--cb);border-bottom:1px solid var(--cb);font-size:0.63rem;color:#93c5fd;background:rgba(59,130,246,.04);}
+.show-flows .vfcell{display:block;}
+</style>
+</head>
+<body>
+<div id="nav-mount"></div>
+
+<main class="main">
+  <h2 class="map-title">Ecosystem Map</h2>
+  <p class="map-sub">How Kamunity works — every layer, every flow. Service Blueprint · Priya View · Value Stream (coming next).</p>
+
+  <!-- Controls -->
+  <div class="mc">
+    <div class="vg">
+      <button class="vbtn active" onclick="switchView('blueprint')" id="vb-blueprint">📋 Blueprint</button>
+      <button class="vbtn" onclick="switchView('vsm')" id="vb-vsm">📊 Value Stream</button>
+      <button class="vbtn" onclick="switchView('simple')" id="vb-simple">🧑 Priya View</button>
+    </div>
+    <div class="mc-div" id="mc-div"></div>
+    <div class="tg" id="bp-tog">
+      <button class="tbtn" id="t-flows" onclick="tog(this,'show-flows','bp-wrap')">💾 Data Flows</button>
+      <button class="tbtn" id="t-safe"  onclick="tog(this,'show-safety','bp-wrap')">🔴 Safety Gates</button>
+      <button class="tbtn on" id="t-plan" onclick="tog(this,'hide-planned','bp-wrap',1)">📋 Planned</button>
+    </div>
+    <div class="tg" id="vsm-tog" style="display:none">
+      <button class="tbtn" onclick="tog(this,'show-waste','vsm-wrap')">⚡ Waste / Gaps</button>
+      <button class="tbtn" onclick="tog(this,'show-flows','vsm-wrap')">💾 Data Flows</button>
+    </div>
+  </div>
+
+  <!-- Blueprint view -->
+  <div id="blueprint-view">
+    <div class="cbanner">
+      <strong>⚖️ CONSTITUTION</strong> &mdash; 11 inviolable principles govern every node on this map.
+      Real users &middot; Triage first &middot; Evidence changes the plan &middot; Data sovereignty &middot; Harm check &middot; Ship it &middot; Cultural safety &middot; No exploitation.
+      <a href="https://kamunity.org/constitution" target="_blank">Read in full →</a>
+    </div>
+    <div class="bpscroll"><div class="bpgrid" id="bp-wrap"></div></div>
+  </div>
+
+  <!-- Priya (simple) view -->
+  <div id="simple-view" style="display:none">
+    <div class="priya-intro">
+      <strong style="color:var(--con)">Priya's Path</strong>
+      <span> &mdash; Operations coordinator, 12-person NFP in Fremantle. No tech background. Worried about AI.</span>
+    </div>
+    <div class="pstrip" id="priya-strip"></div>
+  </div>
+
+  <!-- VSM -->
+  <div id="vsm-view" style="display:none">
+    <div class="vsmscroll"><div class="vsmgrid" id="vsm-wrap"></div></div>
+    <p style="font-size:0.65rem;color:rgba(245,240,232,.3);margin-top:8px;">⚡ Kaizen bursts = waste / blockers. Toggle above to reveal. Inspired by lean manufacturing VSM.</p>
+  </div>
+</main>
+
+<script type="module" src="./js/ecosystem-map.js"></script>
+</body>
+</html>
