@@ -1,5 +1,6 @@
 # ===== Dependencies =====
 node_modules/
+*.mp4
 package-lock.json
 
 # ===== Environment / Secrets =====
