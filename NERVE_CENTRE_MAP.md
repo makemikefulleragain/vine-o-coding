@@ -1,6 +1,6 @@
 # KAMUNITY NERVE CENTRE
 ## The Map, The Cheat Sheet, The Action List
-### Updated: Feb 19, 2026
+### Updated: Feb 20, 2026
 
 *This is the one document you read when you sit down. It tells you what's here, how to use it, what's waiting, and what to do next. Think of it as the pause menu in a game — map, inventory, quest log, controls.*
 
@@ -22,7 +22,7 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 ├── PLAN/                                  ← The Strategy. What we're doing and when.
 │   ├── PHASE_QUEUE.md                        11 phases, KP-01 to KP-11, prioritised
 │   ├── RHYTHM.md                             Weekly/monthly/quarterly cadences
-│   ├── DECISION_LOG.md                       24 decisions logged with rationale
+│   ├── DECISION_LOG.md                       29 decisions logged with rationale
 │   ├── kamunity-master-roadmap.md            Weekly → monthly → quarterly roadmap
 │   └── campfire-phase-plan.md                Phase execution plan for this consolidation
 │
@@ -39,6 +39,7 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 │   ├── kai-vine-code-scope.md                Kai deepening scope doc
 │   ├── ai-groundwork-scope.md                AI foundations scope doc
 │   ├── nlnet-application-draft.md            NLnet funding application draft
+│   ├── OPUS_HANDOFF_20250220.md              Feb 20, 2026 Opus strategic session handoff (fully actioned)
 │   ├── kai-OPUS_HANDOFF.md                   Previous AI session handoff notes
 │   ├── kai-manual-tasks.md                   Manual tasks for Kai development
 │   ├── ecosystem-state.json                  Machine-readable ecosystem snapshot
@@ -81,13 +82,16 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 │
 ├── kitchen-table/                         ← Mission Control dashboard (PWA) — deployed
 │   ├── index.html (Today) + 8 more pages (tasks, phases, ecosystem, allies, money, safety, gaps, source)
-│   ├── js/data.js (46 tasks, 7 phases, 16 sites, 16 allies)
-│   ├── js/waymaker.js (Waymaker AI — reads full BRAIN/PLAN markdown as context)
+│   ├── sovereignty-calculator.html           Standalone Sovereignty Calculator tool (Feb 20)
+│   ├── copilot-check.html                    Standalone Copilot Risk Check tool (Feb 20)
+│   ├── js/data.js (47 tasks, 7 phases, 16 sites, 16 allies)
+│   ├── js/waymaker.js (Waymaker AI — voice input, abilities modal, /shortcuts, honesty rules)
 │   ├── js/source.js (Source editor — 5-file browser editor, saves to disk locally)
 │   ├── js/widgets.js (Today widgets — rhythm reminder, NLnet countdown, ally radar)
 │   ├── js/auth.js (password gate — sessionStorage)
 │   ├── js/brief.js (Mon/Wed/Sat audio brief player)
 │   ├── data/ (BRAIN/PLAN snapshots for Netlify deployment)
+│   ├── data/task-specs/ (47 task spec files — t1.md through t47.md)
 │   ├── netlify/functions/waymaker.mjs (Claude API proxy)
 │   ├── netlify/functions/markdown.mjs (serves data/ snapshots)
 │   ├── server.py (local server + /api/files + Claude + ElevenLabs)
@@ -329,11 +333,11 @@ These are working prototypes sitting in WORKSHOP/ waiting to be tested, polished
 | GitHub repos | 7 |
 | Working prototypes | 11 |
 | Research iterations | 5 (with full audit trails) |
-| Decisions logged | 27 |
+| Decisions logged | 29 |
 | Safety gates defined | 16 |
 | Phases in queue | 11 |
 | Allies mapped | 16 |
-| Tasks tracked | 46 |
+| Tasks tracked | 47 |
 
 ---
 

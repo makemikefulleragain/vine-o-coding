@@ -22,6 +22,7 @@ The nerve centre is a git-tracked folder on OneDrive with markdown documents, pr
 | Git clone kamunity (kamunity.ai) into PROJECTS/ | ✅ Done Feb 19 | Cloned to PROJECTS/kamunity-ai/ |
 | Git clone NeoKamunityWedding into PROJECTS/ | ✅ Done Feb 19 | Cloned to PROJECTS/wedding/ |
 | Run `npm install` in ai-readiness + sovereignty-audit | ✅ Done Feb 19 | 0 prod vulnerabilities |
+| ~~**Test sovereignty-calculator prototype** for demo potential~~ ✅ DONE Feb 20 — Promoted to kamunity.org /calculator + Kai encounter card | — | — |
 | Archive zip of old Dev_Code folders | ⏳ Pending | PowerShell Compress-Archive — see below |
 | Move `important teck/` to secure location | 🔴 **MANUAL** | Contains API keys — do not automate |
 | Rename auto-named Netlify sites | Low priority | Netlify dashboard |

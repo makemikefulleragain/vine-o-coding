@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 20, 2026 (morning — Waymaker bug fixed, ecosystem tab expanded, ROADMAP.md files created)
+### Last Updated: Feb 20, 2026 (afternoon — Opus handoff fully closed, Kai encounter cards live, Waymaker abilities + voice fixed)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -9,6 +9,9 @@
 ## Current Period: Pre-Launch Sprint
 
 **Week of Feb 19-23, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
+
+### Session Highlight (Feb 20 — Afternoon)
+Opus handoff KNOWLEDGE/OPUS_HANDOFF_20250220.md reviewed in full — all Cascade build tasks confirmed done. Five items completed: (1) Voice recording transcript bug fixed (e.results[i][0].transcript). (2) Waymaker honesty rules added to system prompt — no more fake agency claims. (3) Abilities modal + /shortcuts added to Waymaker chat header — full discoverability layer with 8 commands. (4) Sovereignty Calculator + Copilot Check promoted to kamunity.org as full Next.js pages (/calculator, /copilot-check) and as Kai encounter cards — Kai now surfaces them when users mention Microsoft/Copilot/tool costs. (5) t47 formally queued with spec file. Code review caught 4 bugs (missing animation class, external Link→a, font-sans→font-fraunces, shortcut displayText) — all fixed and committed. kamunity.org now has 5 live showcase tools + /calculator + /copilot-check.
 
 ### Session Highlight (Feb 20 — Morning)
 Opus handoff reviewed (KNOWLEDGE/OPUS_HANDOFF_20250220.md). Four tasks completed and UAT passed: (1) Waymaker crash fixed — loadState() returns undefined, state.safety threw on every message send; fixed by reading mutated arrays directly. Also fixed s.title → s.text property name. (2) Ecosystem tab: Prototypes section (17 WORKSHOP/ builds) + Recommended Ecosystem section (6 external tools, Principle 2 made visible) added. (3) URL data fixes: Nonna's Knitting corrected, Grants Hub URL added. (4) ROADMAP.md created for all 5 PROJECTS/ folders — pre-populated with current state, improvement queue, research questions.
@@ -42,7 +45,7 @@ Three meetings next week:
 
 | System | Status | Notes |
 |---|---|---|
-| Kai (kamunity.org) | ✅ Live | @netlify/plugin-nextjs fix deployed Feb 19. 200 confirmed. |
+| Kai (kamunity.org) | ✅ Live | @netlify/plugin-nextjs fix deployed Feb 19. 200 confirmed. /calculator + /copilot-check pages added Feb 20. |
 | kamunity.ai | ✅ Live | Community rooms platform. |
 | Sovereignty Audit | ✅ Live | Free self-assessment tool. |
 | AI Readiness | ✅ Live | 12-question quiz + toolkit. |
@@ -210,10 +213,12 @@ Revenue target: $5-8K/month by April 2026.
 - **GitHub repos:** 8 (4 active incl. kamunity-kitchen-table, 1 playground, 3 archive)
 - **Netlify projects:** 19 (target: reduce to ~14 after cleanup)
 - **Nerve centre:** 1 consolidated folder, git-tracked
-- **Tasks tracked:** 46 across 7 phases (t10 AI Safety Checklist ✅ done tonight)
+- **Tasks tracked:** 47 across 7 phases (t47 Waymaker conversation memory added Feb 20)
 - **Safety items:** 13 (S1 ✅ S2 ✅ S5 ✅ done — 1 critical open: insurance)
 - **Allies mapped:** 16 (3 meetings imminent, 3 to contact, rest mapped)
-- **Kitchen Table:** v2 live data — Source editor, Waymaker reads full BRAIN/PLAN markdown, Today widgets
+- **Kitchen Table:** v2 live data — Source editor, Waymaker reads full BRAIN/PLAN markdown, Today widgets, voice input, abilities modal, /shortcuts
+- **Kai encounter cards (new):** /calculator (Sovereignty Calculator) + /copilot-check (Copilot Risk Check) live on kamunity.org
+- **kamunity.org showcase:** 5 live tools (was 3 before this session)
 - **Windsurf workflows:** 7 (incl. /restart-server added tonight)
 - **Meeting prep:** PLAN/meeting-briefs.md written for all 3 meetings (Feb 24 week)
 - **AI Safety Checklist:** tools/ai-safety-checklist.html — print-ready leave-behind
@@ -228,12 +233,12 @@ Revenue target: $5-8K/month by April 2026.
 
 1. **Monday brief** — test the Week Opener brief on Monday Feb 23 (first real use)
 2. **Meeting week (Feb 24)** — use meeting-briefs.md + print AI Safety Checklist before each meeting
-3. **Post-meeting** — update STATE.md + allies page within 24hrs of each meeting (use Source editor)
-4. **Insurance** — get PI insurance quotes before first paid engagement (S3 still open)
-5. **NLnet draft** — April 1 deadline is 41 days away. KNOWLEDGE/nlnet-application-draft.md needs finishing.
-6. **Cross-link sites** (t15) — every ecosystem site → kamunity.org
-- Verify Netlify function markdown.mjs fix (502 → 200) on deployed Source editor
-- If Source editor works on Netlify: Waymaker on deployed now reads live BRAIN/PLAN snapshots
+3. **Demo flow** — open kamunity.org → Kai mode → type "We use Microsoft 365, Teams, Copilot" → confirm /calculator + /copilot-check cards surface. This is the ALIKE demo moment.
+4. **Post-meeting** — update STATE.md + allies page within 24hrs of each meeting (use Source editor)
+5. **Insurance** — get PI insurance quotes before first paid engagement (S3 still open — CRITICAL)
+6. **NLnet draft** — April 1 deadline is ~40 days away. KNOWLEDGE/nlnet-application-draft.md needs finishing.
+7. **server.py FILE_MAP** — add 5 ROADMAP.md entries (manual step — see kitchen-table/netlify/functions/markdown.mjs FILE_KEYS for format)
+8. **Priya audio story** — 400-word script + ElevenLabs generation before ALIKE meeting (Opus handoff Part 3 Move 1)
 
 ---
 
