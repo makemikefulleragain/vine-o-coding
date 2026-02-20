@@ -49,6 +49,10 @@
 | 2026-02-19 | No import.meta.url in Netlify functions — use process.cwd() | esbuild converts ESM→CJS; import.meta.url crashes at runtime (502). process.cwd() = /var/task in Lambda where included_files land. Lesson learned. | netlify/functions/markdown.mjs |
 | 2026-02-19 | Meeting briefs stored in PLAN/ and synced to kitchen-table/data/ | Waymaker reads them as live context. Source editor exposes them for in-browser editing. Single source of truth in PLAN/. | PLAN/meeting-briefs.md, kitchen-table/data/ |
 | 2026-02-19 | tools/ folder added for client-facing deliverables | Printable one-pagers, leave-behinds, templates — not internal docs, not code. Separate from BRAIN/ (strategy) and KNOWLEDGE/ (library). | Campfire Architecture, tools/ai-safety-checklist.html |
+| 2026-02-20 | Waymaker crash fix: loadState() returns undefined — read arrays directly | loadState() mutates TASKS/SAFETY_ITEMS/GAPS in place; capturing return as `state` then accessing state.safety threw on every message send. Minimal fix: call without capturing return. Also fixed s.title → s.text (wrong property name). | kitchen-table/js/waymaker.js |
+| 2026-02-20 | Ecosystem tab expanded: Prototypes + Recommended Ecosystem sections | 17 working WORKSHOP/ prototypes now visible in Kitchen Table. Principle 2 (Triage) made operationally visible — recommended external tools shown alongside what Kamunity builds. | kitchen-table/ecosystem.html, kitchen-table/js/data.js |
+| 2026-02-20 | ROADMAP.md created for each PROJECTS/ folder | Per-site development queues — user feedback log, now/next/later queue, research questions, change log. Waymaker and Cascade can surface per-site roadmaps. Pre-populated from known context. | PROJECTS/*/ROADMAP.md |
+| 2026-02-20 | Nonna's URL corrected: nonnas.netlify.app → nonnas-knitting-circle.netlify.app | data.js had wrong URL. ECOSYSTEM.md is source of truth. Also added Grants Hub URL (grants-hub.netlify.app) which was blank. | kitchen-table/js/data.js |
 
 ---
 

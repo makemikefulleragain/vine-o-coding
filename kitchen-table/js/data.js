@@ -76,8 +76,8 @@ export const SITES = [
   {icon:"🏭",name:"FactoryK",url:"factoryk1.netlify.app",desc:"AI factory with constitutional guardrails",st:"live"},
   {icon:"⭐",name:"Constellation",url:"",desc:"120+ ally tracker + comms drafter",st:"live"},
   {icon:"🤖",name:"Kamunity.ai",url:"kamunity.ai",desc:"AI capabilities hub / landing",st:"live"},
-  {icon:"🧶",name:"Nonna's Knitting",url:"nonnas.netlify.app",desc:"Community pattern sharing — proof of concept",st:"live"},
-  {icon:"📋",name:"Grants Hub",url:"",desc:"Grant acquittal + reporting helper",st:"live"},
+  {icon:"🧶",name:"Nonna's Knitting",url:"nonnas-knitting-circle.netlify.app",desc:"Community pattern sharing — proof of concept",st:"live"},
+  {icon:"📋",name:"Grants Hub",url:"grants-hub.netlify.app",desc:"Grant acquittal + reporting helper",st:"live"},
   {icon:"🔥",name:"Kitchen Table",url:"kamunity-kitchen-table.netlify.app",desc:"Internal ops dashboard + Waymaker AI — password protected",st:"live"},
   {icon:"📜",name:"Constitution Page",url:"/constitution",desc:"Public constitution + 'I have a thought' amendments",st:"building"},
   {icon:"📍",name:"Perth Directory",url:"",desc:"Verified local services · 13 life domains",st:"planned"},
@@ -137,6 +137,35 @@ export const GAPS = [
   {id:"g11",type:"q",title:"Rooms: kamunity.org or separate subdomain?",body:"Supabase needed = different hosting.",resolved:false},
   {id:"g12",type:"q",title:"Min viable directory — which 3 domains first?",body:"Start small to start real.",resolved:false},
   {id:"g13",type:"q",title:"Kitchen Table maintenance rhythm?",body:"Only useful if used. What's minimum?",resolved:false},
+];
+
+export const PROTOTYPES = [
+  {icon:"💰",name:"Sovereignty Calculator",path:"engine-prototypes-auto1/sovereignty-calculator",desc:"True cost of 'free' tools — direct cost, hidden time cost, data extraction value, switching cost",potential:"Highest priority — embed in Kai as encounter card",batch:"auto1"},
+  {icon:"🏠",name:"Room Type Templates",path:"engine-prototypes-auto1/room-type-templates",desc:"Community room configuration templates — different room types for different purposes",potential:"Integrate into kamunity.ai community rooms",batch:"auto1"},
+  {icon:"🔔",name:"Notification Preferences",path:"engine-prototypes-auto1/notification-preferences",desc:"User notification settings UI — granular control over what gets surfaced",potential:"Integrate into kamunity.ai",batch:"auto1"},
+  {icon:"❤️",name:"Six Reactions",path:"engine-prototypes-auto1/six-reactions",desc:"Community reaction system — six context-appropriate responses beyond a like",potential:"Community testing — integrate into rooms",batch:"auto1"},
+  {icon:"📤",name:"Data Export",path:"engine-prototypes-auto1/data-export",desc:"Data portability tool — export your community data in open formats",potential:"kamunity.ai sovereignty feature — Principle 5 made visible",batch:"auto1"},
+  {icon:"🏛️",name:"Community Asset Register",path:"engine-prototypes-auto2/community-asset-register",desc:"Track and manage community organisation assets — equipment, spaces, resources",potential:"Pitch to WALGA and local government orgs",batch:"auto2"},
+  {icon:"💬",name:"Community Chat Platform",path:"engine-prototypes-auto2/community-chat-platform",desc:"Lightweight community chat UI prototype",potential:"Evaluate against Element/Matrix before building further",batch:"auto2"},
+  {icon:"🗳️",name:"Community Decision Making",path:"engine-prototypes-auto2/community-decision-making",desc:"Structured decision tool for community organisations — propose, discuss, decide",potential:"Compare with Loomio integration — may be redundant",batch:"auto2"},
+  {icon:"🎟️",name:"Community Event Ticketing",path:"engine-prototypes-auto2/community-event-ticketing",desc:"Free event registration and ticketing for community events",potential:"Compare with Humanitix — may be redundant",batch:"auto2"},
+  {icon:"📝",name:"Meeting Notes Summariser",path:"engine-prototypes-auto2/meeting-notes-summariser",desc:"Paste meeting notes → structured summary with action items and decisions",potential:"Internal use immediately — integrate into Kitchen Table voice intake",batch:"auto2"},
+  {icon:"🌱",name:"Make Communities Better",path:"engine-prototypes-auto2/make-communities-better",desc:"Community improvement ideation and planning tool",potential:"Research further before committing",batch:"auto2"},
+  {icon:"🌻",name:"Community Garden Planner",path:"engine-prototypes-auto3/community-garden-planner",desc:"Collaborative garden planning — plot allocation, planting schedules, seasonal guides",potential:"Community gardens — direct community use",batch:"auto3"},
+  {icon:"📌",name:"Community Noticeboard",path:"engine-prototypes-auto3/community-noticeboard",desc:"Digital noticeboard for neighbourhood houses and community spaces",potential:"Neighbourhood houses — Linkwest network",batch:"auto3"},
+  {icon:"📊",name:"Community Survey Tool",path:"engine-prototypes-auto3/community-survey-tool",desc:"Simple survey creation and collection for community orgs",potential:"Compare with LimeSurvey/Formbricks",batch:"auto3"},
+  {icon:"📋",name:"Grant Acquittal Helper",path:"engine-prototypes-auto3/grant-acquittal-helper",desc:"Step-by-step grant acquittal and reporting guide for community orgs",potential:"Test with a real grant acquittal — Grants Hub sibling",batch:"auto3"},
+  {icon:"📱",name:"QR Code Check-In",path:"engine-prototypes-auto3/qr-code-check-in",desc:"QR-based attendance and check-in system for community events",potential:"Community events — direct use case",batch:"auto3"},
+  {icon:"⏱️",name:"Volunteer Hour Tracker",path:"engine-prototypes-auto3/volunteer-hour-tracker",desc:"Log and report volunteer hours — simple, no sign-up required",potential:"Volunteering WA use case — audit conversation starter",batch:"auto3"},
+];
+
+export const RECOMMENDED = [
+  {icon:"🗳️",name:"Loomio",url:"loomio.com",desc:"Democratic decision-making for groups. Proposals, polls, discussions.",why:"Worker co-op, 12+ years, open source, NZ-based. Kamunity's constitutional convention tooling.",sovereignty:"✅ OSS · Self-hostable · Worker co-op · NLnet potential partner"},
+  {icon:"🎟️",name:"Humanitix",url:"humanitix.com",desc:"Ethical event ticketing. Free for free events. Profits to charity.",why:"Australian, purpose-driven, free for community events. Recommend to allies instead of Eventbrite.",sovereignty:"✅ Australian · Charity model · No lock-in"},
+  {icon:"📋",name:"LimeSurvey",url:"limesurvey.org",desc:"Open source survey platform. Self-hostable.",why:"Mature OSS alternative to SurveyMonkey/Google Forms. Recommend to orgs handling sensitive data.",sovereignty:"✅ OSS · Self-hostable · No data extraction"},
+  {icon:"📋",name:"Formbricks",url:"formbricks.com",desc:"Open source survey and form tool. Modern UX.",why:"Newer, developer-friendly OSS alternative. Good for orgs with tech support.",sovereignty:"✅ OSS · Self-hostable · No data extraction"},
+  {icon:"⏱️",name:"Track It Forward",url:"trackitforward.com",desc:"Volunteer hour tracking. Free for small orgs.",why:"Proven in Australian community sector. Recommend to Volunteering WA contacts.",sovereignty:"⚠️ SaaS · Free tier · Not self-hostable — but ethical enough to recommend"},
+  {icon:"💬",name:"Element / Matrix",url:"element.io",desc:"Open, decentralised messaging. Self-hostable.",why:"OSS, federated, end-to-end encrypted. Evaluate for kamunity.ai community rooms vs building custom.",sovereignty:"✅ OSS · Federated · Self-hostable · No central authority"},
 ];
 
 export const SERVICES = [

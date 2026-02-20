@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 19, 2026 (late evening — Kitchen Table v2 complete + meeting prep done)
+### Last Updated: Feb 20, 2026 (morning — Waymaker bug fixed, ecosystem tab expanded, ROADMAP.md files created)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -9,6 +9,9 @@
 ## Current Period: Pre-Launch Sprint
 
 **Week of Feb 19-23, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
+
+### Session Highlight (Feb 20 — Morning)
+Opus handoff reviewed (KNOWLEDGE/OPUS_HANDOFF_20250220.md). Four tasks completed and UAT passed: (1) Waymaker crash fixed — loadState() returns undefined, state.safety threw on every message send; fixed by reading mutated arrays directly. Also fixed s.title → s.text property name. (2) Ecosystem tab: Prototypes section (17 WORKSHOP/ builds) + Recommended Ecosystem section (6 external tools, Principle 2 made visible) added. (3) URL data fixes: Nonna's Knitting corrected, Grants Hub URL added. (4) ROADMAP.md created for all 5 PROJECTS/ folders — pre-populated with current state, improvement queue, research questions.
 
 ### Session Highlight (Feb 19 — Morning)
 Massive consolidation + build session. Campfire Architecture fully built. Waymaker AI chat live in Kitchen Table. 17 prototypes extracted from engine. Root directory cleaned. Version control initialized. Windsurf workflows created.

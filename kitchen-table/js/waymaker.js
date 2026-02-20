@@ -39,14 +39,14 @@ async function fetchLiveFiles() {
 }
 
 function buildSystemPrompt(pageId) {
-  const state = loadState();
+  loadState();
   const tasksDone = TASKS.filter(t => t.done).length;
   const tasksCrit = TASKS.filter(t => !t.done && t.pri === 'critical').length;
   const tasksHigh = TASKS.filter(t => !t.done && t.pri === 'high').length;
   const sitesLive = SITES.filter(s => s.st === 'live').length;
-  const safetyOpen = SAFETY_ITEMS.filter(s => (state.safety?.[s.id] || s.st) === 'open').length;
-  const safetyDone = SAFETY_ITEMS.filter(s => (state.safety?.[s.id] || s.st) === 'done').length;
-  const gapsOpen = GAPS.filter(g => !state.gaps?.[g.id]).length;
+  const safetyOpen = SAFETY_ITEMS.filter(s => s.st === 'open').length;
+  const safetyDone = SAFETY_ITEMS.filter(s => s.st === 'done').length;
+  const gapsOpen = GAPS.filter(g => !g.resolved).length;
   const meetings = TASKS.filter(t => t.tags.includes('meeting') && !t.done).length;
   const activePhase = PHASES.find(p => p.st === 'active');
 
@@ -58,7 +58,7 @@ function buildSystemPrompt(pageId) {
 
   const critSafety = SAFETY_ITEMS
     .filter(s => s.sev === 'critical' || s.sev === 'high')
-    .map(s => `  - [${s.sev}] ${s.title} — ${(state.safety?.[s.id] || s.st)}`)
+    .map(s => `  - [${s.sev}] ${s.text} — ${s.st}`)
     .join('\n');
 
   const allyList = ALLIES

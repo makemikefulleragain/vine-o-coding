@@ -23,7 +23,7 @@
 <script type="module">
 import { initNav }    from './js/nav.js';
 import { initCompose } from './js/compose.js';
-import { SITES }      from './js/data.js';
+import { SITES, PROTOTYPES, RECOMMENDED } from './js/data.js';
 import { initWaymaker } from './js/waymaker.js';
 
 initNav('ecosystem');
@@ -64,6 +64,34 @@ function renderSite(s) {
 </div>`.trim();
 }
 
+const BATCH_LABELS = { auto1: 'Auto-Run 1', auto2: 'Auto-Run 2', auto3: 'Auto-Run 3' };
+
+function renderPrototype(p) {
+  return `
+<div class="site-card">
+  <div class="site-icon">${p.icon}</div>
+  <div class="site-name">${p.name}</div>
+  <div class="site-url">WORKSHOP/${p.path}</div>
+  <div class="site-desc">${p.desc}</div>
+  <div class="site-desc" style="margin-top:4px;opacity:0.7">→ ${p.potential}</div>
+  <div style="margin-top:5px">
+    <span class="badge b-building">${BATCH_LABELS[p.batch] || p.batch}</span>
+  </div>
+</div>`.trim();
+}
+
+function renderRecommended(r) {
+  return `
+<div class="site-card clickable" onclick="window.open('https://${r.url}','_blank')" role="button" aria-label="Open ${r.name}">
+  <div class="site-icon">${r.icon}</div>
+  <div class="site-name">${r.name}</div>
+  <div class="site-url">${r.url}</div>
+  <div class="site-desc">${r.desc}</div>
+  <div class="site-desc" style="margin-top:4px;opacity:0.7">${r.why}</div>
+  <div style="margin-top:5px;font-size:0.7rem;opacity:0.6">${r.sovereignty}</div>
+</div>`.trim();
+}
+
 function render() {
   const grouped = {};
   SITES.forEach(s => {
@@ -71,12 +99,26 @@ function render() {
     (grouped[g] = grouped[g] || []).push(s);
   });
 
-  document.getElementById('eco-out').innerHTML = GROUPS
+  const sitesHtml = GROUPS
     .filter(g => grouped[g.key]?.length)
     .map(g => `
       <h3 class="section-title sm">${g.label} (${grouped[g.key].length})</h3>
       <div class="site-grid">${grouped[g.key].map(renderSite).join('')}</div>
     `).join('');
+
+  const prototypesHtml = `
+    <h3 class="section-title sm">🧪 Prototypes (${PROTOTYPES.length})</h3>
+    <p class="section-sub" style="margin-bottom:12px">Working builds from WORKSHOP/ engine auto-runs. Not deployed — ready to integrate or showcase.</p>
+    <div class="site-grid">${PROTOTYPES.map(renderPrototype).join('')}</div>
+  `;
+
+  const recommendedHtml = `
+    <h3 class="section-title sm">🤝 Recommended Ecosystem (${RECOMMENDED.length})</h3>
+    <p class="section-sub" style="margin-bottom:12px">Tools Kamunity recommends to allies. We triage first — build only what doesn't already exist well. <em>Principle 2 made visible.</em></p>
+    <div class="site-grid">${RECOMMENDED.map(renderRecommended).join('')}</div>
+  `;
+
+  document.getElementById('eco-out').innerHTML = sitesHtml + prototypesHtml + recommendedHtml;
 }
 
 render();
