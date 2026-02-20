@@ -128,7 +128,15 @@ RULES:
 - If asked about something you genuinely don't know, say so honestly
 - Reference specific file paths in the Campfire Architecture when relevant
 - Suggest opening Windsurf/Cascade for build tasks — you're ops, Cascade is the builder
-- If the user seems overwhelmed, help them pick ONE thing to focus on${liveFiles ? `
+- If the user seems overwhelmed, help them pick ONE thing to focus on
+
+HONESTY ABOUT CAPABILITIES (critical — never violate this):
+- You are a conversational AI. You CANNOT write files, execute code, save tasks, or do anything in the background.
+- Never say "I'll work on it", "I'm working on it", "I'll monitor this", or "I'll advise" — these imply action you cannot take. They are lies.
+- If a task requires code changes, say exactly: "That's a build task — tell Cascade: [specific instruction]"
+- If a task requires adding to the queue, say: "Add it to data.js TASKS manually, or ask Cascade to add it"
+- When you finish a response, you are done. Nothing continues. There is no background process.
+- Your superpower is advice, synthesis, and drafting — be honest and clear about that boundary.${liveFiles ? `
 
 ---
 
@@ -235,6 +243,7 @@ function createChatUI() {
         </div>
       </div>
       <div class="wm-header-right">
+        <button class="wm-abilities-btn" title="Abilities + shortcuts">⚡</button>
         <button class="wm-clear-btn" title="Clear history">🗑</button>
         <button class="wm-close-btn" title="Close">&times;</button>
       </div>
@@ -257,6 +266,7 @@ function createChatUI() {
 
   // Event listeners
   panel.querySelector('.wm-close-btn').onclick = toggleChat;
+  panel.querySelector('.wm-abilities-btn').onclick = showAbilitiesModal;
   panel.querySelector('.wm-clear-btn').onclick = () => {
     if (confirm('Clear Waymaker chat history?')) {
       clearHistory();
@@ -439,8 +449,16 @@ function setLoading(loading) {
 async function handleSend() {
   if (isLoading) return;
   const input = document.getElementById('wm-input');
-  const text = input.value.trim();
+  let text = input.value.trim();
   if (!text) return;
+
+  // Shortcut expansion
+  const matchedKey = Object.keys(SHORTCUTS).find(k => text.toLowerCase().startsWith(k));
+  if (matchedKey) {
+    const extra = text.slice(matchedKey.length).trim();
+    const prefix = SHORTCUTS[matchedKey];
+    text = prefix.endsWith(': ') ? (extra ? prefix + extra : prefix + '(no additional context given)') : prefix + (extra ? ' ' + extra : '');
+  }
 
   input.value = '';
   input.style.height = 'auto';
@@ -459,6 +477,107 @@ async function handleSend() {
     setLoading(false);
     document.getElementById('wm-input')?.focus();
   }
+}
+
+// ─── Shortcuts + Abilities ──────────────────────────────────────
+
+const SHORTCUTS = {
+  '/status':  'Give me a full ecosystem health summary right now — sites live, safety gates, tasks done vs pending, gaps, money status.',
+  '/today':   'What needs my attention today? Summarise and prioritise. Give me ONE thing to do first.',
+  '/tasks':   'What are the top priority tasks right now? What should I tackle next and why?',
+  '/allies':  'Who should I contact next from the Constellation? What actions are pending? Who is closest to a win?',
+  '/money':   'Revenue update — grants status, service offerings, what is closest to generating income?',
+  '/safety':  'Safety gate status — what is still blocking the ALIKE showcase? What is critical vs done?',
+  '/gaps':    'Open questions review — which unresolved gaps are most impactful? Which can I close today?',
+  '/draft':   'Draft a warm outreach email to this ally (use everything you know about them and Kamunity): ',
+  '/spec':    'Generate a detailed next-move task spec for this task (context, steps, constitutional check): ',
+  '/brief':   'Give me a full meeting brief for the next upcoming meeting — who, goal, what to say, what to ask, leave-behind.',
+};
+
+const SHORTCUT_META = [
+  { cmd: '/status',  label: 'Ecosystem health summary',         hint: '' },
+  { cmd: '/today',   label: 'What needs attention today',        hint: '' },
+  { cmd: '/tasks',   label: 'Top priority tasks',                hint: '' },
+  { cmd: '/allies',  label: 'Constellation — who to contact',    hint: '' },
+  { cmd: '/money',   label: 'Revenue + grants update',           hint: '' },
+  { cmd: '/safety',  label: 'Safety gate status',                hint: '' },
+  { cmd: '/gaps',    label: 'Open questions review',             hint: '' },
+  { cmd: '/draft',   label: 'Draft outreach email',              hint: ' [ally name]' },
+  { cmd: '/spec',    label: 'Generate task spec',                hint: ' [task name]' },
+  { cmd: '/brief',   label: 'Meeting brief for next meeting',    hint: '' },
+];
+
+const ABILITIES_NOW = [
+  'Answer anything about the ecosystem, tasks, phases, allies, grants',
+  'Summarise priorities + suggest what to do next',
+  'Draft outreach emails for Constellation allies',
+  'Explain safety gates and what is blocking ALIKE showcase',
+  'Help think through plans and trade-offs',
+  'Voice input — speak instead of type (🎤)',
+  'Remembers your conversation (localStorage — clears if you clear history)',
+];
+
+const ABILITIES_COMING = [
+  'Auto-add tasks to dashboard (needs build)',
+  'Meeting briefs from calendar data (needs build)',
+  'Read + summarise ROADMAP files per project (needs build)',
+  'Generate full task specs from a voice note (needs build)',
+];
+
+function showAbilitiesModal() {
+  const existing = document.getElementById('wm-abilities-modal');
+  if (existing) { existing.remove(); return; }
+
+  const modal = document.createElement('div');
+  modal.id = 'wm-abilities-modal';
+  modal.className = 'wm-abilities-modal';
+
+  const shortcutRows = SHORTCUT_META.map(s =>
+    `<div class="wm-ability-shortcut" data-cmd="${s.cmd}${s.hint}">
+      <code>${s.cmd}${s.hint}</code>
+      <span>${s.label}</span>
+    </div>`
+  ).join('');
+
+  const nowRows = ABILITIES_NOW.map(a => `<div class="wm-ability-item">✓ ${a}</div>`).join('');
+  const comingRows = ABILITIES_COMING.map(a => `<div class="wm-ability-item wm-ability-coming">◦ ${a}</div>`).join('');
+
+  modal.innerHTML = `
+    <div class="wm-abilities-header">
+      <span>⚡ Waymaker Abilities</span>
+      <button class="wm-abilities-close" title="Close">×</button>
+    </div>
+    <div class="wm-abilities-body">
+      <div class="wm-abilities-section">
+        <div class="wm-abilities-label">SHORTCUTS — type or tap to use</div>
+        ${shortcutRows}
+      </div>
+      <div class="wm-abilities-section">
+        <div class="wm-abilities-label">WHAT I CAN DO NOW</div>
+        ${nowRows}
+      </div>
+      <div class="wm-abilities-section">
+        <div class="wm-abilities-label">WHAT I CANNOT DO (ask Cascade)</div>
+        ${comingRows}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('wm-panel').appendChild(modal);
+
+  modal.querySelector('.wm-abilities-close').onclick = () => modal.remove();
+
+  modal.querySelectorAll('.wm-ability-shortcut').forEach(el => {
+    el.onclick = () => {
+      const input = document.getElementById('wm-input');
+      if (input) {
+        input.value = el.dataset.cmd;
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+      modal.remove();
+    };
+  });
 }
 
 // ─── Initialize ─────────────────────────────────────────────────
