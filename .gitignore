@@ -36,3 +36,6 @@ Desktop.ini
 # ===== OneDrive conflict files =====
 *-conflict-*
 ~$*
+
+# Local Netlify folder
+.netlify

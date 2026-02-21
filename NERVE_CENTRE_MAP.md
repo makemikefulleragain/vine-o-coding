@@ -66,7 +66,9 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 ├── PROJECTS/                              ← Live Codebases. Things that are deployed.
 │   ├── README.md                             Move instructions + status
 │   ├── ai-readiness/                         → kamunity-ai-readiness.netlify.app
-│   └── sovereignty-audit/                    → kamunity-audit.netlify.app
+│   ├── sovereignty-audit/                    → kamunity-audit.netlify.app
+│   ├── kamunity-org/                         → kamunity.org (GitHub CI/CD)
+│   └── kamunity-consulting/                  → kamunityconsulting.com (Netlify CLI deploy)
 │
 ├── WORKSHOP/                              ← Experiments. Play. Prototypes.
 │   ├── engine-prototypes-auto1/              5 prototypes (sovereignty calc, templates...)
@@ -87,7 +89,7 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 │   ├── index.html (Today) + 8 more pages (tasks, phases, ecosystem, allies, money, safety, gaps, source)
 │   ├── sovereignty-calculator.html           Standalone Sovereignty Calculator tool (Feb 20)
 │   ├── copilot-check.html                    Standalone Copilot Risk Check tool (Feb 20)
-│   ├── js/data.js (47 tasks, 7 phases, 16 sites, 16 allies)
+│   ├── js/data.js (47 tasks, 7 phases, 17 sites, 16 allies)
 │   ├── js/waymaker.js (Waymaker AI — voice input, abilities modal, /shortcuts, honesty rules)
 │   ├── js/source.js (Source editor — 5-file browser editor, saves to disk locally)
 │   ├── js/widgets.js (Today widgets — rhythm reminder, NLnet countdown, ally radar)
@@ -138,7 +140,7 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 | **Log a decision** | Append to `PLAN/DECISION_LOG.md` with date + rationale |
 | **Start a new project** | Copy templates from `ENGINE/TEMPLATES/` → fill in blanks |
 | **Find research** | Browse `KNOWLEDGE/engine-v1-full/research/` or `KNOWLEDGE/RESEARCH/` |
-| **See all live sites** | Read `BRAIN/ECOSYSTEM.md` — 18 Netlify sites mapped |
+| **See all live sites** | Read `BRAIN/ECOSYSTEM.md` — 13 active sites mapped (19 total incl. archive/playground) |
 | **Weekly check-in** | Follow `PLAN/RHYTHM.md` — Monday 30 min (or 15 min minimum) |
 
 ### Deploying
@@ -150,6 +152,7 @@ Kamunity-Tabletop-Plan/                    ← YOU ARE HERE
 | grants-hub | Drag & drop | (in engine-v1-full/) Build → drag to Netlify |
 | nonna's knitting | Drag & drop | (in engine-v1-full/) Build → drag to Netlify |
 | kamunity.org | Git push | Push to `kamunity-org` repo → auto-deploys |
+| kamunity-consulting | Netlify CLI | `netlify deploy --dir site --prod` from `PROJECTS/kamunity-consulting/` |
 | kamunity.ai | Git push | Push to `kamunity` repo → auto-deploys |
 | wedding | Git push | Push to `NeoKamunityWedding` repo → auto-deploys |
 | kitchen-table | Git push | Push to `kamunity-kitchen-table` repo → Netlify auto-deploys. Local: `/restart-server` |

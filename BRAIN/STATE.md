@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 20, 2026 (late evening — MIKE_FULLER_PROFILE.md fully populated from LinkedIn + Tech'o'Space Ep 27)
+### Last Updated: Feb 21, 2026 (consulting site Phases 1–3 complete + ecosystem stitch + mobile Kai fix)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -9,6 +9,9 @@
 ## Current Period: Pre-Launch Sprint
 
 **Week of Feb 19-23, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
+
+### Session Highlight (Feb 21 — Morning)
+kamunity-consulting Phase 3 refinements + ecosystem stitch complete. Fixes: CSP violations (7 inline styles → CSS classes), Netlify Function ESM syntax fix (exports.handler → export const handler), model switched to claude-3-haiku-20240307 (3-5-haiku not on current API tier), Australian English instruction added to Kai system prompt, favicon (🔥 data URI) on all 4 pages. Ecosystem stitch: ecosystem-state.json v0.4.0, showcase.ts (7 items now includes consulting), kai-cards.ts (consulting card added), route.ts (Kai knows kamunityconsulting.com + surfaces card on consulting queries), llms-full.txt, site/llms.txt created. BRAIN/ECOSYSTEM.md (13 live sites), kitchen-table/js/data.js (consulting site added), kitchen-table/data/ECOSYSTEM.md synced, DECISION_LOG.md (2 new decisions). kamunity-org committed + pushed → Netlify CI/CD deploying. Phase 4 (free resource) on hold — real traffic needed. DNS cutover from Wix still pending.
 
 ### Session Highlight (Feb 20 — Late Evening)
 MIKE_FULLER_PROFILE.md created in KNOWLEDGE/ as verified source of truth for Mike's professional identity. Full LinkedIn experience + projects integrated: dated career timeline 1999–present, Perth relocation confirmed April 2007 (Joy Global start), The Pack Music Co-op documented (Founding Partner 2017, Deputy Chair 2021), WALGA scope confirmed (3 separate engagements Apr–Jan 2025), “chugger” origin corrected (was Regional Best Practice Manager at Fruitful On-Street Fundraising, Edinburgh), 10-project consulting table added, Open Questions: 4 of 5 answered and closed. Profile committed to nerve centre git.
@@ -246,6 +249,15 @@ Revenue target: $5-8K/month by April 2026.
 7. **server.py FILE_MAP** — add 5 ROADMAP.md entries (manual step — see kitchen-table/netlify/functions/markdown.mjs FILE_KEYS for format)
 8. **Priya audio story** — 400-word script + ElevenLabs generation before ALIKE meeting (Opus handoff Part 3 Move 1)
 9. **MIKE_FULLER_PROFILE.md is ready** — use it for NLnet bio section, ALIKE meeting prep, ally emails. Key pitch facts: RAC $500K in 9 months, WA Health Hackathon win, WALGA 3-engagement relationship, Captain America = the Kamunity archetype.
+
+---
+
+## Next Session Should…
+
+- **DNS cutover** — when Mike is ready: point kamunityconsulting.com from Wix to Netlify (`kamunity-consulting-new`). After cutover: ask Cascade to update CSP `form-action` directive in `netlify.toml` from `https://kamunity-consulting-new.netlify.app` to `https://kamunityconsulting.com`.
+- **kamunity.ai "built-by" card investigation** — read the `kamunity` repo (private, at `C:\Users\mikef\NeoKamunity\kamunity\`) to understand how the "Built by Kamunity" card system works. Check if consulting site can be registered.
+- **KP-02 meeting prep** — ALIKE, Activate MH, AI Speaker briefs still pending (see PLAN/PHASE_QUEUE.md KP-02).
+- **Mike photo for about.html** — when received, update `PROJECTS/kamunity-consulting/site/about.html` and redeploy via Netlify CLI.
 
 ---
 

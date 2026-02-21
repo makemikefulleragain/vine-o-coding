@@ -1,12 +1,12 @@
 # KAMUNITY ECOSYSTEM MAP
 ## All Live Sites, Tools & Infrastructure
-### Last Updated: Feb 19, 2026 (all 6 core sites on GitHub CI/CD. deploy-check 14/14 healthy.)
+### Last Updated: Feb 21, 2026 (kamunity-consulting added — Phases 1–3 complete, Kai FAB live)
 
 *This document is the single source of truth for what exists, where it lives, and how it's deployed. Any AI session reads this to understand the full landscape.*
 
 ---
 
-## Live Sites (12 Active)
+## Live Sites (13 Active)
 
 ### Core Infrastructure
 
@@ -35,6 +35,12 @@
 | **System Map** | [subtle-starship-d0bdac.netlify.app](https://subtle-starship-d0bdac.netlify.app) | FactoryK + Kamunity comprehensive system documentation (70 tracked items) | ✅ Live — rename to `kamunity-system-map` |
 | **The Need's Journey** | [starlit-unicorn-6440fb.netlify.app](https://starlit-unicorn-6440fb.netlify.app) | Interactive FactoryK demo — how needs become tools | ✅ Live — rename to `factoryk-needs-journey` |
 | **The Mycelium** | [candid-donut-4ec289.netlify.app](https://candid-donut-4ec289.netlify.app) | Experimental AI encounter space with breadcrumb system | ✅ Live — rename to `kamunity-mycelium` |
+
+### Consulting
+
+| Site | URL | Purpose | Deploy Method | Status |
+|---|---|---|---|---|
+| **Kamunity Consulting** | [kamunityconsulting.com](https://kamunityconsulting.com) (temp: [kamunity-consulting-new.netlify.app](https://kamunity-consulting-new.netlify.app)) | Mike Fuller's consulting practice — Fix (QA/improvement/strategy) + Impossible (innovation/AI/design sprints). Kai FAB embedded. Built by Kamunity. | Netlify CLI (`netlify deploy --dir site --prod`) | ✅ Live (temp URL, DNS cutover pending) |
 
 ### Playground
 
@@ -78,6 +84,7 @@
 | AI Readiness | React + Tailwind + Vite | Yes (Vite build) |
 | Sovereignty Audit | React + Tailwind + Vite | Yes (Vite build) |
 | Kitchen Table | Vanilla JS ES modules | None (static) |
+| kamunity-consulting | Static HTML + CSS + Vanilla JS + Netlify Functions (Kai proxy) | None (static) — Netlify CLI deploy |
 | Wedding | Unknown (check repo) | GitHub CI/CD |
 | Nonna's / Grants Hub / Outcome Vine | React + Tailwind + Vite (Vine-o-Code v1 outputs) | Yes (Vite build) |
 | Demo (kamunitydemo.org) | Unknown (React/Next.js) | GitHub CI/CD |
@@ -89,6 +96,7 @@
 | Domain | Points To | Registrar | Status |
 |---|---|---|---|
 | kamunity.org | Netlify (kamunityai project) | Check | Active |
+| kamunityconsulting.com | Wix (pending cutover to Netlify kamunity-consulting-new) | Check | Active — DNS cutover to Netlify pending |
 | kamunity.ai | Netlify (sparkling-moxie project) | Check | Active |
 | kamunitydemo.org | Netlify (kamunity-demo project) | Check | Active — confirm registration renewal |
 

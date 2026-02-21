@@ -1,0 +1,37 @@
+# Kamunity Consulting — llms.txt
+> Mike Fuller's consulting practice for the WA community and nonprofit sector.
+
+## What Is This Site?
+kamunityconsulting.com is the consulting website for Mike Fuller, built by Kamunity. Static HTML site using the Kamunity campfire design system (parchment, ember red, deep sky blue, Georgia serif).
+
+## Services — Two Doors
+
+### Fix the shit things (red door)
+QA, process improvement, system design, team turnarounds, strategy. Starting point: the thing you already know is broken.
+Proof: RAC — $500k found in 9 months, nobody fired.
+
+### Do the impossible thing (blue door)
+Innovation sprints, AI integration, human-centred design, hackathons, community innovation.
+Proof: WA Health Hackathon — won by talking to humans first.
+
+## Who It's For
+WA community organisations, nonprofits, disability services, social services — any team where the problem is visible but the path isn't.
+
+## About Mike Fuller
+30 years of quality, improvement and innovation across brewing, mining, disability, and community services. Glasgow to Perth. Holy trinity: QA → Improvement → Innovation. Anti-McKinsey. Post-modern structuralist.
+
+## Kai (AI on this site)
+An embedded version of Kai lives on every page as a floating chat button. Session-only — nothing stored. Constitutionally-governed. Full Kai at kamunity.org.
+
+## Tech
+Static HTML + CSS + Vanilla JS. No build step. Netlify deployment. Kai via Netlify Function proxy to Anthropic Claude API (server-side key only).
+
+## Kamunity Ecosystem
+- Main ecosystem: https://kamunity.org
+- Community rooms: https://kamunity.ai
+- Digital Sovereignty Audit: https://kamunity-audit.netlify.app
+- AI Readiness Assessment: https://kamunity-ai-readiness.netlify.app
+
+## Contact
+mike@kamunityconsulting.com
+https://kamunityconsulting.com

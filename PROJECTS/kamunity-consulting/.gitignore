@@ -1,0 +1,18 @@
+# Deployment
+.netlify/
+windsurf_deployment.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Zip archives (source material, not for deploy)
+*.zip

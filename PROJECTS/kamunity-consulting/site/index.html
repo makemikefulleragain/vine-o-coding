@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+  <meta name="description" content="Kamunity Consulting — QA, improvement, and innovation for the WA community sector. Two doors. One conversation.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kamunityconsulting.com">
+  <meta property="og:title" content="Kamunity Consulting — QA, improvement and innovation for the WA community sector">
+  <meta property="og:description" content="Less hours. Fewer programs. More rules. More need. Do it anyway. Two doors. One conversation.">
+  <meta property="og:image" content="https://kamunityconsulting.com/img/og-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Kamunity Consulting</title>
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,14..144,400;0,14..144,700;1,14..144,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header" role="banner">
+    <div class="site-header-inner">
+      <a href="/" class="wordmark">Kamunity Consulting</a>
+      <nav class="site-nav-wrap" aria-label="Main navigation" id="site-nav-wrap">
+        <ul class="site-nav" id="site-nav-list">
+          <li><a href="fix.html">Fix the shit things</a></li>
+          <li><a href="impossible.html">Do the impossible thing</a></li>
+          <li><a href="about.html#testimonials">Testimonials</a></li>
+          <li><a href="fix.html#services">Services</a></li>
+          <li><a href="#" class="nav-contact-link">Contact</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+      <button class="site-hamburger" id="site-hamburger" aria-expanded="false" aria-controls="site-nav-list" aria-label="Open navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main role="main">
+    <div class="landing-split">
+
+      <!-- LEFT: LinkedIn-style post -->
+      <div class="post-panel">
+        <article class="post-card" role="article" aria-label="Mike Fuller on the WA community sector">
+
+          <div class="li-header">
+            <div class="li-avatar" aria-hidden="true">MF</div>
+            <div class="li-meta">
+              <div class="li-name-row">
+                <span class="li-name">Mike Fuller</span>
+                <span class="li-badge">&bull; 1st</span>
+                <a class="li-follow" href="https://www.linkedin.com/in/mikefuller76" target="_blank" rel="noopener">Follow</a>
+                <div class="li-more-wrap">
+                  <button class="li-more" id="li-more-btn" aria-expanded="false" aria-haspopup="true" aria-label="More options">&hellip;</button>
+                  <div class="li-more-menu" id="li-more-menu" hidden role="menu" aria-label="Site navigation">
+                    <a href="fix.html" class="li-menu-item" role="menuitem">Fix the shit things</a>
+                    <a href="impossible.html" class="li-menu-item" role="menuitem">Do the impossible thing</a>
+                    <a href="about.html#testimonials" class="li-menu-item" role="menuitem">Testimonials</a>
+                    <a href="fix.html#services" class="li-menu-item" role="menuitem">Services</a>
+                    <a href="#" class="li-menu-item nav-contact-link" role="menuitem">Contact</a>
+                    <a href="about.html" class="li-menu-item" role="menuitem">About</a>
+                  </div>
+                </div>
+              </div>
+              <div class="li-headline">Founder, Kamunity Consulting &middot; Community sector strategist</div>
+              <div class="li-time">2d &middot; &#127760;</div>
+            </div>
+          </div>
+
+          <div class="li-body">
+            <p class="li-hook">Less hours. Fewer programs. More rules. More need. Do it anyway.</p>
+            <p>The WA community sector is carrying more than it should. We don't need another framework or another round of tech promises.</p>
+            <p>You already know where the problem is. We just need it to work. That is where we start, whichever path you take from here.</p>
+          </div>
+
+          <div class="li-reactions-bar">
+            <div class="li-r-count-row">
+              <span class="li-r-emojis">
+                <span class="li-emoji-bubble leb-like">&#128077;</span>
+                <span class="li-emoji-bubble leb-love">&#10084;</span>
+                <span class="li-emoji-bubble leb-support">&#129309;</span>
+              </span>
+              <span class="li-r-count">312</span>
+            </div>
+            <span class="li-r-comments">47 comments &middot; 18 reposts</span>
+          </div>
+
+          <div class="li-actions" role="group" aria-label="Post actions">
+            <button id="btn-like" class="li-action-btn" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+              Like
+            </button>
+            <button id="btn-comment" class="li-action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              Comment
+            </button>
+            <button id="btn-repost" class="li-action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+              Repost
+            </button>
+            <button id="btn-send" class="li-action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Send
+            </button>
+          </div>
+
+          <div class="li-comment-compose" id="compose-area">
+            <div class="li-compose-avatar" aria-hidden="true">MF</div>
+            <div class="li-compose-wrap">
+              <textarea id="compose-ta" class="li-compose-textarea" placeholder="Do you agree? What&#39;s your experience&#8230;" rows="1" aria-label="Write a comment"></textarea>
+              <div class="li-compose-btns" id="compose-btns" hidden>
+                <button type="button" id="compose-cancel" class="li-compose-cancel">Cancel</button>
+                <button type="button" id="compose-post" class="li-compose-post">Post</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="li-comments-list" id="comments-list" aria-label="Comments">
+
+            <div class="li-comment">
+              <div class="li-c-avatar li-av-1">SR</div>
+              <div class="li-c-bubble">
+                <div class="li-c-name"><a href="#" class="li-c-link" target="_blank" rel="noopener">Sarah R.</a></div>
+                <div class="li-c-role">Programs Manager &middot; WA NFP</div>
+                <p class="li-c-text">This. Every single week.</p>
+                <div class="li-c-meta">
+                  <button class="li-c-like-btn">Like</button><button class="li-c-reply-btn">Reply</button><span>1d</span>
+                  <button class="li-c-react" aria-label="3 likes">&#128077; <span>3</span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="li-comment">
+              <div class="li-c-avatar li-av-2">TK</div>
+              <div class="li-c-bubble">
+                <div class="li-c-name"><a href="#" class="li-c-link" target="_blank" rel="noopener">Tom K.</a></div>
+                <div class="li-c-role">CEO &middot; Community Organisation</div>
+                <p class="li-c-text">Finally someone who gets it.</p>
+                <div class="li-c-meta">
+                  <button class="li-c-like-btn">Like</button><button class="li-c-reply-btn">Reply</button><span>22h</span>
+                  <button class="li-c-react" aria-label="7 likes">&#128077; <span>7</span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="li-comment">
+              <div class="li-c-avatar li-av-3">JL</div>
+              <div class="li-c-bubble">
+                <div class="li-c-name"><a href="#" class="li-c-link" target="_blank" rel="noopener">Jo L.</a></div>
+                <div class="li-c-role">Volunteer Coordinator</div>
+                <p class="li-c-text">Where were you two years ago?</p>
+                <div class="li-c-meta">
+                  <button class="li-c-like-btn">Like</button><button class="li-c-reply-btn">Reply</button><span>14h</span>
+                  <button class="li-c-react" aria-label="12 likes">&#128077; <span>12</span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="li-comment">
+              <div class="li-c-avatar li-av-4">PM</div>
+              <div class="li-c-bubble">
+                <div class="li-c-name"><a href="#" class="li-c-link" target="_blank" rel="noopener">Priya M.</a></div>
+                <div class="li-c-role">Digital Transformation Lead &middot; Health sector</div>
+                <p class="li-c-text">That bit about not needing another framework hit hard. We are swimming in them.</p>
+                <div class="li-c-meta">
+                  <button class="li-c-like-btn">Like</button><button class="li-c-reply-btn">Reply</button><span>9h</span>
+                  <button class="li-c-react" aria-label="5 likes">&#128077; <span>5</span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="li-comment">
+              <div class="li-c-avatar li-av-5">DW</div>
+              <div class="li-c-bubble">
+                <div class="li-c-name"><a href="#" class="li-c-link" target="_blank" rel="noopener">Dean W.</a></div>
+                <div class="li-c-role">Service Designer</div>
+                <p class="li-c-text">The RAC story. Nine months. $500k. Nobody fired. More of this please.</p>
+                <div class="li-c-meta">
+                  <button class="li-c-like-btn">Like</button><button class="li-c-reply-btn">Reply</button><span>4h</span>
+                  <button class="li-c-react" aria-label="9 likes">&#128077; <span>9</span></button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </article>
+        <p class="post-disclaimer">* Not a real LinkedIn post. But the testimonials are real. And so are the challenges faced by WA community services, volunteers and families.</p>
+      </div>
+
+      <!-- RIGHT: Card-flip doors -->
+      <div class="doors-panel" aria-label="Choose your path">
+        <div class="doors-intro">
+          <h2 class="doors-h1">You know because you&rsquo;re there, now. We&rsquo;re there too.</h2>
+          <p class="doors-p1">We also know, you know&hellip; the thing that would really work. <strong class="doors-accent-green">This is where we start.</strong></p>
+          <p class="doors-p1">A path that improves the system. Another path to remake it, one bit at a time.</p>
+          <h2 class="doors-h2">Your Choice&hellip;</h2>
+        </div>
+        <div class="doors-lobby">
+
+          <!-- Fix door -->
+          <div class="door-scene">
+            <div class="door-wrapper" id="wrapper-fix" role="button" tabindex="0"
+              aria-label="Fix the shit things. Click to knock and open.">
+              <div class="door-flipper" id="flipper-fix">
+                <div class="door-front door-front-fix" aria-hidden="true">
+                  <svg class="door-panels" viewBox="0 0 222 378" focusable="false">
+                    <!-- Upper panel -->
+                    <rect x="14" y="20" width="194" height="145" rx="3" fill="rgba(0,0,0,0.15)" stroke="rgba(180,120,50,0.35)" stroke-width="1.5"/>
+                    <rect x="17" y="23" width="188" height="139" rx="2" fill="none" stroke="rgba(255,200,130,0.2)" stroke-width="1"/>
+                    <!-- Lower panel -->
+                    <rect x="14" y="178" width="194" height="170" rx="3" fill="rgba(0,0,0,0.15)" stroke="rgba(180,120,50,0.35)" stroke-width="1.5"/>
+                    <rect x="17" y="181" width="188" height="164" rx="2" fill="none" stroke="rgba(255,200,130,0.2)" stroke-width="1"/>
+                  </svg>
+                  <div class="door-nameplate door-nameplate-fix">
+                    <span>Fix the<br>shit things</span>
+                  </div>
+                  <span class="door-knob-el"></span>
+                </div>
+                <div class="door-back door-back-fix">
+                  <div class="room-icon">🔧</div>
+                  <p class="room-title">Fix the<br>shit things</p>
+                  <ul class="room-tags">
+                    <li>QA &amp; quality systems</li>
+                    <li>Process improvement</li>
+                    <li>Strategy &amp; alignment</li>
+                    <li>Team turnarounds</li>
+                  </ul>
+                  <blockquote class="room-proof">RAC. $500k found in 9 months. Nobody got fired.</blockquote>
+                  <a href="fix.html" class="room-enter">Enter this room</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Impossible door -->
+          <div class="door-scene">
+            <div class="door-wrapper" id="wrapper-impossible" role="button" tabindex="0"
+              aria-label="Do the impossible thing. Click to knock and open.">
+              <div class="door-flipper" id="flipper-impossible">
+                <div class="door-front door-front-impossible" aria-hidden="true">
+                  <svg class="door-panels" viewBox="0 0 222 378" focusable="false">
+                    <!-- Large glass panel upper -->
+                    <rect x="10" y="10" width="202" height="215" rx="2" fill="rgba(255,255,255,0.15)" stroke="rgba(100,130,180,0.5)" stroke-width="1.5"/>
+                    <!-- Horizontal metal rail -->
+                    <rect x="0" y="232" width="222" height="7" fill="rgba(55,65,81,0.6)"/>
+                    <!-- Lower glass panel -->
+                    <rect x="10" y="247" width="202" height="115" rx="2" fill="rgba(255,255,255,0.1)" stroke="rgba(100,130,180,0.35)" stroke-width="1.5"/>
+                  </svg>
+                  <div class="door-nameplate door-nameplate-impossible">
+                    <span>Do the<br>impossible<br>thing</span>
+                  </div>
+                  <span class="door-knob-el"></span>
+                </div>
+                <div class="door-back door-back-impossible">
+                  <div class="room-icon">🚀</div>
+                  <p class="room-title">Do the<br>impossible thing</p>
+                  <ul class="room-tags">
+                    <li>Human-centred design</li>
+                    <li>AI integration</li>
+                    <li>Design sprints</li>
+                    <li>Community innovation</li>
+                  </ul>
+                  <blockquote class="room-proof">WA Health hackathon. Won by talking to actual humans first.</blockquote>
+                  <a href="impossible.html" class="room-enter">Enter this room</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer" id="index-footer" role="contentinfo">
+    <div class="site-footer-inner">
+      <div class="footer-ecosystem">
+        <strong>The Kamunity ecosystem</strong>
+        <a href="https://kamunity.org" rel="noopener">kamunity.org</a> — tools, guides, stories
+      </div>
+      <ul class="footer-links">
+        <li><a href="about.html" class="footer-ecosystem">About Mike</a></li>
+      </ul>
+      <p class="footer-meta">2026 Kamunity Consulting. Perth, WA. No tracking. No cookies.</p>
+    </div>
+  </footer>
+
+  <!-- Hidden forms for Netlify detection -->
+  <div hidden aria-hidden="true">
+    <form name="comment-share" netlify netlify-honeypot="bot-field">
+      <input name="bot-field"><input name="reactions"><textarea name="comment"></textarea>
+      <input name="name"><input name="email">
+    </form>
+    <form name="contact" netlify netlify-honeypot="bot-field">
+      <input name="bot-field"><input name="name"><input name="email"><textarea name="message"></textarea>
+    </form>
+  </div>
+
+  <!-- Modal overlay -->
+  <div id="modal-overlay" class="kc-overlay" hidden></div>
+
+  <!-- Comment share modal -->
+  <div id="modal-comment" class="kc-modal" hidden role="dialog" aria-modal="true" aria-labelledby="mc-title">
+    <button class="kc-modal-close" id="mc-close" aria-label="Close">&times;</button>
+    <h3 id="mc-title" class="kc-modal-title">Share your thoughts?</h3>
+    <blockquote id="mc-preview" class="kc-modal-preview"></blockquote>
+    <p class="kc-modal-sub">Goes directly to Mike. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a>.</p>
+    <div class="kc-modal-opts">
+      <button id="mc-email-btn" class="kc-opt-btn kc-opt-email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email Mike directly
+      </button>
+      <p class="kc-opt-desc">Opens your email app. Mike gets it. No middleman.</p>
+      <button id="mc-form-toggle" class="kc-opt-btn kc-opt-form">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Post to Mike
+      </button>
+      <p class="kc-opt-desc">Posted anonymously via the webhost. No LinkedIn required.</p>
+    </div>
+    <div id="mc-form-area" class="kc-inline-form" hidden>
+      <form name="comment-share" method="POST" data-netlify="true" id="mc-netlify-form">
+        <input type="hidden" name="form-name" value="comment-share">
+        <p class="kc-honeypot-wrap"><label>Leave blank: <input name="bot-field"></label></p>
+        <label class="kc-form-label">Reaction <span class="kc-optional">(optional)</span>
+          <div class="kc-emoji-row" role="group" aria-label="Reaction">
+            <button type="button" class="kc-ep" data-val="&#128077;">&#128077;</button>
+            <button type="button" class="kc-ep" data-val="&#10084;">&#10084;</button>
+            <button type="button" class="kc-ep" data-val="&#129300;">&#129300;</button>
+            <button type="button" class="kc-ep" data-val="&#128588;">&#128588;</button>
+          </div>
+          <input type="hidden" name="reactions" id="mc-reactions-val">
+        </label>
+        <label class="kc-form-label">Comment <span class="kc-required">*</span>
+          <textarea name="comment" id="mc-form-comment" class="kc-form-ta" required rows="3"></textarea>
+        </label>
+        <label class="kc-form-label">Name <span class="kc-optional">(optional)</span>
+          <input type="text" name="name" class="kc-form-input">
+        </label>
+        <label class="kc-form-label">Email <span class="kc-optional">(optional)</span>
+          <input type="email" name="email" class="kc-form-input">
+        </label>
+        <p class="kc-opt-desc">Posted anonymously — <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a> doesn't apply here.</p>
+        <button type="submit" class="kc-submit-btn">Send comment</button>
+        <p id="mc-form-success" class="kc-form-success" hidden>Comment sent. Thanks!</p>
+      </form>
+    </div>
+    <button id="mc-dontshare" class="kc-dontshare">Don't share &mdash; keep it to myself</button>
+  </div>
+
+  <!-- Contact modal -->
+  <div id="modal-contact" class="kc-modal" hidden role="dialog" aria-modal="true" aria-labelledby="mct-title">
+    <button class="kc-modal-close" id="mct-close" aria-label="Close">&times;</button>
+    <h3 id="mct-title" class="kc-modal-title">Get in touch</h3>
+    <p class="kc-modal-sub">Mike reads and responds to everything personally.</p>
+    <div class="kc-modal-opts">
+      <button id="mct-email-btn" class="kc-opt-btn kc-opt-email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email Mike directly
+      </button>
+      <p class="kc-opt-desc">Opens your email app. Quick and direct.</p>
+      <button id="mct-form-toggle" class="kc-opt-btn kc-opt-form">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Send a message
+      </button>
+      <p class="kc-opt-desc">Your details stay private. Nothing sold.</p>
+    </div>
+    <div id="mct-form-area" class="kc-inline-form" hidden>
+      <form name="contact" method="POST" data-netlify="true" id="mct-netlify-form">
+        <input type="hidden" name="form-name" value="contact">
+        <p class="kc-honeypot-wrap"><label>Leave blank: <input name="bot-field"></label></p>
+        <label class="kc-form-label">Name <span class="kc-optional">(optional)</span>
+          <input type="text" name="name" class="kc-form-input">
+        </label>
+        <label class="kc-form-label">Email <span class="kc-optional">(optional)</span>
+          <input type="email" name="email" class="kc-form-input">
+        </label>
+        <label class="kc-form-label">Message or question <span class="kc-required">*</span>
+          <textarea name="message" id="mct-form-message" class="kc-form-ta" required rows="4" placeholder="What are you working on?"></textarea>
+        </label>
+        <label class="kc-form-check">
+          <input type="checkbox" name="consent" required>
+          I have read the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>
+        </label>
+        <button type="submit" class="kc-submit-btn">Send message</button>
+        <p id="mct-form-success" class="kc-form-success" hidden>Message sent. Thanks!</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Share / Repost modal -->
+  <div id="modal-share" class="kc-modal" hidden role="dialog" aria-modal="true" aria-labelledby="ms-title">
+    <button class="kc-modal-close" id="ms-close" aria-label="Close">&times;</button>
+    <h3 id="ms-title" class="kc-modal-title">Share this post</h3>
+    <div class="kc-share-grid">
+      <button id="share-copy" class="kc-share-btn kc-share-copy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        <span id="share-copy-label">Copy link</span>
+      </button>
+      <a id="share-linkedin" class="kc-share-btn kc-share-li" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0H5C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5V5c0-2.761-2.238-5-5-5zM8 19H5V8h3v11zM6.5 6.732c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V8h3v1.765c1.396-2.586 7-2.777 7 2.476V19z"/></svg>
+        LinkedIn
+      </a>
+      <a id="share-facebook" class="kc-share-btn kc-share-fb" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073C24 5.446 18.627 0 12 0S0 5.446 0 12.073c0 6.03 4.388 11.02 10.125 11.927v-8.43H7.078v-3.497h3.047V9.428c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.497h-2.796v8.43C19.612 23.093 24 18.103 24 12.073z"/></svg>
+        Facebook
+      </a>
+      <a id="share-twitter" class="kc-share-btn kc-share-x" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Twitter / X
+      </a>
+      <a id="share-whatsapp" class="kc-share-btn kc-share-wa" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <button id="share-mastodon" class="kc-share-btn kc-share-masto">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 00.023-.043v-1.809a.052.052 0 00-.02-.041.053.053 0 00-.046-.01 20.282 20.282 0 01-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 01-.319-1.433.053.053 0 01.066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12v6.406z"/></svg>
+        Mastodon
+      </button>
+    </div>
+    <p class="kc-share-note">Instagram / TikTok: copy the link and paste into your app.</p>
+  </div>
+
+  <!-- Kai FAB -->
+  <button id="kai-fab" class="kai-fab" aria-label="Chat with Kai, the Kamunity AI" aria-expanded="false">K</button>
+  <div id="kai-panel" class="kai-panel" hidden>
+    <div class="kai-header">
+      <div class="kai-avatar" aria-hidden="true">K</div>
+      <div class="kai-header-info">
+        <strong class="kai-name">Kai</strong>
+        <span class="kai-tagline">Kamunity AI</span>
+      </div>
+      <button class="kai-close" id="kai-close" aria-label="Close Kai chat">&times;</button>
+    </div>
+    <div class="kai-messages" id="kai-messages" role="log" aria-live="polite">
+      <div class="kai-bubble kai-bubble-ai">Hi, I&rsquo;m Kai the Kamunity AI. I&rsquo;m here to help with whatever you&rsquo;re navigating in your community &mdash; ask me anything.</div>
+    </div>
+    <div class="kai-compose">
+      <textarea class="kai-input" id="kai-input" placeholder="Ask Kai…" rows="2" aria-label="Your message to Kai"></textarea>
+      <button class="kai-send" id="kai-send" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+    <p class="kai-disclaimer">Conversations aren&rsquo;t saved. Kai is AI, not human &mdash; and knows it. Built for all communities. <a href="https://kamunity.org/constitution" target="_blank" rel="noopener">Constitution</a> &middot; <a href="https://kamunity.org" target="_blank" rel="noopener">Meet full Kai &rarr;</a></p>
+  </div>
+
+  <script src="js/doors.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/post.js"></script>
+  <script src="js/version.js"></script>
+  <script src="js/kai.js"></script>
+</body>
+</html>
