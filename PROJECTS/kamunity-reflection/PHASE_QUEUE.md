@@ -17,22 +17,22 @@ Before BUILD, check BRAIN/SAFETY_GATES.md for applicable gates.
 
 ## Phase 1: Foundation Interface
 **Timeline:** Session 1 (Feb 22, 2026)
-**Status:** IN PROGRESS
+**Status:** COMPLETE ✅ (2026-02-22)
 
 **Goal:** Ship a deployed, working Kai-centred mirror interface with curated data, parchment aesthetic, and the core conversation experience.
 
 **Done When:**
-- [ ] Kai orb renders with ember→blue state transitions on parchment background
-- [ ] Split screen layout works (desktop L/R, mobile top/bottom)
-- [ ] Dynamic text input (3→6 rows, grow then scroll, mic button, submit)
-- [ ] Floating text output (mid-screen, expands up, fades at top, scrollable)
-- [ ] Kai responds via Netlify Function (Claude API, crisis protocol hardcoded)
-- [ ] Presentation cards appear with gift/story/exchange content
-- [ ] Backpack toggle works (add/not now/not for me, status, 2 latent options)
-- [ ] Modal cards work (about, feedback via Netlify form)
-- [ ] G1, G2, G4, G13 safety gates pass
-- [ ] llms.txt, cross-links, disclaimers present
-- [ ] Deployed to Netlify
+- [x] Kai orb renders with ember→blue state transitions on parchment background
+- [x] Split screen layout works (desktop L/R, mobile top/bottom)
+- [x] Dynamic text input (3→6 rows, grow then scroll, mic button, submit)
+- [x] Floating text output (mid-screen, expands up, fades at top, scrollable)
+- [x] Kai responds via Netlify Function (Claude API, crisis protocol hardcoded)
+- [x] Presentation cards appear with gift/story/exchange content
+- [x] Backpack toggle works (add/not now/not for me, status, 2 latent options)
+- [x] Modal cards work (about, feedback via Netlify form)
+- [x] G1, G2, G4, G13 safety gates pass
+- [x] llms.txt, cross-links, disclaimers present
+- [x] Deployed to Netlify — https://kamunity-reflection.netlify.app
 
 **Dependencies:** None — greenfield.
 **Safety Gates:** G1, G2, G4, G13 (critical). G10, G11, G12 (medium — proceed with flag).
@@ -40,17 +40,20 @@ Before BUILD, check BRAIN/SAFETY_GATES.md for applicable gates.
 ---
 
 ## Phase 2: Data Layer — Signal Detection
-**Timeline:** After Phase 1 UAT + evidence of engagement
-**Status:** Not started
+**Timeline:** 2026-02-22
+**Status:** IN PROGRESS
 
 **Goal:** Auto-populated RAG pipeline that reads public signals (Facebook, Eventbrite, Ethical Jobs, ACNC) to detect need/have signals and pre-populate exchange possibilities before any org sits down.
 
 **Done When:**
-- [ ] Signal taxonomy defined and documented (need vs have indicators)
-- [ ] At least 3 public data sources ingesting on schedule
-- [ ] Kai can reference real local examples in "like them" stories
-- [ ] Exchange possibilities include confidence rating and HOW explanation
-- [ ] Data pipeline is transparent (users can ask "how did you find that?")
+- [x] Signal taxonomy defined — `src/data/wa-sectors.js` (need/have signals per sector)
+- [x] WA sector intelligence — 6 sectors, 20+ WA org profiles, exchange templates (public data)
+- [x] ACNC data.gov.au API integration — live WA charity count by sector (3s timeout, graceful fallback)
+- [x] Kai references real WA orgs in "like them" stories (sector-detected, hedged language)
+- [x] Exchange possibilities include confidence rating and HOW explanation
+- [x] Sector detection from conversation keywords — server-side, transparent
+- [ ] At least 2 more live public data sources (Ethical Jobs, Eventbrite — Phase 2+)
+- [ ] Scheduled data refresh (Netlify scheduled functions — Phase 2+)
 
 **Dependencies:** Phase 1 complete. Real user engagement as evidence signal.
 **Safety Gates:** G2 (public data only, no PII), G6 (no ACCO data without consultation), G12 (hallucination risk increases with RAG — must test).
@@ -108,6 +111,8 @@ Possible directions:
 | Date | Change | Rationale |
 |---|---|---|
 | 2026-02-22 | Queue created | Initial hypothesis based on opu46 conversation + kamunity-mirror.html prototype + user confirmation |
+| 2026-02-22 | Phase 1 complete — deployed to https://kamunity-reflection.netlify.app | User tested and confirmed, API key set | 
+| 2026-02-22 | Phase 2 started — sector intelligence layer | wa-sectors.js (6 sectors, 20+ WA orgs), ACNC integration, sector detection server-side in kai.js |
 
 ---
 

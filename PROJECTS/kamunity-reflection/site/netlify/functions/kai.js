@@ -1,3 +1,31 @@
+import { detectSector, getSectorContext } from '../../src/data/wa-sectors.js';
+
+const ACNC_API = 'https://data.gov.au/data/api/3/action/datastore_search';
+const ACNC_RESOURCE = 'eb1e6be4-5b13-4feb-b28e-388bf7c26f93';
+
+const ACNC_SECTOR_FILTER = {
+  'peer-support':    'Mental Health, Crisis Intervention',
+  'mental-health':   'Mental Health, Crisis Intervention',
+  'arts-community':  'Culture and Arts',
+  'neighbourhood':   'Social Services',
+  'youth':           'Children',
+  'disability':      'Disability',
+};
+
+async function fetchACNCCount(sectorKey) {
+  const activity = ACNC_SECTOR_FILTER[sectorKey];
+  if (!activity) return null;
+  try {
+    const url = `${ACNC_API}?resource_id=${ACNC_RESOURCE}&filters={"Address_State":"WA","Main_Activity":"${encodeURIComponent(activity)}","Active_Charity":"Y"}&limit=0`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json?.result?.total ?? null;
+  } catch {
+    return null;
+  }
+}
+
 const SYSTEM_PROMPT = `You are Kai, the Kamunity wayfinder — embedded in Kamunity Reflection, a community self-perception mirror.
 
 ## YOUR ROLE
@@ -104,6 +132,20 @@ export const handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ message: 'No message received.', cards: [] }) };
   }
 
+  const detectedSector = detectSector(messages);
+  const [sectorCtx, acncCount] = await Promise.all([
+    Promise.resolve(detectedSector ? getSectorContext(detectedSector) : ''),
+    detectedSector ? fetchACNCCount(detectedSector) : Promise.resolve(null),
+  ]);
+
+  let dynamicPrompt = SYSTEM_PROMPT;
+  if (sectorCtx) {
+    dynamicPrompt += '\n\n' + sectorCtx;
+  }
+  if (acncCount !== null && detectedSector) {
+    dynamicPrompt += `\n\n## LIVE ACNC DATA\nAccording to the current ACNC Charity Register, there are approximately ${acncCount} active WA charities with a primary activity matching this sector. This is the landscape this organisation operates in. You may reference this: "Based on public ACNC data, there are around ${acncCount} registered WA charities in this space..." — always citing the source.`;
+  }
+
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -115,7 +157,7 @@ export const handler = async (event) => {
       body: JSON.stringify({
         model: 'claude-3-haiku-20240307',
         max_tokens: 1024,
-        system: SYSTEM_PROMPT,
+        system: dynamicPrompt,
         messages,
       }),
     });
