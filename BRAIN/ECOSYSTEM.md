@@ -42,6 +42,12 @@
 |---|---|---|---|---|
 | **Kamunity Consulting** | [kamunityconsulting.com](https://kamunityconsulting.com) (temp: [kamunity-consulting-new.netlify.app](https://kamunity-consulting-new.netlify.app)) | Mike Fuller's consulting practice — Fix (QA/improvement/strategy) + Impossible (innovation/AI/design sprints). Kai FAB embedded. Built by Kamunity. | Netlify CLI (`netlify deploy --dir site --prod`) | ✅ Live (temp URL, DNS cutover pending) |
 
+### Reflection & Community Self-Perception
+
+| Site | URL | Purpose | Deploy Method | Status |
+|---|---|---|---|---|
+| **Kamunity Reflection** | TBD (kamunity-reflection.netlify.app) | Kai-centred community self-perception mirror — "What are you for?" conversational tool with value exchange matching | Netlify (Vite build) | 🔨 In build — Phase 1 |
+
 ### Playground
 
 | Site | URL | Purpose | GitHub Repo | Status |

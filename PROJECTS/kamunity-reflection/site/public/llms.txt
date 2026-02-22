@@ -1,0 +1,30 @@
+# Kamunity Reflection
+## Community Self-Perception Infrastructure
+
+**Purpose:** A Kai-centred conversational mirror that helps community organisations discover what they're actually for — and find others facing the same fork in the road.
+
+**What it does:**
+- Asks organisations "What are you for?" through guided conversation
+- Surfaces gifts (reframes), earworms (memorable phrases), and peer stories
+- Identifies value exchange possibilities: swaps, loops, and chains between organisations
+- Leaves something useful in hand when the conversation ends
+
+**Primary users:** Community organisations in WA — peer support groups, mental health sector, arts/community orgs, ACCOs.
+
+**Key principle:** "You can stop anytime. What you have is already yours."
+
+**Part of the Kamunity ecosystem:**
+- Main site: https://kamunity.org
+- Sovereignty Audit: https://kamunity-audit.netlify.app
+- AI Readiness: https://kamunity-ai-readiness.netlify.app
+- Consulting: https://kamunityconsulting.com
+
+**Built by Kamunity** — post-capitalist community infrastructure, Whadjuk Noongar boodja, WA.
+
+**Kai is:** An AI wayfinder — not a counsellor, not a professional advisor. Honest about being AI. Always pointing toward human connection.
+
+**Crisis resources (WA):**
+- Lifeline: 13 11 14
+- Beyond Blue: 1300 22 4636
+- 13YARN: 13 92 76
+- Crisis Care WA: 9223 1111
