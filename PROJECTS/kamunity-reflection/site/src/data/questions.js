@@ -139,7 +139,7 @@ export const MIRROR_QUESTIONS = [
 
 export const OPENING_MESSAGE = {
   role: 'assistant',
-  content: "What are you for?\n\nNot what your constitution says. Not what your last grant application said.\n\nWhat you are for, right now, in the room.",
+  content: "Hi — I'm Kai, an AI wayfinder from Kamunity.\n\nI'm going to ask you four questions that most organisations never sit with. You'll leave with a reframe or two, maybe a connection worth following up, and something worth keeping.\n\nBefore we start — tell me about your organisation. Who are you, and what do you do?",
   cards: [],
   isOpening: true,
 };

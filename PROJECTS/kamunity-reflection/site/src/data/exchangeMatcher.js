@@ -77,7 +77,7 @@ export function matchExchanges(messages, sectorKey) {
   if (!sectorKey || !SECTORS[sectorKey]) return [];
 
   const userMessageCount = messages.filter(m => m.role === 'user').length;
-  if (userMessageCount < 2) return [];
+  if (userMessageCount < 3) return [];
 
   const sector = SECTORS[sectorKey];
   const { haveSignals, needSignals } = extractSignals(messages);
@@ -101,8 +101,8 @@ export function matchExchanges(messages, sectorKey) {
       sector.typical_haves
     );
 
-    const finalConfidence = detectedConfidence || (template.confidence === 'high' ? 'medium' : null);
-    if (!finalConfidence) continue;
+    if (!detectedConfidence) continue;
+    const finalConfidence = detectedConfidence;
 
     const evidence = buildSignalEvidence(needSignals, haveSignals, partnerOrg, template);
 

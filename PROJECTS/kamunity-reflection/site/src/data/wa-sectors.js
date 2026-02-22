@@ -471,6 +471,38 @@ export const SECTORS = {
 
 export const SECTOR_KEYS = Object.keys(SECTORS);
 
+export function getCompactSectorMap() {
+  const lines = [
+    '## WA SECTOR KNOWLEDGE BASE',
+    'Reference ONLY confirmed organisations from this list. Never invent org names, acronyms, or URLs.\n',
+  ];
+
+  for (const sector of Object.values(SECTORS)) {
+    lines.push(`### ${sector.label}`);
+    lines.push(`Typical HAVE: ${sector.typical_haves.slice(0, 3).join(' · ')}`);
+    lines.push(`Typical NEED: ${sector.typical_needs.slice(0, 3).join(' · ')}\n`);
+    for (const org of (sector.wa_orgs || [])) {
+      lines.push(`**${org.name}** (${org.url}) — ${org.description}`);
+      lines.push(`  HAVE: ${org.known_haves.slice(0, 3).join(' · ')}`);
+      lines.push(`  NEED: ${org.known_needs.slice(0, 3).join(' · ')}`);
+    }
+    lines.push('');
+  }
+
+  lines.push('### Cross-sector exchange patterns seen in WA');
+  lines.push('- Peer orgs ↔ Arts orgs: lived-experience stories + community trust ↔ accessible creative formats that remove stigma barriers (neither can buy what the other has)');
+  lines.push('- Peer orgs ↔ Clinical/MH orgs: peer wisdom + authentic community voice ↔ clinical governance + funder credibility');
+  lines.push('- Arts orgs ↔ Neighbourhood houses: specialist programming ↔ space + existing community (very common Perth metro, often informal, rarely documented)');
+  lines.push('- NDIS orgs ↔ Arts orgs: NDIS community participation funding ↔ inclusive creative programs (underutilised connection)');
+  lines.push('- Three-way entry loop: Arts org (first safe non-clinical contact) → Peer support → Clinical pathway when ready');
+  lines.push('- ALIKE WA ↔ The Pack Music: peer groups need creative non-clinical entry points; The Pack needs mental health support pathways for participants — direct exchange possibility');
+  lines.push('- ALIKE WA ↔ Activate Mental Health: same mental health landscape, different angles — lived-experience voice (ALIKE) ↔ sector coordination capacity (Activate MH)');
+  lines.push('- Activate Mental Health ↔ any peer org: coordination infrastructure ↔ lived-experience integration (often the missing piece in Activate\'s member organisations)');
+  lines.push('\nWhen HAVES and NEEDS align across orgs in this list, name the exchange explicitly — use the org\'s real name and be specific about what flows in each direction.');
+
+  return lines.join('\n');
+}
+
 export function detectSector(messages) {
   const text = messages
     .map(m => (m.content || '').toLowerCase())

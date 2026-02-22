@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const TYPE_CONFIG = {
   gift: {
@@ -39,9 +39,12 @@ const EXCHANGE_TYPE_LABEL = {
 export default function PresentationCard({ card, onAddToBackpack, onNotNow, onNotForMe }) {
   const [dismissed, setDismissed] = useState(false);
   const [minimised, setMinimised] = useState(false);
-  const [touchStart, setTouchStart] = useState(null);
-  const [holdTimer, setHoldTimer] = useState(null);
   const [showHoldMenu, setShowHoldMenu] = useState(false);
+  const holdTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => { if (holdTimerRef.current) clearTimeout(holdTimerRef.current); };
+  }, []);
 
   const cfg = TYPE_CONFIG[card.type] || TYPE_CONFIG.gift;
 
@@ -60,17 +63,12 @@ export default function PresentationCard({ card, onAddToBackpack, onNotNow, onNo
     setDismissed(true);
   };
 
-  const handleTouchStart = (e) => {
-    setTouchStart(Date.now());
-    const timer = setTimeout(() => {
-      setShowHoldMenu(true);
-    }, 3000);
-    setHoldTimer(timer);
+  const handleTouchStart = () => {
+    holdTimerRef.current = setTimeout(() => setShowHoldMenu(true), 3000);
   };
 
   const handleTouchEnd = () => {
-    if (holdTimer) clearTimeout(holdTimer);
-    setHoldTimer(null);
+    if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
   };
 
   if (dismissed) return null;

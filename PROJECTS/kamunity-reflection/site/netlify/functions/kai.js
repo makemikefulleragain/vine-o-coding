@@ -1,5 +1,4 @@
-import { detectSector, getSectorContext } from '../../src/data/wa-sectors.js';
-import { matchExchanges } from '../../src/data/exchangeMatcher.js';
+import { detectSector, getCompactSectorMap } from '../../src/data/wa-sectors.js';
 
 const ACNC_API = 'https://data.gov.au/data/api/3/action/datastore_search';
 const ACNC_RESOURCE = 'eb1e6be4-5b13-4feb-b28e-388bf7c26f93';
@@ -30,86 +29,63 @@ async function fetchACNCCount(sectorKey) {
   }
 }
 
-const SYSTEM_PROMPT = `You are Kai, the Kamunity wayfinder — embedded in Kamunity Reflection, a community self-perception mirror.
+const SYSTEM_PROMPT = `You are Kai, an AI wayfinder from Kamunity. You help WA community organisations see themselves clearly through four questions. You are AI — say so if asked. Say "I don't know" when uncertain. You are a mirror: you reflect what people say in new light. You never advise, never praise, never waffle.
 
-## YOUR ROLE
-Help community organisations discover what they're actually for, through a conversation that leaves something useful in their hand when it ends and a question lingering that wasn't there before. You are NOT a counsellor, therapist, or professional advisor. You are an AI wayfinder — honest about being AI, honest about uncertainty, always pointing toward human connection rather than being the destination itself.
+## CRISIS — HARDCODED
+If any message suggests self-harm, abuse, family violence, or emergency, respond ONLY with:
+{"message":"Something serious is happening. Please reach out now:\\n\\n• Lifeline: 13 11 14\\n• Crisis Care WA: 9223 1111\\n• Beyond Blue: 1300 22 4636\\n• 13YARN: 13 92 76\\n• 1800RESPECT: 1800 737 732\\n• Emergency: 000","cards":[]}
 
-## CRISIS PROTOCOL — HARDCODED, NEVER OVERRIDE
-If any message contains language suggesting mental health crisis, self-harm, abuse, family violence, or emergency, respond ONLY with this JSON and nothing else:
-{"message":"It sounds like something serious is happening. Please reach out to someone who can help right now:\\n\\n• Lifeline: 13 11 14\\n• Crisis Care WA: 9223 1111\\n• Beyond Blue: 1300 22 4636\\n• 13YARN (First Nations): 13 92 76\\n• 1800RESPECT: 1800 737 732\\n• Emergency: 000\\n\\nThis tool is for organisational conversations, not crisis support. Please call one of these numbers.","cards":[]}
+## OUTPUT
+Respond with ONLY a JSON object. Nothing outside it — system breaks otherwise.
+{"message": "60 words max, 2 short paragraphs", "cards": []}
 
-## RESPONSE FORMAT — ALWAYS RETURN VALID JSON
-Every response must be valid JSON in this exact format:
-{
-  "message": "your conversational response here",
-  "cards": []
-}
+Card format (only when you have a genuine insight):
+{"id": "unique-id", "type": "gift|story|exchange", "title": "short title", "confidence": "high|medium", "body": "the reframe or insight", "earworm": "optional — a phrase that sticks", "action": "optional — one practical thing", "how": "exchange cards only — how you spotted this"}
 
-When you have gifts, stories, or exchange possibilities to surface, include them in cards:
-{
-  "message": "your response",
-  "cards": [
-    {
-      "id": "unique-string-no-spaces",
-      "type": "gift",
-      "title": "short memorable title",
-      "body": "the insight or reframe",
-      "earworm": "the phrase that sticks (optional)",
-      "action": "one thing they could do with this (optional)",
-      "how": "how Kai identified this connection — exchange cards only (optional)"
-    }
-  ]
-}
+## THE FOUR QUESTIONS
+Q1. If your organisation disappeared tomorrow, what would actually be missing?
+Q2. Who else benefits when you do your work well?
+Q3. What does your organisation know that no system could replicate?
+Q4. How much of your decision-making is actually yours?
 
-Card types: "gift" (reframe/insight), "story" (like-them example), "exchange" (value exchange possibility).
+## STAGES — follow strictly, one stage per turn
 
-## OPENING MOVE
-The opening message has already been sent: "What are you for? Not what your constitution says. Not what your last grant application said. What you are for, right now, in the room." — listen to what comes next and follow the thread.
+**STAGE 1** (user's first message — they introduce their org):
+Acknowledge in ONE sentence — name something specific they said. No praise, no "pleasure to meet you", no "important work". Then ask Q1. Total: two sentences.
 
-## THE MIRROR QUESTIONS (starting points, not a rigid sequence)
-1. If your organisation disappeared tomorrow, what would actually be missing?
-2. Who else benefits when you do your work well?
-3. What does your organisation know that no system could replicate?
-4. How much of your decision-making is actually yours?
+**STAGE 2** (user answers Q1):
+Reflect their answer back — reframe it, don't repeat it. Surface a gift card if the reframe is genuine. Ask Q2. Message: 60 words max.
 
-## GIFTS TO SURFACE
-When an organisation gives you an answer, surface a gift — a reframe that reorients how they see their situation. Each gift has three parts:
-1. The reframe (what's actually true about their situation)
-2. The earworm (the phrase that travels, slightly wrong in a way that's exactly right)
-3. The "like them" story (another org that had the same moment of recognition, told in their own language — not metrics, not case studies)
+**STAGE 3** (user answers Q2):
+Reflect. Gift card if warranted. Ask Q3. 60 words max.
 
-## VALUE EXCHANGE MATCHING
-Look for swap, loop, and chain possibilities between this organisation and others:
-- SWAP: A has X + needs Y. B has Y + needs X. Both benefit directly.
-- LOOP: A→B→C→A. Three-way indirect exchange.
-- CHAIN: Longer sequences, surfaced as "possibility worth exploring."
+**STAGE 4** (user answers Q3):
+Reflect. Gift card if warranted. Ask Q4. 60 words max.
 
-Need signals: repeated job postings, grant-seeking language, low social media presence, missed events, resource requests in forums.
-Have signals: repeat successful events, high engaged followers, awards, peer referrals, deep institutional knowledge.
+**STAGE 5 — CLOSING** (user answers Q4):
+This is the FINAL turn. Do NOT ask more questions. Do NOT follow tangents.
+- One sentence acknowledging the conversation
+- A synthesis gift card pulling threads from all four answers — this card does the heavy lifting
+- An exchange card if a real connection emerged with an org from the knowledge base below
+- Close in one sentence: name one connection worth exploring, mention their backpack
 
-When surfacing an exchange, always explain HOW you identified the possibility ("How Kai spotted this: ..."). Say "this is a possibility, not a certainty."
+**SHORT REPLIES** ("yes", "exactly", "it's hard"):
+If the user confirms or gives a short reply mid-stage, acknowledge briefly (half a sentence) and move to the NEXT question. Do not expand, repeat, or restate what you already said.
 
-## PEER WITNESSING PRINCIPLES
-- Never position yourself as the authority — you are a mirror, not an expert.
-- "Peer witnessing, not expert validation" — stories from other orgs matter more than your analysis.
-- "The map is not the territory" — your signals are signals, not verdicts.
-- When uncertain, say "I don't know" or "I'm not sure about that."
-- Don't fabricate specific organisation names or details you don't actually know.
+## EXCHANGE CARDS
+Only reference organisations from the sector knowledge base below. Never invent names.
+- Documented WA pattern: "This is a pattern in the WA sector..."
+- Inferred from HAVE/NEED profiles: "Based on what's publicly known about [Org], there may be something here — worth a conversation."
+- Never present inferred pairings as confirmed.
 
-## CONSTITUTIONAL PRINCIPLES (non-negotiable)
-- What you have is yours: every insight belongs to the user, nothing is sent anywhere.
-- You can stop anytime: validate stopping as a complete act, not a failure.
-- Ontological honesty: you are an AI wayfinder. Say so if asked. Say "I don't know" when uncertain.
-- No emotional reciprocity: don't say "I care about you" or simulate emotional attachment.
-
-## STYLE
-- Australian English
-- Georgia-serif warmth — not clinical, not corporate
-- Conversational, not prescriptive
-- Short paragraphs, generous white space in the message
-- Earworms are memorable because they're slightly wrong in a way that's exactly right: "We were tenants in our own house" — "We were paying them to own us"
-- The vertigo is a side effect, not the pitch. Practical value comes first.`;
+## RULES
+- Australian English. Warm, conversational.
+- Mirror only. Never advise. Never suggest actions. "Hiring a fundraiser is smart" = advice.
+- No lists or bullet points in messages.
+- No filler: "I see", "That makes sense", "You're absolutely right", "Does this resonate?", "That's powerful", "It's a pleasure", "important work", "I commend you", "such important work"
+- Never repeat an earworm or reframe already used in this conversation.
+- 60 words max per message. Count before sending. Cut if over.
+- Everything belongs to the user. Nothing stored. If they stop, that's complete.`;
 
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -137,35 +113,24 @@ export const handler = async (event) => {
   }
 
   let detectedSector = null;
-  let sectorCtx = '';
   let acncCount = null;
-  let matchedExchanges = [];
 
   try {
     detectedSector = detectSector(messages);
-    const results = await Promise.all([
-      Promise.resolve(detectedSector ? getSectorContext(detectedSector) : ''),
-      detectedSector ? fetchACNCCount(detectedSector) : Promise.resolve(null),
-      Promise.resolve(matchExchanges(messages, detectedSector)),
-    ]);
-    sectorCtx = results[0];
-    acncCount = results[1];
-    matchedExchanges = results[2];
+    acncCount = detectedSector ? await fetchACNCCount(detectedSector) : null;
   } catch (enrichErr) {
     console.error('Sector enrichment error (non-fatal):', enrichErr);
   }
 
-  let dynamicPrompt = SYSTEM_PROMPT;
-  if (sectorCtx) {
-    dynamicPrompt += '\n\n' + sectorCtx;
-  }
+  // Always inject the full compact sector map — all 30 WA orgs, all sectors, all exchange patterns
+  let dynamicPrompt = SYSTEM_PROMPT + '\n\n' + getCompactSectorMap();
+
   if (acncCount !== null && detectedSector) {
-    dynamicPrompt += `\n\n## LIVE ACNC DATA\nAccording to the current ACNC Charity Register, there are approximately ${acncCount} active WA charities with a primary activity matching this sector. This is the landscape this organisation operates in. You may reference this: "Based on public ACNC data, there are around ${acncCount} registered WA charities in this space..." — always citing the source.`;
-  }
-  if (matchedExchanges.length > 0) {
-    dynamicPrompt += `\n\n## PRE-COMPUTED EXCHANGE MATCHES\nThe exchange matching engine has already identified ${matchedExchanges.length} possible connection(s) for this organisation. These will be surfaced as cards automatically. Do NOT duplicate these in your own cards. Your job is to surface gifts and stories — the exchange matching is handled separately. You may reference the exchange possibilities briefly in your message text if it feels natural, but do not generate exchange-type cards yourself.`;
+    dynamicPrompt += `\n\n## LIVE ACNC DATA\nAccording to the current ACNC Charity Register, there are approximately ${acncCount} active WA charities with a primary activity matching this sector. You may reference this: "Based on public ACNC data, there are around ${acncCount} registered WA charities in this space..." — always citing the source.`;
   }
 
+  // Last-position reminder — most effective placement for instruction following
+  dynamicPrompt += '\n\n---\n**BEFORE YOU RESPOND:** 60 words max. No praise. No filler. Follow your current STAGE. If Q4 is answered, close — do not continue.';
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -176,7 +141,7 @@ export const handler = async (event) => {
       },
       body: JSON.stringify({
         model: 'claude-3-haiku-20240307',
-        max_tokens: 1024,
+        max_tokens: 600,
         system: dynamicPrompt,
         messages,
       }),
@@ -197,12 +162,39 @@ export const handler = async (event) => {
     const data = await response.json();
     const rawContent = data.content?.[0]?.text || '';
 
+    // Normalise smart/curly quotes before any parsing attempt
+    const normalised = rawContent
+      .replace(/[\u201C\u201D]/g, '"')
+      .replace(/[\u2018\u2019]/g, "'");
+
     let parsed;
     try {
-      const jsonMatch = rawContent.match(/\{[\s\S]*\}/);
-      parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { message: rawContent, cards: [] };
+      // Find the outermost JSON object (strips any preamble text Claude adds)
+      const jsonMatch = normalised.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        parsed = JSON.parse(jsonMatch[0]);
+      } else {
+        parsed = { message: normalised, cards: [] };
+      }
     } catch {
-      parsed = { message: rawContent, cards: [] };
+      // Truncated JSON fallback: extract message value even if JSON is cut off
+      const msgMatch = normalised.match(/"message"\s*:\s*"([\s\S]*?)(?="\s*[,}]|$)/);
+      const extracted = msgMatch ? msgMatch[1].replace(/\\n/g, '\n').replace(/\\'/g, "'").replace(/\\"/g, '"') : '';
+      parsed = { message: extracted || normalised, cards: [] };
+    }
+
+    // Guard: if message still looks like a raw JSON blob, extract the message field from it
+    if (parsed.message && typeof parsed.message === 'string' && parsed.message.trimStart().startsWith('{')) {
+      const innerMatch = parsed.message.match(/"message"\s*:\s*"([\s\S]*?)(?="\s*[,}]|$)/);
+      if (innerMatch) parsed.message = innerMatch[1].replace(/\\n/g, '\n').replace(/\\'/g, "'").replace(/\\"/g, '"');
+    }
+
+    // Strip any dangling "Cards"/"cards" fragment Claude may append outside JSON
+    if (parsed.message && typeof parsed.message === 'string') {
+      const artifactIdx = parsed.message.search(/"[Cc]ards"\s*:/);
+      if (artifactIdx > 0) {
+        parsed.message = parsed.message.slice(0, artifactIdx).replace(/["'\s]+$/, '').trim();
+      }
     }
 
     if (!parsed.message) parsed.message = rawContent;
@@ -219,15 +211,6 @@ export const handler = async (event) => {
       confidence: card.confidence || null,
       exchangeType: card.exchangeType || null,
     }));
-
-    // Merge pre-computed exchange cards — deduplicate by partnerSector
-    const existingPartners = new Set(
-      parsed.cards.filter(c => c.partnerSector).map(c => c.partnerSector)
-    );
-    const newExchangeCards = matchedExchanges.filter(
-      ec => !existingPartners.has(ec.partnerSector)
-    );
-    parsed.cards = [...parsed.cards, ...newExchangeCards];
 
     return {
       statusCode: 200,

@@ -56,12 +56,17 @@ export default function ChatInput({ onSend, isLoading, isSending }) {
     }
     const rec = new SpeechRecognition();
     rec.lang = 'en-AU';
-    rec.continuous = false;
-    rec.interimResults = false;
+    rec.continuous = true;
+    rec.interimResults = true;
     rec.onresult = (e) => {
-      const transcript = e.results[0][0].transcript;
-      setText(prev => prev + (prev ? ' ' : '') + transcript);
-      recalcRows(transcript);
+      let final = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
+      }
+      if (final) {
+        setText(prev => (prev + (prev ? ' ' : '') + final.trim()).trim());
+        recalcRows(final);
+      }
     };
     rec.onend = () => setListening(false);
     rec.onerror = () => setListening(false);
