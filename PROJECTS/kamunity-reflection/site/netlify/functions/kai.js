@@ -18,7 +18,10 @@ async function fetchACNCCount(sectorKey) {
   if (!activity) return null;
   try {
     const url = `${ACNC_API}?resource_id=${ACNC_RESOURCE}&filters={"Address_State":"WA","Main_Activity":"${encodeURIComponent(activity)}","Active_Charity":"Y"}&limit=0`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timer);
     if (!res.ok) return null;
     const json = await res.json();
     return json?.result?.total ?? null;
@@ -133,12 +136,24 @@ export const handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ message: 'No message received.', cards: [] }) };
   }
 
-  const detectedSector = detectSector(messages);
-  const [sectorCtx, acncCount, matchedExchanges] = await Promise.all([
-    Promise.resolve(detectedSector ? getSectorContext(detectedSector) : ''),
-    detectedSector ? fetchACNCCount(detectedSector) : Promise.resolve(null),
-    Promise.resolve(matchExchanges(messages, detectedSector)),
-  ]);
+  let detectedSector = null;
+  let sectorCtx = '';
+  let acncCount = null;
+  let matchedExchanges = [];
+
+  try {
+    detectedSector = detectSector(messages);
+    const results = await Promise.all([
+      Promise.resolve(detectedSector ? getSectorContext(detectedSector) : ''),
+      detectedSector ? fetchACNCCount(detectedSector) : Promise.resolve(null),
+      Promise.resolve(matchExchanges(messages, detectedSector)),
+    ]);
+    sectorCtx = results[0];
+    acncCount = results[1];
+    matchedExchanges = results[2];
+  } catch (enrichErr) {
+    console.error('Sector enrichment error (non-fatal):', enrichErr);
+  }
 
   let dynamicPrompt = SYSTEM_PROMPT;
   if (sectorCtx) {
