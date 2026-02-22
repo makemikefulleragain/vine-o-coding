@@ -46,7 +46,7 @@
 
 | Site | URL | Purpose | Deploy Method | Status |
 |---|---|---|---|---|
-| **Kamunity Reflection** | TBD (kamunity-reflection.netlify.app) | Kai-centred community self-perception mirror — "What are you for?" conversational tool with value exchange matching | Netlify (Vite build) | 🔨 In build — Phase 1 |
+| **Kamunity Reflection** | [kamunity-reflection.netlify.app](https://kamunity-reflection.netlify.app) | Kai-centred community self-perception mirror — "What are you for?" conversational tool with value exchange matching | Netlify CLI (`netlify deploy --dir dist --functions netlify/functions --prod`) | ✅ Live — Phase 1 (needs ANTHROPIC_API_KEY set in Netlify env) |
 
 ### Playground
 
