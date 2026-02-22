@@ -1,4 +1,5 @@
 import { detectSector, getSectorContext } from '../../src/data/wa-sectors.js';
+import { matchExchanges } from '../../src/data/exchangeMatcher.js';
 
 const ACNC_API = 'https://data.gov.au/data/api/3/action/datastore_search';
 const ACNC_RESOURCE = 'eb1e6be4-5b13-4feb-b28e-388bf7c26f93';
@@ -133,9 +134,10 @@ export const handler = async (event) => {
   }
 
   const detectedSector = detectSector(messages);
-  const [sectorCtx, acncCount] = await Promise.all([
+  const [sectorCtx, acncCount, matchedExchanges] = await Promise.all([
     Promise.resolve(detectedSector ? getSectorContext(detectedSector) : ''),
     detectedSector ? fetchACNCCount(detectedSector) : Promise.resolve(null),
+    Promise.resolve(matchExchanges(messages, detectedSector)),
   ]);
 
   let dynamicPrompt = SYSTEM_PROMPT;
@@ -144,6 +146,9 @@ export const handler = async (event) => {
   }
   if (acncCount !== null && detectedSector) {
     dynamicPrompt += `\n\n## LIVE ACNC DATA\nAccording to the current ACNC Charity Register, there are approximately ${acncCount} active WA charities with a primary activity matching this sector. This is the landscape this organisation operates in. You may reference this: "Based on public ACNC data, there are around ${acncCount} registered WA charities in this space..." — always citing the source.`;
+  }
+  if (matchedExchanges.length > 0) {
+    dynamicPrompt += `\n\n## PRE-COMPUTED EXCHANGE MATCHES\nThe exchange matching engine has already identified ${matchedExchanges.length} possible connection(s) for this organisation. These will be surfaced as cards automatically. Do NOT duplicate these in your own cards. Your job is to surface gifts and stories — the exchange matching is handled separately. You may reference the exchange possibilities briefly in your message text if it feels natural, but do not generate exchange-type cards yourself.`;
   }
 
   try {
@@ -196,7 +201,18 @@ export const handler = async (event) => {
       earworm: card.earworm || null,
       action: card.action || null,
       how: card.how || null,
+      confidence: card.confidence || null,
+      exchangeType: card.exchangeType || null,
     }));
+
+    // Merge pre-computed exchange cards — deduplicate by partnerSector
+    const existingPartners = new Set(
+      parsed.cards.filter(c => c.partnerSector).map(c => c.partnerSector)
+    );
+    const newExchangeCards = matchedExchanges.filter(
+      ec => !existingPartners.has(ec.partnerSector)
+    );
+    parsed.cards = [...parsed.cards, ...newExchangeCards];
 
     return {
       statusCode: 200,

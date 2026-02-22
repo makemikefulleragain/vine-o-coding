@@ -24,6 +24,18 @@ const TYPE_CONFIG = {
   },
 };
 
+const CONFIDENCE_CONFIG = {
+  high:   { label: 'Strong signal', dot: 'bg-moss',  text: 'text-moss' },
+  medium: { label: 'Worth exploring', dot: 'bg-gold', text: 'text-gold' },
+  low:    { label: 'Tentative',      dot: 'bg-tan',  text: 'text-tan' },
+};
+
+const EXCHANGE_TYPE_LABEL = {
+  swap:  'Direct swap',
+  loop:  'Three-way loop',
+  chain: 'Chain possibility',
+};
+
 export default function PresentationCard({ card, onAddToBackpack, onNotNow, onNotForMe }) {
   const [dismissed, setDismissed] = useState(false);
   const [minimised, setMinimised] = useState(false);
@@ -104,9 +116,28 @@ export default function PresentationCard({ card, onAddToBackpack, onNotNow, onNo
         </p>
       )}
 
+      {card.type === 'exchange' && (card.confidence || card.exchangeType) && (
+        <div className="flex items-center gap-3 pl-4 mb-3">
+          {card.confidence && (() => {
+            const cc = CONFIDENCE_CONFIG[card.confidence] || CONFIDENCE_CONFIG.medium;
+            return (
+              <span className={`flex items-center gap-1.5 font-mono text-[0.58rem] tracking-widest uppercase ${cc.text}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${cc.dot} inline-block`} />
+                {cc.label}
+              </span>
+            );
+          })()}
+          {card.exchangeType && (
+            <span className="font-mono text-[0.58rem] tracking-widest uppercase text-tan">
+              {EXCHANGE_TYPE_LABEL[card.exchangeType] || card.exchangeType}
+            </span>
+          )}
+        </div>
+      )}
+
       {card.how && (
         <p className="font-mono text-[0.65rem] text-tan leading-relaxed mb-3 pl-4">
-          How Kai spotted this: {card.how}
+          {card.how}
         </p>
       )}
 
