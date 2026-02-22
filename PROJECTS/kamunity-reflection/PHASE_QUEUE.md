@@ -78,49 +78,128 @@ Before BUILD, check BRAIN/SAFETY_GATES.md for applicable gates.
 
 ---
 
-## Phase 3: Value Exchange Matching
-**Timeline:** After Phase 2 stable + 10+ org interactions
-**Status:** Not started
+## Phase 2+: Conversation Quality Sprint
+**Timeline:** 2026-02-23
+**Status:** COMPLETE ✅ (2026-02-23) — UAT passed by user
 
-**Goal:** Kai identifies and surfaces swap, loop, and chain exchange possibilities between specific organisations — with transparency about the match logic.
+**Trigger:** R&R protocol — Phase 2 UAT failed on conversation quality after 9 prompt iterations. Root cause: Haiku model ceiling, not prompt design. See `phases/phase-02/review-reflect.md`.
 
-**Done When:**
-- [ ] Swap detection working (A has X + needs Y, B has Y + needs X)
-- [ ] Loop detection working (A→B→C→A three-way)
-- [ ] Chain surfaced as "possible, not certain" with explicit reasoning
-- [ ] "Like them" stories populate from real matched cases (not just curated)
-- [ ] Decision history working: "3 orgs faced this fork — here's what each chose"
-- [ ] Constitution alignment check: matches optimise for community impact, not engagement
+**Decision made:** B (client-side enforcement) + architectural redesign. Model upgrade blocked — API key only has access to `claude-3-haiku-20240307`. Newer models (3.5 Haiku, 3.5 Sonnet) require Anthropic Build tier (credit card). Documented in change log.
 
-**Dependencies:** Phase 2 data pipeline stable.
+**Shipped:**
+- [x] Fork architecture: Act 1 (identity, 4 mirror questions) → choice → Path A (relational) or Path B (practical)
+- [x] Three separate system prompts — identity (pure mirror), relational (depth + stories), practical (exchange matching + sector map)
+- [x] `fork: true` signal from Kai after Q4 synthesis — triggers fork UI
+- [x] Client-side enforcement: `sanitiseKaiResponse` — strips banned phrases, extracts leaked JSON cards, truncates at 60 words
+- [x] Landing page — pitch, transparency, crisis numbers, single CTA
+- [x] Act 1: full-width chat, no columns, small ember orb indicator left of Kai messages, cards held silently
+- [x] Fork UI: two inline buttons replace text input after synthesis
+- [x] Act 2: 4/5 chat + 1/5 orange 🎒 backpack trigger strip
+- [x] Backpack panel: slide-in modal, orange header, New (expanded) + Saved (collapsed) sections
+- [x] Christmas morning: held cards flood into backpack on fork transition, panel opens automatically
+- [x] UAT passed — user confirmed
 
----
-
-## Phase 4: Decision History + Peer Corpus
-**Timeline:** Evidence-gated
-**Status:** Not started
-
-**Goal:** Build the commons of recognition stories — real examples of the "moment of recognition and what they did next" — surfaced as peer mirrors.
-
-**Done When:**
-- [ ] Opt-in story capture mechanism (consent-based, org can review before it goes in)
-- [ ] Stories anonymised at org discretion
-- [ ] Corpus searchable by Kai for decision proximity matches
-- [ ] "You too?" moment is a real feature, not a promise
-
-**Dependencies:** Phase 3 + real engagement + consent framework.
+**Dependencies:** Phase 2 complete ✅
+**Safety Gates:** G12 (hallucination risk — test with known orgs like ALIKE WA, The Pack Music)
 
 ---
 
-## Phase 4+: Based on Evidence
+## Phase 3: Model Upgrade + Conversation Depth
+**Timeline:** When Anthropic Build tier is activated
+**Status:** Blocked — API key tier
 
-*What comes next depends on what Phases 1–3 reveal. Do not plan beyond what evidence supports.*
+**Goal:** Unlock the full conversational quality the architecture was designed for. The fork, prompts, and backpack are built for a model that can actually hold the instructions. Haiku is the ceiling, not the design.
+
+**Trigger:** Add credit card to Anthropic account → Build tier → swap model in `kai.js`.
+
+**Model path:**
+1. `claude-3-5-haiku-20241022` — immediate swap, ~$0.004/conversation, significant quality jump
+2. `claude-3-5-sonnet-20241022` — best instruction following, ~$0.02/conversation, ideal for the relational path
+
+**Done When:**
+- [ ] Model upgraded to at least `claude-3-5-haiku-20241022`
+- [ ] Full 8-turn UAT: no banned phrases, ≤60 words, no advice, cards render correctly
+- [ ] Relational path (Path A) delivers 2–3 genuine reframes the user wants to keep
+- [ ] Practical path (Path B) surfaces at least 1 real exchange card with a named WA org and honest confidence rating
+- [ ] Conversation feels like something was achieved — not just a nice chat
+- [ ] Decision history: "3 orgs faced this fork — here's what each chose" (requires corpus, see Phase 4)
+
+**Dependencies:** Phase 2+ complete ✅. Anthropic Build tier.
+**Safety Gates:** G12 (hallucination risk — test with ALIKE WA, The Pack Music, Activate Mental Health).
+
+---
+
+## Phase 4: The Peer Layer — Commons Making Itself Visible
+**Timeline:** Evidence-gated. After Phase 3 UAT passes and real org engagement begins.
+**Status:** Not started
+
+### The Vision
+
+Scarcity is mostly an information problem, not a resource problem.
+
+On any street on any day there is already enough — skills, time, knowledge, care, equipment, relationships. The commons already exists. It is invisible to itself.
+
+Kamunity Reflection is the infrastructure that makes the latent visible — without a profit motive distorting the door it comes through.
+
+The current tool operates at the **org layer**: it helps organisations see themselves clearly and find other organisations worth talking to. Phase 4 opens the **peer layer**: two people on the same street who are already each other's resource and don't know it yet.
+
+The POTS illustration: the algorithm found her eventually, but for the worst reason and through the worst door — profit-motivated latent value extraction dressed as community. Kamunity finds the connection for the right reason. That changes everything about the interaction when it happens.
+
+The value was always there. Fully present. 99% latent.
+
+### The Exchange Model
+
+Three types of value exchange — already in the codebase, needs real peer data to power:
+- **SWAP**: A has X + needs Y. B has Y + needs X. Direct.
+- **LOOP**: A→B→C→A. Three-way.
+- **CHAIN**: Longer sequence, surfaced as "possibility worth exploring."
+
+These work for orgs now. Phase 4 makes them work for people.
+
+### Constitutional Principles for Phase 4
+
+1. **Connection for the right reason.** Matches are made to surface latent value between people, not to enrich a dataset or increase engagement metrics.
+2. **Consent is the architecture.** Nothing enters the peer corpus without explicit opt-in. People can review, edit, or remove their profile at any time.
+3. **The commons governs itself.** The matching logic is transparent and community-auditable. No black box.
+4. **Anonymity at discretion.** People choose their own level of visibility. The system works at every level.
+5. **Scarcity is the lie we're undoing.** Every design decision is tested against this: does this reinforce scarcity thinking or dissolve it?
+6. **ACCO sovereignty.** Aboriginal and Torres Strait Islander community data, stories, and connections are governed by those communities. No ACCO data without explicit consultation and community control. (Safety Gate G6.)
+
+### Conversation Tone for Phase 4
+
+The current Kai voice is calibrated for organisations. The peer layer needs a different register:
+- Warmer, less formal — talking to a person, not a CEO
+- The four mirror questions adapt: "If you disappeared from your street tomorrow, what would actually be missing?"
+- The fork adapts: "Someone to sit with this" vs "Someone nearby who might have what you need"
+- The backpack adapts: gifts are personal insights, exchanges are peer connections
+- The earworm matters more — it's what someone carries home on the bus
+
+### Done When
+- [ ] Consent-based peer profile capture (opt-in, review before it goes in, remove anytime)
+- [ ] Peer HAVE/NEED signal model — distinct from org model, personal language
+- [ ] Peer corpus searchable by Kai for proximity matches (same suburb, same challenge, complementary skills)
+- [ ] "You too?" moment is a real feature — Kai can say "someone two streets away has the same thing" with permission
+- [ ] Decision history: real stories from real people who faced the same fork
+- [ ] ACCO consultation completed before any First Nations peer data enters the system
+- [ ] Community governance model for the matching logic — who audits it, how
+- [ ] Kai conversation tone adapted for peer layer (separate prompt set)
+- [ ] Privacy impact assessment completed
+
+**Dependencies:** Phase 3 complete. Real org engagement generating stories. Consent framework designed with community input. ACCO consultation.
+**Safety Gates:** G2 (PII — peer data is PII, treat accordingly), G6 (ACCO sovereignty), G13 (AI transparency — peers must know they're talking to AI and what happens to their data).
+
+---
+
+## Phase 5+: Based on Evidence
+
+*What comes next depends on what Phases 3–4 reveal. Do not plan beyond what evidence supports.*
 
 Possible directions:
-- Kai-facilitated introductions between matched orgs
-- Sector-specific modules (peer support, arts, ACCO — each with distinct starting questions)
+- Kai-facilitated introductions between matched peers and orgs
+- Sector-specific peer modules (mental health peer support, arts community, disability — each with distinct starting questions and safety protocols)
 - Kitchen Table integration: Reflection as lead signal feeding Waymaker
 - Open-source release of the value exchange matching logic for community governance
+- The question of whether Kamunity should hold the data at all, or whether the commons should govern itself through a different structure entirely
 
 ---
 
@@ -132,6 +211,9 @@ Possible directions:
 | 2026-02-22 | Phase 1 complete — deployed to https://kamunity-reflection.netlify.app | User tested and confirmed, API key set | 
 | 2026-02-22 | Phase 2 started — sector intelligence layer | wa-sectors.js (6 sectors, 20+ WA orgs), ACNC integration, sector detection server-side in kai.js |
 | 2026-02-22 | Phase 2 closed — shipped with known Haiku limitations | All-sector map, stage-driven prompt redesign, voice I/O, JSON hardening, exchange calibration. Haiku model ceiling hit: banned phrases ignored, word limits drift, advice leaks. Fix paths documented. |
+| 2026-02-23 | Phase 2+ complete — UAT passed | Fork architecture (Act 1 identity → Path A relational / Path B practical), three system prompts, client-side enforcement (sanitiseKaiResponse), landing page, ember orb message indicator, backpack panel slide-in modal, Christmas morning card reveal. Model upgrade blocked — API key only allows claude-3-haiku-20240307. |
+| 2026-02-23 | Phase 3 reframed — Model Upgrade + Conversation Depth | Blocked on Anthropic Build tier. One-line swap in kai.js once credit card added. Model path: 3.5 Haiku (~$0.004/conv) → 3.5 Sonnet (~$0.02/conv). |
+| 2026-02-23 | Phase 4 rewritten — The Peer Layer | Full vision documented: scarcity as information problem, peer-to-peer exchange (SWAP/LOOP/CHAIN), constitutional principles (consent, ACCO sovereignty, community governance), conversation tone for peer layer, POTS illustration as founding wound. |
 
 ---
 

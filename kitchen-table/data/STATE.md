@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 21, 2026 (consulting site Phases 1–3 complete + ecosystem stitch + mobile Kai fix)
+### Last Updated: Feb 23, 2026 (Kamunity Reflection Phase 2+ complete — fork architecture, landing page, backpack panel, UAT passed)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -9,6 +9,9 @@
 ## Current Period: Pre-Launch Sprint
 
 **Week of Feb 19-23, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
+
+### Session Highlight (Feb 23 — Morning)
+Kamunity Reflection Phase 2+ complete. UAT passed by user. Shipped: fork architecture (Act 1 identity → Path A relational / Path B practical), three separate system prompts, client-side enforcement (`sanitiseKaiResponse` — strips banned phrases, extracts leaked JSON cards, truncates at 60w), landing page (pitch + transparency + crisis numbers + single CTA), small ember orb indicator left of Kai messages, Act 1 full-width chat (no columns, cards held silently), fork UI (inline buttons replace text input after Q4 synthesis), Act 2 layout (4/5 chat + 1/5 orange 🎒 backpack trigger), slide-in backpack panel (orange header, New expanded / Saved collapsed, Christmas morning card reveal on fork transition). Model upgrade blocked — API key only allows `claude-3-haiku-20240307`; newer models require Anthropic Build tier (credit card, ~$0.004/conv for 3.5 Haiku). Phase 4 fully rewritten in PHASE_QUEUE.md with peer-to-peer vision, constitutional principles, POTS founding wound, conversation tone for peer layer. Live: https://kamunity-reflection.netlify.app
 
 ### Session Highlight (Feb 21 — Morning)
 kamunity-consulting Phase 3 refinements + ecosystem stitch complete. Fixes: CSP violations (7 inline styles → CSS classes), Netlify Function ESM syntax fix (exports.handler → export const handler), model switched to claude-3-haiku-20240307 (3-5-haiku not on current API tier), Australian English instruction added to Kai system prompt, favicon (🔥 data URI) on all 4 pages. Ecosystem stitch: ecosystem-state.json v0.4.0, showcase.ts (7 items now includes consulting), kai-cards.ts (consulting card added), route.ts (Kai knows kamunityconsulting.com + surfaces card on consulting queries), llms-full.txt, site/llms.txt created. BRAIN/ECOSYSTEM.md (13 live sites), kitchen-table/js/data.js (consulting site added), kitchen-table/data/ECOSYSTEM.md synced, DECISION_LOG.md (2 new decisions). kamunity-org committed + pushed → Netlify CI/CD deploying. Phase 4 (free resource) on hold — real traffic needed. DNS cutover from Wix still pending.
