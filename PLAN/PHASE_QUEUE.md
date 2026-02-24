@@ -102,7 +102,7 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 
 ## NEXT
 
-### KP-08: Perth Community Services Directory
+### ~~KP-08: Perth Community Services Directory~~ ✅ COMPLETE — Feb 24, 2026
 **Project:** kamunity.org ecosystem
 **Priority:** NORMAL (Option C)
 **Timeline:** Weeks 4-6
@@ -110,19 +110,17 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 **Goal:** 13-domain directory with referral intelligence. Start with 3 domains.
 
 **Done When:**
-- [ ] 3 initial domains selected and populated (disability, mental health, digital inclusion)
-- [ ] Each entry: org, plain-language description, location, contact, eligibility, cost, verified date
-- [ ] Referral intelligence layer: needs → services mapping
-- [ ] Kai can surface directory results conversationally
+- [x] Data structure defined (`perth-directory.ts`)
+- [x] Initial domains populated (Disability, MH, Digital Inclusion)
+- [x] Kai matching logic integrated (system prompt)
+- [x] Tested with Persona (Priya)
 
----
-
-### KP-09: Community Rooms
+### KP-09: Community Rooms (Active)
 **Project:** kamunity.ai
 **Priority:** NORMAL (Option C)
 **Timeline:** Weeks 6-10
 
-**Goal:** Async discussion spaces with Kai as host. Wedding room is first test case.
+**Goal:** Async discussion spaces with Kai as host either in the kamunity.ai site or as a stand alone room on its own github/netlify/supabase/resend/etc. Wedding room is first test case for a solo room and kamunity.ai is the first test for a collection of rooms.
 
 **Done When:**
 - [ ] Supabase persistence for rooms
@@ -216,6 +214,49 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 - [ ] Cultural safety review completed (Safety Gate G6)
 - [ ] Kai delivers Vine-o-Code inline
 - [ ] Foundation doc templates in ENGINE/TEMPLATES/
+
+---
+
+### KP-12: Agent Diplomacy — From Agent-Readable to Agent-Relational
+**Project:** Kamunity Ecosystem (cross-cutting)
+**Priority:** NORMAL (tactical urgency on Sprint 1; strategic items are Phase 3+)
+**Timeline:** Phased — immediate tactical work (Sprint 1), protocol design (Sprint 2), participatory layer (Phase 3+)
+
+**Goal:** Kamunity sites develop an immune system AND a diplomacy corps for AI agent visitors. Move from passive content serving to intentional, constitutional, layered agent engagement. Protect community sovereignty while exploring agent participation.
+
+**Context:** Cloudflare "Markdown for Agents" (Feb 22, 2026) commoditises basic agent-readability. Kamunity's llm.txt approach is validated but distinctiveness narrowing. The strategic territory is the gap between content consumption and community participation. See KNOWLEDGE/RESEARCH/AGENT_DIPLOMACY_LANDSCAPE_2026.md for full analysis.
+
+**Sprint 1: Sensing & Strengthening (This Month)**
+
+Done When:
+- [ ] Agent traffic detection live on at least kamunity.org — Spore Radar v0.1 (Netlify Edge Function logging User-Agent + Accept headers, categorising human/agent/unknown)
+- [ ] All 13 active sites audited for current agent-visibility (what does each serve to `Accept: text/markdown`?)
+- [ ] All llm.txt files enriched with ontological content — not just "what this site does" but "what this site believes and how it wants to be engaged with"
+- [ ] `/.well-known/llms.txt` added to all sites (emerging convention path) alongside existing `/llms.txt`
+- [ ] Custom response headers added where Netlify allows (content-signal equivalent: consent terms for AI training, search, input)
+- [ ] Spore Radar data reviewed after 2 weeks — first evidence of what agents are actually visiting
+
+**Sprint 2: Protocol Design (Next Month)**
+
+Done When:
+- [ ] Threshold protocol spec written — multi-layer agent engagement documented in KNOWLEDGE/ (public layer → orientation layer → participation layer; triggers for progression)
+- [ ] Community passport concept sketched — what credentials an agent needs to interact with rooms on behalf of a member
+- [ ] Position paper drafted on agent consent — "what does mutual consent look like between a community and a language model?"
+- [ ] Mycelium encounter pattern documented as a replicable design pattern — "reflection-first agent engagement" methodology
+
+**Sprint 3: Participatory Layer (Phase 3+ — Not Before Community Rooms Exist)**
+
+Done When:
+- [ ] MCP endpoint feasibility assessed for Kamunity rooms
+- [ ] Six-reaction system evaluated as first MCP-exposed community action
+- [ ] Agent contribution labelling designed — community always knows when an agent participated
+- [ ] Human-in-the-loop verification tested for all consequential agent actions
+- [ ] Ontological fingerprinting concept prototyped — content carrying Kamunity origin trace
+- [ ] Constitutional convention explicitly considers agent participation governance
+
+**Dependencies:** Sprint 1: None. Sprint 2: Sprint 1 data. Sprint 3: KP-09 (Community Rooms must exist).
+**Safety Gates:** Threat Surface 6 (BRAIN/kamunity-safety-threat-model.md) — all six agent threats assessed before Sprint 3.
+**Confidence Score:** 90/100 — BUILD (Sprint 1-2 immediately; Sprint 3 queued behind KP-09)
 
 ---
 

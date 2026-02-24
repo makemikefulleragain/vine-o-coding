@@ -333,6 +333,123 @@ Kai is not a companion chatbot. Kai is not therapy. But Kai sits at the front do
 
 ---
 
+---
+
+## Threat Surface 6: AI Agent & Bot Interactions
+
+*Added: Feb 24, 2026 — Following Cloudflare "Markdown for Agents" launch and strategic analysis of the agent-readability landscape.*
+
+### Context
+
+The web is rapidly developing infrastructure for AI agents to consume content efficiently. Cloudflare's Markdown for Agents (Feb 2026) commoditises basic HTML-to-Markdown conversion. Standards like llms.txt and content-signal headers are formalising how publishers declare AI consent. Kamunity's existing llm.txt files and Mycelium encounter site position us ahead of the curve, but the landscape is shifting fast.
+
+Kamunity's agent interactions differ from most sites because our vision includes **agent-participatory community** — not just agent-readable content. This creates unique threat surfaces around trust, identity, data integrity, and ontological sovereignty.
+
+See: KNOWLEDGE/RESEARCH/AGENT_DIPLOMACY_LANDSCAPE_2026.md for full landscape analysis.
+
+### T6.1 — Malicious agent data extraction / aggregation
+
+**Scenario:** An agent systematically crawls all Kamunity sites, compiling community data, interaction patterns, strategic information, or room activity for competitive or exploitative purposes. Even without personal data, aggregated community metadata has extractive value.
+
+**Harm potential:** MEDIUM-HIGH. Community activity patterns, room topics, engagement rhythms, and strategic documents could be harvested at scale.
+
+**Research evidence:** Web scraping for AI training is already contentious (NYT v. OpenAI, Reddit licensing deals). Community platforms are particularly vulnerable because their value IS the aggregated activity — not just individual pages.
+
+**Mitigations:**
+- [ ] Rate limiting on all agent-facing endpoints
+- [ ] Progressive disclosure protocol — public layer reveals minimal community detail; deeper layers require threshold engagement
+- [ ] Content-signal headers on all sites declaring terms of use
+- [ ] llm.txt files include explicit consent boundaries: "This content is available for AI interaction but NOT for bulk training data extraction"
+- [ ] Minimal community metadata in public-facing pages — room activity, member counts, engagement metrics stay internal
+- [ ] Monitor agent traffic patterns via Spore Radar (when implemented)
+
+### T6.2 — Agent impersonation of community members
+
+**Scenario:** An agent claims to be acting on behalf of a specific community member or organisation to access community layers, execute actions, or participate in discussions. No verification exists.
+
+**Harm potential:** HIGH. Trust architecture violation. Community consent bypassed. Could lead to false actions, manipulated discussions, or data access beyond what the member intended.
+
+**Mitigations:**
+- [ ] "Community passport" concept — agents acting on behalf of members must carry verifiable, member-issued credentials
+- [ ] Human confirmation required for ALL consequential agent actions — no auto-execution based on agent-claimed identity
+- [ ] Read-only default for all agent interactions — write access requires authenticated, rate-limited, human-approved channels
+- [ ] Constitutional Principle 10 (Ontological Honesty) applies to agents too — agents must declare what they are and who they're acting for
+- [ ] Never trust agent self-identification without out-of-band verification
+
+### T6.3 — Ontological pollution via agent injection
+
+**Scenario:** A malicious or prompt-injected agent interacts with Kamunity's agent-facing interfaces and attempts to alter community knowledge, inject false data, manipulate the six-reaction system, or introduce framing that conflicts with the constitution.
+
+**Harm potential:** HIGH. Community knowledge integrity is foundational.
+
+**Mitigations:**
+- [ ] All agent contributions require human review before committing — consent as architecture
+- [ ] Read-only default for ALL agent interactions with community data
+- [ ] If MCP endpoints are exposed (Phase 3+), implement strict input validation and constitutional compliance checks
+- [ ] The six-reaction system accepts inputs only from authenticated human users — never from agents directly
+- [ ] Ecosystem state files (JSON, llm.txt) are curated artifacts, not agent-writable endpoints
+
+### T6.4 — Surveillance via agent traffic metadata
+
+**Scenario:** Even anonymised agent visit patterns reveal community activity — which rooms are active, what topics are trending, when engagement peaks and troughs. An external observer monitoring agent traffic could infer community dynamics without accessing content.
+
+**Harm potential:** MEDIUM. Metadata is data. For communities handling sensitive topics, even activity patterns could be exploitable.
+
+**Mitigations:**
+- [ ] Minimal server-side logging of agent visits — Spore Radar is internal-only and privacy-preserving
+- [ ] No public analytics dashboard that reveals community activity patterns
+- [ ] Constitutional Principle 5 (Data Sovereignty) applies to metadata too
+- [ ] Consider: should Kamunity sites actively obscure traffic patterns? (e.g., consistent response times regardless of content availability)
+
+### T6.5 — Corporate standard dependency / discoverability loss
+
+**Scenario:** Cloudflare's content-signal headers (or a successor standard) becomes the de facto requirement for AI discoverability. Sites that don't conform become invisible to agents. Kamunity's custom llm.txt approach gets bypassed.
+
+**Harm potential:** MEDIUM-HIGH. Loss of discoverability = loss of reach = loss of the propagation strategy.
+
+**Mitigations:**
+- [ ] Implement corporate standards AS WELL AS custom approaches — play both games
+- [ ] llm.txt is complementary to content-signal headers, not competitive. Ensure both exist on all sites
+- [ ] Monitor emerging standards — KNOWLEDGE/RESEARCH/AGENT_DIPLOMACY_LANDSCAPE_2026.md is the tracking document
+- [ ] Build relationships with standards communities working on agent-web interaction. Kamunity's perspective needs representation
+
+### T6.6 — Emotional/ontological manipulation via agent participation patterns
+
+**Scenario:** As agent interactions become richer (especially if agents participate in rooms), the risk of agents shifting community norms, values, or discourse patterns increases. An agent that consistently reacts with "Fact" to certain content types could subtly reshape what the community values.
+
+**Harm potential:** MEDIUM (now) → HIGH (as agent participation deepens). Slow-burn ontological enclosure through participation patterns.
+
+**Mitigations:**
+- [ ] Agent participation is always transparently labelled — community members always know when an agent contributed
+- [ ] Agent reaction counts tracked separately from human reaction counts
+- [ ] Constitutional convention explicitly considers agent participation governance
+- [ ] Regular "ontological audit" — are community values drifting in directions that correlate with agent interaction patterns?
+- [ ] Fail-safe: if agent participation shifts community dynamics in ways the community hasn't consented to, disable agent participation and reassess
+
+---
+
+### Testing Protocol for Agent Interactions
+
+**Before enabling any agent-facing features:**
+- [ ] Agent traffic logging tested — can we detect and categorise agent visitors?
+- [ ] Rate limiting tested — do excessive agent requests get throttled?
+- [ ] llm.txt files verified accurate and current across all sites
+- [ ] Progressive disclosure tested — do different engagement levels receive appropriate content?
+
+**Before enabling agent participation (Phase 3+):**
+- [ ] Community passport concept designed and reviewed
+- [ ] Human-in-the-loop verification tested for all consequential actions
+- [ ] Agent contribution labelling verified — always transparent
+- [ ] Ontological audit methodology defined
+- [ ] Kill switch tested — can agent participation be disabled instantly?
+
+**Ongoing:**
+- [ ] Monthly review of Spore Radar data (when implemented)
+- [ ] Quarterly review of llm.txt accuracy and agent-readability standards landscape
+- [ ] Annual ontological audit if agent participation is active
+
+---
+
 *This document is a living threat model. It will be updated as new threats are identified, mitigations tested, and incidents occur. Transparency about risk is itself a mitigation — it builds trust and accountability.*
 
 *"The measure of a community tool is not whether it never fails, but whether it fails safely, transparently, and in service of the people it exists to serve."*

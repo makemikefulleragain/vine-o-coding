@@ -72,7 +72,7 @@ Before any build phase begins across any Kamunity project:
 - [ ] Coverage includes: professional advice, tool recommendations, workshop delivery
 - [ ] AI-specific coverage confirmed
 
-**Current status:** ⚠️ OPEN — Quotes not yet obtained.
+**Current status:** ✅ PASS — PI Insurance active (KP-03 complete).
 
 ### G6 — Cultural Safety Check
 **Applies to:** Any tool serving Aboriginal communities or operating on Noongar boodja
@@ -169,7 +169,7 @@ Before any build phase begins across any Kamunity project:
 | G2 No PII in localStorage | Critical | ✅ Designed | No |
 | G3 Prompt Injection | Critical | ✅ PASS | No — UAT signed off Feb 19 |
 | G4 Honest Disclaimers | Critical | ✅ PASS | No — UAT signed off Feb 19 |
-| G5 Insurance | High | ⚠️ Open | YES — blocks paid consulting |
+| G5 Insurance | High | ✅ PASS | No — PI active (KP-03 complete) |
 | G6 Cultural Safety | High | ⚠️ Open | YES — blocks ACCO engagement |
 | G7 Vine-o-Code Data Warning | High | ⚠️ Open | YES — blocks Vine-o-Code promotion |
 | G8 Incident Response | High | ⚠️ Open | Partial — plan exists in draft |
@@ -179,7 +179,7 @@ Before any build phase begins across any Kamunity project:
 | G12 Hallucination | Medium | 🔶 Untested | No — proceed with flag |
 | G13 Emotional Dependency | Medium | ✅ Designed | No |
 
-**Bottom line: G1, G3, G4 PASSED — UAT signed off Feb 19. Next critical blocker: G5 (insurance) blocks paid consulting. G6 (cultural safety) blocks ACCO engagement.**
+**Bottom line: G1, G3, G4, G5 PASSED. Next critical blocker: G6 (cultural safety) blocks ACCO engagement.**
 
 ---
 
