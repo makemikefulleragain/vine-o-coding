@@ -71,6 +71,7 @@
 | 2026-02-24 | KP-03 Revenue Infrastructure Complete | Survival milestone reached. Kamunity Consulting generated $10k-$20k with $10k outstanding. Insurance (S3) active. The gap between architectural maturity and operational survival is bridged. | Financial state, STATE.md, PHASE_QUEUE.md |
 | 2026-02-24 | Kitchen Table v3 Visual & Architecture Alignment | Kitchen Table must visually match the new external tools (Kamunity Reflection, Consulting). A plan is logged to align the styling (parchment, ember, sky) and improve the coordination capabilities based on the Frontier Report recommendations. | kitchen-table/css/, kitchen-table/index.html |
 | 2026-02-24 | Strategic Phase Reordering (Option B → Option C) | With KP-03 (Revenue) complete, immediate funding pressure is off. Pivot to Ecosystem Polish (KP-04, KP-06) to ensure front door is flawless for ALIKE/Activate MH meetings, then Value Creation (KP-08, KP-09). WALGA/NLnet (Option A) down-prioritized. | PHASE_QUEUE.md |
+| 2026-02-24 | API Key Upgraded: claude-3-5-sonnet-20241022 reinstated | Anthropic API key upgraded to Build tier. claude-3-haiku-20240307 instances across kamunity.org, kamunity-consulting, kamunity-reflection, and kitchen-table upgraded to Sonnet 3.5. This unlocks higher reasoning for the encounter interfaces. | All AI endpoints |
 
 ---
 
