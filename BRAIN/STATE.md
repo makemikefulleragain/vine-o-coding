@@ -261,6 +261,7 @@ Revenue target: $5-8K/month by April 2026.
 - **kamunity.ai "built-by" card investigation** — read the `kamunity` repo (private, at `C:\Users\mikef\NeoKamunity\kamunity\`) to understand how the "Built by Kamunity" card system works. Check if consulting site can be registered.
 - **KP-02 meeting prep** — ALIKE, Activate MH, AI Speaker briefs still pending (see PLAN/PHASE_QUEUE.md KP-02).
 - **Mike photo for about.html** — when received, update `PROJECTS/kamunity-consulting/site/about.html` and redeploy via Netlify CLI.
+- **KP-09 Community Rooms** — Begin work on the Supabase/Next.js implementation for the wedding room and community topic rooms.
 
 ---
 
