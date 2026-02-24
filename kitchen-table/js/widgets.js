@@ -9,20 +9,12 @@ import { esc } from './utils.js';
 
 function renderRhythm() {
   const r = weeklyRhythm();
-  const typeClass = {
-    check:    'rhythm--check',
-    work:     'rhythm--work',
-    outreach: 'rhythm--outreach',
-    wrap:     'rhythm--wrap',
-    rest:     'rhythm--rest',
-  }[r.type] || 'rhythm--work';
-
   return `
-    <div class="widget rhythm-widget ${typeClass}">
-      <div class="widget-icon">${r.icon}</div>
+    <div class="widget rhythm-widget" style="background:var(--surface); border-radius:var(--rl); padding:16px; margin-bottom:12px; display:flex; gap:12px; align-items:center;">
+      <div class="widget-icon" style="font-size:2rem; background:var(--bg); border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${r.icon}</div>
       <div class="widget-body">
-        <div class="widget-label">${r.label} Rhythm</div>
-        <div class="widget-text">${esc(r.action)}</div>
+        <div class="widget-label" style="font-family:'Fraunces', serif; color:var(--ember); font-size:1.1rem; margin-bottom:2px;">${r.label} Rhythm</div>
+        <div class="widget-text" style="font-size:0.85rem; color:var(--text); line-height:1.4;">${esc(r.action)}</div>
       </div>
     </div>
   `;
@@ -34,20 +26,20 @@ function renderNLnet() {
   const days = nlnetDays();
   if (days > 45) return ''; // only show when it matters
 
-  const urgencyClass = days <= 14 ? 'nlnet--urgent' : days <= 30 ? 'nlnet--warning' : 'nlnet--normal';
+  const urgencyColor = days <= 14 ? 'var(--danger)' : days <= 30 ? 'var(--ember)' : 'var(--text)';
   const label = days > 0 ? `${days} days` : 'DUE NOW';
   const sub = days > 0
     ? `NLnet NGI Zero Commons deadline — April 1, 2026 (€35K ask)`
     : `NLnet deadline has passed — submit if not yet done`;
 
   return `
-    <div class="widget nlnet-widget ${urgencyClass}">
-      <div class="widget-icon">⏳</div>
-      <div class="widget-body">
-        <div class="widget-label">${label} to NLnet</div>
-        <div class="widget-text">${sub}</div>
+    <div class="widget nlnet-widget" style="background:var(--surface); border-radius:var(--rl); padding:16px; margin-bottom:12px; display:flex; gap:12px; align-items:center; border:1px solid ${urgencyColor};">
+      <div class="widget-icon" style="font-size:2rem; background:var(--bg); border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">⏳</div>
+      <div class="widget-body" style="flex:1;">
+        <div class="widget-label" style="font-family:'Fraunces', serif; color:${urgencyColor}; font-size:1.1rem; margin-bottom:2px;">${label} to NLnet</div>
+        <div class="widget-text" style="font-size:0.85rem; color:var(--dim); line-height:1.4;">${sub}</div>
       </div>
-      <a href="money.html" class="widget-action">View →</a>
+      <a href="money.html" class="widget-action" style="font-size:0.85rem; color:var(--sky); text-decoration:none; padding:8px; background:var(--bg); border-radius:var(--r);">View →</a>
     </div>
   `;
 }
@@ -75,39 +67,56 @@ function renderAllyFollowUps() {
   if (!meetings.length && !needsFollowUp && !toContact.length) return '';
 
   const meetingCards = meetings.map(a => `
-    <div class="followup-card followup-card--meeting">
-      <div class="followup-name">${esc(a.name)}</div>
-      <div class="followup-status">${esc(a.status)}</div>
-      <div class="followup-action">${esc(a.action)}</div>
+    <div class="followup-card followup-card--meeting" style="background:var(--surface); border-radius:var(--r); padding:10px; margin-top:8px;">
+      <div class="followup-name" style="font-family:'Fraunces', serif; color:var(--ember);">${esc(a.name)}</div>
+      <div class="followup-status" style="font-size:0.75rem; color:var(--dim);">${esc(a.status)}</div>
+      <div class="followup-action" style="font-size:0.75rem; color:var(--text);">${esc(a.action)}</div>
     </div>
   `).join('');
 
   const contactCards = toContact.map(a => `
-    <div class="followup-card followup-card--contact">
-      <div class="followup-name">${esc(a.name)}</div>
-      <div class="followup-status">${esc(a.status)}</div>
-      <div class="followup-action">${esc(a.action)}</div>
+    <div class="followup-card followup-card--contact" style="background:var(--surface); border-radius:var(--r); padding:10px; margin-top:8px;">
+      <div class="followup-name" style="font-family:'Fraunces', serif; color:var(--sky);">${esc(a.name)}</div>
+      <div class="followup-status" style="font-size:0.75rem; color:var(--dim);">${esc(a.status)}</div>
+      <div class="followup-action" style="font-size:0.75rem; color:var(--text);">${esc(a.action)}</div>
     </div>
   `).join('');
 
   const followUpBanner = needsFollowUp ? `
-    <div class="followup-banner">
+    <div class="followup-banner" style="background:var(--danger); color:#fff; padding:8px 12px; border-radius:var(--r); font-size:0.8rem; margin-top:8px;">
       ⚡ You have completed meetings — follow up within 24hrs.
-      <a href="allies.html">Open Allies →</a>
+      <a href="allies.html" style="color:#fff; text-decoration:underline;">Open Allies →</a>
     </div>
   ` : '';
 
   return `
-    <div class="widget ally-widget">
-      <div class="widget-header">
+    <div class="widget ally-widget" style="margin-top:16px;">
+      <div class="widget-header" style="display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--hover); padding-bottom:4px;">
         <span class="widget-icon">⭐</span>
-        <span class="widget-label">Ally Radar</span>
-        <a href="allies.html" class="widget-action">All allies →</a>
+        <span class="widget-label" style="font-family:'Fraunces', serif; color:var(--text); font-size:1.1rem;">Ally Radar</span>
+        <a href="allies.html" class="widget-action" style="margin-left:auto; font-size:0.8rem; color:var(--sky); text-decoration:none;">All allies →</a>
       </div>
       ${followUpBanner}
-      <div class="followup-grid">
+      <div class="followup-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:8px;">
         ${meetingCards}
         ${contactCards}
+      </div>
+    </div>
+  `;
+}
+
+// ─── Revenue & Pipeline Tracker ─────────────────────────────────────
+
+function renderPipeline() {
+  return `
+    <div class="widget pipeline-widget" style="background:var(--surface); border-radius:var(--rl); padding:16px; margin-bottom:12px; display:flex; gap:12px; align-items:center; border:1px solid var(--moss);">
+      <div class="widget-icon" style="font-size:2rem; background:var(--bg); border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">💰</div>
+      <div class="widget-body" style="flex:1;">
+        <div class="widget-label" style="font-family:'Fraunces', serif; color:var(--moss); font-size:1.1rem; margin-bottom:2px;">Consulting Pipeline</div>
+        <div class="widget-text" style="font-size:0.85rem; color:var(--dim); line-height:1.4;">
+          <strong>$10k-$20k</strong> received · <strong>$10k</strong> outstanding invoice<br>
+          <em>Runway secured. Ops stable.</em>
+        </div>
       </div>
     </div>
   `;
@@ -121,6 +130,7 @@ export function renderTodayWidgets(mountId) {
 
   const html = [
     renderRhythm(),
+    renderPipeline(),
     renderNLnet(),
     renderAllyFollowUps(),
   ].filter(Boolean).join('');

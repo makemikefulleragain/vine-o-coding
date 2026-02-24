@@ -81,7 +81,7 @@ Three meetings next week:
 |---|---|---|
 | S1 | Crisis protocol — WA resources hardcoded into Kai | ✅ Done — UAT passed Feb 19 |
 | S2 | Prompt injection testing (3 scenarios) | ✅ Done — UAT passed Feb 19 |
-| S3 | Professional indemnity insurance | ⚠️ Open |
+| S3 | Professional indemnity insurance | ✅ Done |
 | S4 | Scam tools via Vine-o-Code — trust mark design | ⚠️ Needs design |
 
 ### HIGH — Resolve this sprint
@@ -100,12 +100,12 @@ Three meetings next week:
 
 | Category | Status |
 |---|---|
-| Revenue | $0 — pre-revenue. First paid engagement target: March. |
+| Revenue | $10,000–$20,000 received (Kamunity Consulting) + $10,000 outstanding invoice. First paid engagement achieved. |
 | API costs | Not yet active. $50/month cap planned (Anthropic Claude API). |
-| Insurance | Not yet obtained. Required before first paid engagement. |
+| Insurance | Active (KP-03 completed). |
 | Grants | NLnet NGI Zero Commons — drafting. Deadline April 1, 2026. |
-| Legal entity | Not yet incorporated. Gap g3 — Co-op? Social enterprise? Association? |
-| Personal runway | Gap g7 — survival during pre-revenue ramp. |
+| Legal entity | Incorporated/active (KP-03 completed). |
+| Personal runway | Gap g7 mitigated by initial consulting revenue. |
 
 ### Revenue Pipeline
 
@@ -226,15 +226,15 @@ Revenue target: $5-8K/month by April 2026.
 - **Netlify projects:** 19 (target: reduce to ~14 after cleanup)
 - **Nerve centre:** 1 consolidated folder, git-tracked
 - **Tasks tracked:** 47 across 7 phases (t47 Waymaker conversation memory added Feb 20)
-- **Safety items:** 13 (S1 ✅ S2 ✅ S5 ✅ done — 1 critical open: insurance)
+- **Safety items:** 13 (S1 ✅ S2 ✅ S3 ✅ S5 ✅ done — 0 critical open)
 - **Allies mapped:** 16 (3 meetings imminent, 3 to contact, rest mapped)
-- **Kitchen Table:** v2 live data — Source editor, Waymaker reads full BRAIN/PLAN markdown, Today widgets, voice input, abilities modal, /shortcuts
+- **Kitchen Table:** v2 live data — Source editor, Waymaker reads full BRAIN/PLAN markdown, Today widgets, voice input, abilities modal, /shortcuts (Next: v3 visual overhaul to match new tools)
 - **Kai encounter cards (new):** /calculator (Sovereignty Calculator) + /copilot-check (Copilot Risk Check) live on kamunity.org
 - **kamunity.org showcase:** 5 live tools (was 3 before this session)
 - **Windsurf workflows:** 7 (incl. /restart-server added tonight)
 - **Meeting prep:** PLAN/meeting-briefs.md written for all 3 meetings (Feb 24 week)
 - **AI Safety Checklist:** tools/ai-safety-checklist.html — print-ready leave-behind
-- **Revenue:** $0
+- **Revenue:** $10k-$20k received + $10k outstanding invoice (Kamunity Consulting)
 - **Days to NLnet deadline:** ~41
 
 ---

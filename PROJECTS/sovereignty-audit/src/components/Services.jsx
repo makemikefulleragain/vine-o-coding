@@ -65,11 +65,11 @@ export default function Services() {
             <h2 className="text-2xl font-bold text-ku-navy mt-1">Workshop</h2>
             <div className="mt-2">
               <p className="text-3xl font-bold text-ku-teal">
-                $500–$800
+                $1,500
                 <span className="text-sm font-normal text-gray-500 ml-1">NFP rate</span>
               </p>
               <p className="text-sm text-gray-400 mt-1">
-                Corporate rate: $1,500–$2,000
+                Corporate rate: $3,000
               </p>
             </div>
             <p className="text-gray-500 text-sm mt-1">Half-day session for your team.</p>
@@ -105,14 +105,14 @@ export default function Services() {
             <h2 className="text-2xl font-bold text-ku-navy mt-1">Consulting</h2>
             <div className="mt-2">
               <p className="text-3xl font-bold text-ku-teal">
-                From $2,000
+                $2,500
                 <span className="text-sm font-normal text-gray-500 ml-1">NFP rate</span>
               </p>
               <p className="text-sm text-gray-400 mt-1">
-                Corporate rate: from $5,000
+                Corporate rate: $5,000
               </p>
             </div>
-            <p className="text-gray-500 text-sm mt-1">Scoped to your needs.</p>
+            <p className="text-gray-500 text-sm mt-1">Full-day / Deep Dive engagement.</p>
           </div>
           <ul className="space-y-3 mb-6 flex-1">
             {[

@@ -71,12 +71,15 @@ export function renderGroup(label, tasks, collapsible = true) {
 }
 
 export function renderTodayGroups(container) {
-  const today = TASKS.filter(t => t.tags.includes('today'));
+  // Rather than just matching 'today' tags which get stale, 
+  // let's grab things that are high/critical pri or explicitly tagged today.
+  const today = TASKS.filter(t => t.tags.includes('today') || t.pri === 'critical' || (t.pri === 'high' && !t.done));
+  
   const groupDef = [
-    { key: 'critical',  label: '🔴 Critical — Before Meetings', test: t => t.pri === 'critical' },
-    { key: 'meeting',   label: '📅 Meeting Prep',               test: t => t.tags.includes('meeting') && t.pri !== 'critical' },
-    { key: 'build',     label: '🔧 Build',                      test: t => t.tags.includes('build') && !t.tags.includes('meeting') && t.pri !== 'critical' },
-    { key: 'revenue',   label: '💰 Revenue',                    test: t => t.tags.includes('revenue') && !t.tags.includes('meeting') && t.pri !== 'critical' },
+    { key: 'critical',  label: '🔴 Critical Priority', test: t => t.pri === 'critical' },
+    { key: 'revenue',   label: '� Revenue & Ops',             test: t => t.tags.includes('revenue') && t.pri !== 'critical' },
+    { key: 'meeting',   label: '� Meetings',               test: t => t.tags.includes('meeting') && t.pri !== 'critical' },
+    { key: 'build',     label: '� Build Queue',                      test: t => t.tags.includes('build') && !t.tags.includes('meeting') && !t.tags.includes('revenue') && t.pri !== 'critical' },
     { key: 'other',     label: '📋 Other',                      test: () => true },
   ];
 

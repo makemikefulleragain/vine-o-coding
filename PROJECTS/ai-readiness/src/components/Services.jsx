@@ -4,8 +4,8 @@ import ContactButton from './ContactButton'
 const SERVICES = [
   {
     name: 'AI Awareness Workshop',
-    price: 'From $1,500',
-    duration: 'Half-day or full-day',
+    price: '$3,000 / $1,500 NFP',
+    duration: 'Half-day',
     description:
       'A hands-on workshop for your whole team. We cover AI basics, safety guidelines, prompt practice, and Q&A — all tailored to your sector and your people.',
     includes: [
@@ -21,16 +21,16 @@ const SERVICES = [
   },
   {
     name: 'AI Strategy Session',
-    price: '$500',
-    duration: '90 minutes',
+    price: '$5,000 / $2,500 NFP',
+    duration: 'Full Day / Deep Dive',
     description:
-      'A focused 1:1 session with your leadership to map AI priorities, risks, and opportunities for your organisation.',
+      'A focused session with your leadership to map AI priorities, risks, and opportunities for your organisation.',
     includes: [
       'Pre-session questionnaire to understand your context',
-      'Facilitated 90-minute session',
+      'Facilitated full-day session',
       'Written summary with prioritised recommendations',
       'Template AI policy for your board',
-      'Follow-up email support for 2 weeks',
+      'Follow-up email support for 4 weeks',
     ],
     for: 'CEOs, operations managers, board members',
     format: 'Virtual or in-person',
@@ -38,8 +38,8 @@ const SERVICES = [
   },
   {
     name: 'Full AI Readiness Mapping',
-    price: 'From $3,500',
-    duration: 'Multi-week engagement',
+    price: 'From $8,000 / $4,000 NFP',
+    duration: 'Multi-session engagement',
     description:
       'A comprehensive assessment of your organisation\'s AI readiness — from staff capability to data practices to governance. You get a custom roadmap, not a generic report.',
     includes: [

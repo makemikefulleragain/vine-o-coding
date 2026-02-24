@@ -55,7 +55,7 @@ export default async (req) => {
 Key facts about Kamunity:
 - Free Digital Sovereignty Audit at https://kamunity-audit.netlify.app
 - 30+ years experience in the community sector
-- Services: free audit + toolkit, workshops ($2,200 NFP), consulting ($8,800+ NFP)
+- Services: free audit + toolkit, workshops ($1,500 NFP), consulting ($2,500+ NFP)
 - Websites: kamunity.ai, kamunity.org, kamunityconsulting.com
 - Contact: mike@kamunityconsulting.com`;
 

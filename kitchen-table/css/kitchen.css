@@ -2,21 +2,21 @@
    Campfire aesthetic. Dense but not cluttered. */
 
 :root {
-  --bg:       #1a1714;
-  --surface:  #242019;
-  --hover:    #2e2922;
-  --active:   #383228;
-  --ember:    #e8a84c;
-  --ember-dim:#a67832;
-  --moss:     #6b9e6b;
-  --sky:      #5c8ec7;
-  --violet:   #9b7ec7;
-  --text:     #e8e0d4;
-  --dim:      #9e9589;
-  --faint:    #6b655d;
+  --bg:       #F7F0E2; /* parchment */
+  --surface:  #E8DEC8; /* darker parchment */
+  --hover:    #D4C5A9; /* tan */
+  --active:   #C9A84C; /* gold */
+  --ember:    #C4622D; /* ember */
+  --ember-dim:#A64D1F; 
+  --moss:     #7A8C6E; /* moss */
+  --sky:      #2B6CB0; /* sky */
+  --violet:   #9b7ec7; 
+  --text:     #4A3728; /* bark */
+  --dim:      #6A5748; /* lighter bark */
+  --faint:    #A39485; /* faint bark */
   --danger:   #c75c5c;
-  --r:        8px;
-  --rl:       12px;
+  --r:        16px; /* softer borders */
+  --rl:       24px; /* blob cards */
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -763,14 +763,16 @@ body {
 }
 .wm-user .wm-msg-content {
   background: var(--ember);
-  color: var(--bg);
+  color: #fff;
   border-bottom-right-radius: 3px;
 }
 .wm-assistant .wm-msg-content {
-  background: var(--bg);
+  background: var(--surface);
   color: var(--text);
   border-bottom-left-radius: 3px;
-  border: 1px solid var(--active);
+  border: 1px solid var(--hover);
+  font-family: 'Fraunces', serif;
+  font-size: .85rem;
 }
 .wm-msg-content code {
   background: var(--active);

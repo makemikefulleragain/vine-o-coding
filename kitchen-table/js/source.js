@@ -5,7 +5,7 @@
 import { refreshWaymakerFiles } from './waymaker.js';
 
 const IS_NETLIFY = location.hostname !== 'localhost' && location.hostname !== '127.0.0.1';
-const FILES_ENDPOINT = IS_NETLIFY ? '/.netlify/functions/markdown' : '/api/files';
+const API_ENDPOINT = IS_NETLIFY ? '/.netlify/functions/markdown' : '/api/files';
 
 const FILES = [
   { key: 'STATE',          label: '🧠 STATE.md',          desc: 'Current operational state — live pulse of the ecosystem' },
@@ -29,7 +29,7 @@ let isDirty = false;
 async function loadAllFiles() {
   setStatus('loading', 'Loading files…');
   try {
-    const resp = await fetch(FILES_ENDPOINT);
+    const resp = await fetch(API_ENDPOINT);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
     loadedContent = data.files || {};
@@ -52,7 +52,7 @@ async function saveCurrentFile() {
   setSaveDisabled(true);
 
   try {
-    const resp = await fetch('/api/files', {
+    const resp = await fetch(API_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ path: currentKey, content }),

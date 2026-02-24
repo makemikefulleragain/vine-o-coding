@@ -60,109 +60,52 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 
 ---
 
-## NEXT
-
-### KP-03: Revenue Infrastructure
-**Project:** Kamunity Consulting
-**Priority:** HIGH — survival dependency
-**Timeline:** Weeks 2-3
-
-**Goal:** Be ready to invoice when the first client says yes.
-
-**Done When:**
-- [ ] One-page consulting offer document (4 services, transparent two-tier pricing)
-- [ ] Invoicing set up (Xero/Wave)
-- [ ] ABN sorted
-- [ ] Professional indemnity insurance active (Safety Gate G5)
-- [ ] WACOSS emailed (digitalinclusion@wacoss.org.au)
-- [ ] Spacecubed contacted
-
-**Dependencies:** KP-02 (meetings may generate first client)
-**Safety Gates:** G5 must PASS before first paid engagement.
-
----
-
-### KP-04: Kai Deepening — Ecosystem Knowledge + Inline Tools
+### ~~KP-04: Kai Deepening — Ecosystem Knowledge + Inline Tools~~ ✅ COMPLETE
 **Project:** kamunity.org (Kai)
-**Priority:** NORMAL
-**Timeline:** Weeks 2-4
+**Priority:** HIGH (Option B)
+**Timeline:** Weeks 2-3
 
 **Goal:** Kai knows the full ecosystem and can run tools conversationally.
 
 **Done When:**
 - [x] ecosystem-state-full.json deployed to Kai's data source — v0.2.0 with 11-site full_site_registry. Feb 20.
 - [x] Kai can describe all ecosystem sites — full_site_registry in ecosystem-state.json + strengthened system prompt. Feb 20.
-- [ ] Kai runs AI Readiness quiz inline (questions as cards, results interpreted)
-- [ ] Kai runs Vine-o-Code 6 questions conversationally (outputs foundation doc pack)
+- [x] Kai runs AI Readiness quiz inline (questions as cards, results interpreted)
+- [x] Kai runs Vine-o-Code 6 questions conversationally (outputs foundation doc pack)
 - [x] All ecosystem sites cross-linked + llms.txt updated — sovereignty-audit + ai-readiness footers + llms.txt updated. Feb 20.
 
 **Dependencies:** KP-01 (safety first)
 
 ---
 
-### KP-05: NLnet Application
-**Project:** Kamunity Grants
-**Priority:** HIGH (deadline-driven)
-**Timeline:** Before April 1, 2026 (12:00 CEST)
-
-**Goal:** Complete, polished NLnet NGI Zero Commons application submitted.
-
-**Done When:**
-- [ ] NLnet submission format researched and adapted
-- [ ] Legal entity / fiscal host question resolved
-- [ ] Budget breakdown based on actual costs
-- [ ] Kai live URL + constitution included as evidence
-- [ ] 1-2 reviewers have reviewed before submission
-- [ ] Submitted before deadline
-
-**Dependencies:** KP-01 (sites must be safe), KP-04 (sites should be polished)
-
----
-
-### KP-06: Campfire Architecture — Codebase Consolidation
+### ~~KP-06: Campfire Consolidation — Codebase Consolidation~~ ✅ COMPLETE
 **Project:** Infrastructure
-**Priority:** NORMAL
+**Priority:** HIGH (Option B)
 **Timeline:** Weeks 3-4
 
 **Goal:** All code in one place, all history preserved, clean forward state.
 
 **Done When:**
-- [ ] Archive zip created (all 26 folders + provenance index)
-- [ ] Folder structure created (BRAIN/, PLAN/, ENGINE/, KNOWLEDGE/, PROJECTS/, WORKSHOP/, ARCHIVE/)
-- [ ] Active projects moved to PROJECTS/
-- [ ] Valuable docs extracted to KNOWLEDGE/
-- [ ] CI/CD verified for kamunity.org, kamunity.ai, wedding
-- [ ] Auto-named Netlify sites renamed
-- [ ] Old Netlify sites archived
-- [ ] Old GitHub repos set to private with archive notes
-- [ ] important teck/ moved to secure location
+- [x] Archive zip created (all 26 folders + provenance index)
+- [x] Folder structure created (BRAIN/, PLAN/, ENGINE/, KNOWLEDGE/, PROJECTS/, WORKSHOP/, ARCHIVE/)
+- [x] Active projects moved to PROJECTS/
+- [x] Valuable docs extracted to KNOWLEDGE/
+- [x] CI/CD verified for kamunity.org, kamunity.ai, wedding
+- [x] Auto-named Netlify sites renamed
+- [x] Old Netlify sites archived
+- [x] Old GitHub repos set to private with archive notes
+- [x] important teck/ moved to secure location
 
 **Dependencies:** Phase 0 audit (DONE), Phase 1 BRAIN/ (DONE), Phase 2 PLAN/+ENGINE/ (this phase)
 
 ---
 
-### KP-07: WALGA Project
-**Project:** WALGA (live client)
-**Priority:** HIGH (active engagement)
-**Timeline:** Ongoing
-
-**Goal:** Deliver value to WALGA. Learn from the engagement. Document methodology.
-
-**Done When:**
-- [ ] Scope defined (to be determined based on WALGA needs)
-- [ ] Kitchen Table zone created for WALGA tracking
-- [ ] Methodology learnings documented for reuse
-
-**Dependencies:** KP-03 (invoicing infrastructure)
-
----
-
-## FUTURE
+## NEXT
 
 ### KP-08: Perth Community Services Directory
 **Project:** kamunity.org ecosystem
-**Priority:** NORMAL
-**Timeline:** Weeks 5-8
+**Priority:** NORMAL (Option C)
+**Timeline:** Weeks 4-6
 
 **Goal:** 13-domain directory with referral intelligence. Start with 3 domains.
 
@@ -176,8 +119,8 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 
 ### KP-09: Community Rooms
 **Project:** kamunity.ai
-**Priority:** NORMAL
-**Timeline:** Weeks 7-12
+**Priority:** NORMAL (Option C)
+**Timeline:** Weeks 6-10
 
 **Goal:** Async discussion spaces with Kai as host. Wedding room is first test case.
 
@@ -187,6 +130,61 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 - [ ] Community moderation model defined
 - [ ] Wedding room live and used by family/guests
 - [ ] At least one community topic room live
+
+---
+
+### ~~KP-03: Revenue Infrastructure~~ ✅ COMPLETE — Feb 24, 2026
+**Project:** Kamunity Consulting
+**Priority:** HIGH — survival dependency
+**Timeline:** Weeks 2-3
+
+**Goal:** Be ready to invoice when the first client says yes.
+
+**Done When:**
+- [x] One-page consulting offer document (4 services, transparent two-tier pricing)
+- [x] Invoicing set up (Xero/Wave)
+- [x] ABN sorted
+- [x] Professional indemnity insurance active (Safety Gate G5)
+- [x] WACOSS emailed (digitalinclusion@wacoss.org.au)
+- [x] Spacecubed contacted
+
+**Dependencies:** KP-02 (meetings may generate first client)
+**Safety Gates:** G5 must PASS before first paid engagement. (✅ PASSED)
+
+---
+
+### KP-07: WALGA Project
+**Project:** WALGA (live client)
+**Priority:** NORMAL (Shifted pending scope)
+**Timeline:** Ongoing
+
+**Goal:** Deliver value to WALGA. Learn from the engagement. Document methodology.
+
+**Done When:**
+- [ ] Scope defined (to be determined based on WALGA needs)
+- [ ] Kitchen Table zone created for WALGA tracking
+- [ ] Methodology learnings documented for reuse
+
+**Dependencies:** KP-03 (invoicing infrastructure)
+
+---
+
+### KP-05: NLnet Application
+**Project:** Kamunity Grants
+**Priority:** NORMAL (Shifted for Option B/C delivery focus)
+**Timeline:** Before April 1, 2026 (12:00 CEST)
+
+**Goal:** Complete, polished NLnet NGI Zero Commons application submitted.
+
+**Done When:**
+- [ ] NLnet submission format researched and adapted
+- [ ] Legal entity / fiscal host question resolved
+- [ ] Budget breakdown based on actual costs
+- [ ] Kai live URL + constitution included as evidence
+- [ ] 1-2 reviewers have reviewed before submission
+- [ ] Submitted before deadline
+
+**Dependencies:** KP-01 (sites must be safe), KP-04 (sites should be polished)
 
 ---
 
