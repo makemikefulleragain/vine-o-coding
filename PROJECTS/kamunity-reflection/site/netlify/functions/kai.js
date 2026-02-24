@@ -147,6 +147,7 @@ export const handler = async (event) => {
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
+  console.log('API key present:', !!apiKey, '| prefix:', apiKey ? apiKey.slice(0, 8) : 'MISSING', '| length:', apiKey ? apiKey.length : 0);
   if (!apiKey) {
     return { statusCode: 500, body: JSON.stringify({ message: 'Configuration issue on our end. The Kamunity team has been notified.', cards: [] }) };
   }
@@ -200,8 +201,8 @@ export const handler = async (event) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 600,
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 1500,
         system: dynamicPrompt,
         messages,
       }),
