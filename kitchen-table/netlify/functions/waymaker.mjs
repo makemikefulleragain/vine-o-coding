@@ -43,7 +43,7 @@ export async function handler(event) {
         model: "claude-sonnet-4-5-20250929",
         max_tokens: 1500,
         system: system || "",
-        messages,
+        messages: messages.slice(-10),
       }),
     });
 

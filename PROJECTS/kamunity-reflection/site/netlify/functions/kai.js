@@ -204,7 +204,7 @@ export const handler = async (event) => {
         model: 'claude-sonnet-4-5-20250929',
         max_tokens: 1500,
         system: dynamicPrompt,
-        messages,
+        messages: messages.slice(-10),
       }),
     });
 
