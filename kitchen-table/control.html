@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kitchen Table — Control Centre MVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/kitchen.css" />
+  <link rel="stylesheet" href="css/control.css" />
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+<!-- ANNOTATION BANNER — hidden by default, toggle in header -->
+<div class="anno-banner" id="annoBanner" style="display:none">
+  <span>🗺️</span>
+  <span><strong>Guide mode on.</strong> Yellow callouts explain each section.</span>
+  <label class="anno-toggle"><input type="checkbox" id="annoToggle" checked onchange="toggleAnnos(this.checked)" /> Show all guides</label>
+  <button class="anno-close" onclick="hideGuides()">✕ Hide guides</button>
+</div>
+
+<!-- HEADER -->
+<header class="cc-header">
+  <div class="cc-header-left">
+    <span class="cc-logo">🔥</span>
+    <div>
+      <h1 class="cc-title">Kamunity Control Centre</h1>
+      <p class="cc-subtitle">Everything in one place — sense, decide, act.</p>
+    </div>
+  </div>
+  <div class="cc-header-right">
+    <div class="cc-stats" id="headerStats">
+      <span class="stat-chip stat-live" id="statLive">0 live</span>
+      <span class="stat-chip stat-build" id="statBuild">0 building</span>
+      <span class="stat-chip stat-warn" id="statWarn">0 ideas</span>
+    </div>
+    <nav class="cc-view-nav">
+      <button class="view-btn active view-btn-hero" data-view="brief" onclick="switchView('brief')">� Command Day</button>
+      <span class="nav-divider"></span>
+      <button class="view-btn" data-view="tasks" onclick="switchView('tasks')">Tasks</button>
+      <button class="view-btn" data-view="roadmap" onclick="switchView('roadmap')">🗺 Roadmap</button>
+      <button class="view-btn" data-view="allies" onclick="switchView('allies')">⭐ Allies</button>
+      <button class="view-btn" data-view="matrix" onclick="switchView('matrix')">Matrix</button>
+      <button class="view-btn" data-view="zones" onclick="switchView('zones')">Zones</button>
+      <button class="view-btn" data-view="safety" onclick="switchView('safety')">Safety</button>
+      <button class="view-btn" data-view="gaps" onclick="switchView('gaps')">Gaps</button>
+      <button class="view-btn" data-view="money" onclick="switchView('money')">Money</button>
+      <button class="view-btn" data-view="prototypes" onclick="switchView('prototypes')">🧪 Prototypes</button>
+      <span class="nav-divider"></span>
+      <button class="view-btn view-btn-guide" onclick="toggleGuides()" title="Toggle section guides">?</button>
+    </nav>
+  </div>
+</header>
+
+<div class="anno" id="annoHeader">
+  💡 <strong>Header:</strong> Live counts pulled from your entity data. Two views: <strong>Matrix</strong> = sortable table of everything; <strong>Zones</strong> = same data grouped by focus area. Both update as you filter.
+</div>
+
+<!-- MAIN LAYOUT -->
+<main class="cc-main">
+
+  <!-- SIDEBAR -->
+  <aside class="cc-sidebar">
+
+    <div class="anno" id="annoSidebar">
+      💡 <strong>Filters:</strong> Stack zone + status + type to narrow the matrix. Filters combine — e.g. Zone=Build + Status=Live shows only live build items. Sort changes column order instantly.
+    </div>
+
+    <section class="sidebar-section">
+      <h3 class="sidebar-heading">Zone</h3>
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="zone" data-val="all" onclick="setFilter('zone','all',this)">All zones</button>
+        <button class="filter-btn" data-filter="zone" data-val="build" onclick="setFilter('zone','build',this)">🏗️ Core Build</button>
+        <button class="filter-btn" data-filter="zone" data-val="people" onclick="setFilter('zone','people',this)">🤝 People &amp; Allies</button>
+        <button class="filter-btn" data-filter="zone" data-val="deploy" onclick="setFilter('zone','deploy',this)">🚀 Deploy &amp; Ecosystem</button>
+        <button class="filter-btn" data-filter="zone" data-val="momentum" onclick="setFilter('zone','momentum',this)">⚡ Momentum</button>
+      </div>
+    </section>
+
+    <section class="sidebar-section">
+      <h3 class="sidebar-heading">Status</h3>
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="status" data-val="all" onclick="setFilter('status','all',this)">All</button>
+        <button class="filter-btn" data-filter="status" data-val="live" onclick="setFilter('status','live',this)">✅ Live</button>
+        <button class="filter-btn" data-filter="status" data-val="building" onclick="setFilter('status','building',this)">🔨 Building</button>
+        <button class="filter-btn" data-filter="status" data-val="paused" onclick="setFilter('status','paused',this)">⏸ Paused</button>
+        <button class="filter-btn" data-filter="status" data-val="idea" onclick="setFilter('status','idea',this)">💡 Idea</button>
+      </div>
+    </section>
+
+    <section class="sidebar-section">
+      <h3 class="sidebar-heading">Type</h3>
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="type" data-val="all" onclick="setFilter('type','all',this)">All</button>
+        <button class="filter-btn" data-filter="type" data-val="site" onclick="setFilter('type','site',this)">🌐 Site</button>
+        <button class="filter-btn" data-filter="type" data-val="grant" onclick="setFilter('type','grant',this)">💰 Grant</button>
+        <button class="filter-btn" data-filter="type" data-val="ally" onclick="setFilter('type','ally',this)">👤 Ally</button>
+        <button class="filter-btn" data-filter="type" data-val="prototype" onclick="setFilter('type','prototype',this)">🧪 Prototype</button>
+      </div>
+    </section>
+
+    <section class="sidebar-section">
+      <h3 class="sidebar-heading">Sort by</h3>
+      <div class="filter-group" id="sortBtns">
+        <button class="filter-btn active" data-sort="impact" onclick="setSort('impact',this)">⭐ Impact</button>
+        <button class="filter-btn" data-sort="effort" onclick="setSort('effort',this)">🔥 Effort</button>
+        <button class="filter-btn" data-sort="ratio" onclick="setSort('ratio',this)">🎯 Ratio</button>
+        <button class="filter-btn" data-sort="name" onclick="setSort('name',this)">A–Z Name</button>
+      </div>
+    </section>
+
+  </aside>
+
+  <!-- CONTENT AREA -->
+  <div class="cc-content">
+
+    <!-- VIEW: COMMAND DAY (was Brief) -->
+    <div class="view-panel active" id="view-brief">
+
+      <!-- RETURN FROM AWAY banner -->
+      <div class="away-banner" id="awayBanner" style="display:none">
+        <span class="away-icon">🌊</span>
+        <div class="away-body">
+          <strong id="awayTitle">Welcome back.</strong>
+          <p id="awayMsg"></p>
+        </div>
+        <button class="btn-ghost" onclick="document.getElementById('awayBanner').style.display='none'">Dismiss</button>
+      </div>
+
+      <!-- TWO-COLUMN COMMAND DAY LAYOUT -->
+      <div class="cmd-layout">
+
+        <!-- LEFT: BRIEF + JOURNAL -->
+        <div class="cmd-col cmd-col-main">
+
+          <!-- BRIEF CARD -->
+          <div class="brief-card" id="briefCard">
+            <div class="brief-header">
+              <div class="brief-meta">
+                <span class="brief-domain-badge" id="briefDomainBadge">Loading…</span>
+                <span class="brief-date" id="briefDate"></span>
+              </div>
+              <div class="brief-actions">
+                <button class="btn-speak" id="btnSpeak" onclick="speakBrief()" title="Browser read aloud">🔊 Aloud</button>
+                <button class="btn-ghost" id="btnStopSpeak" onclick="stopSpeaking()" style="display:none">⏹ Stop</button>
+                <button class="btn-eleven" id="btnEleven" onclick="generateElevenAudio()" title="ElevenLabs voice — best quality">🎙 Listen</button>
+                <button class="btn-ember" onclick="generateBrief()">✨ Generate brief</button>
+              </div>
+            </div>
+            <div class="anno" id="annoBrief">
+              💡 <strong>Daily Brief:</strong> Waymaker reads your tasks, safety items, and today's domain theme, then generates a &lt;45s orientation. Hit Generate, then Read Aloud. Cached for the day.
+            </div>
+            <div class="brief-body" id="briefBody">
+              <p class="brief-placeholder">Hit <strong>✨ Generate brief</strong> — Waymaker will orient you in under 45 seconds.</p>
+            </div>
+            <div id="elevenAudioWrap" style="display:none;margin:10px 0">
+              <audio id="elevenAudio" controls style="width:100%;border-radius:8px"></audio>
+            </div>
+            <div class="brief-sources" id="briefSources" style="display:none">
+              <button class="sources-toggle" onclick="toggleSources()">Sources &amp; confidence ▾</button>
+              <div class="sources-list" id="sourcesList"></div>
+            </div>
+            <div class="focus-card" id="focusCard" style="display:none">
+              <h3 class="focus-title">🎯 Today's Focus</h3>
+              <div class="focus-grid">
+                <div class="focus-item focus-build">
+                  <div class="focus-label">🔥 Build</div>
+                  <div class="focus-task" id="focusBuild"></div>
+                </div>
+                <div class="focus-item focus-grunt">
+                  <div class="focus-label">⚙️ Grunt</div>
+                  <div class="focus-task" id="focusGrunt"></div>
+                </div>
+              </div>
+              <div class="focus-triggers" id="focusTriggers"></div>
+            </div>
+          </div>
+
+          <!-- JOURNAL -->
+          <div class="journal-section">
+            <div class="cmd-section-head">
+              <h3 class="journal-title">📓 Journal</h3>
+              <span class="cmd-section-hint">Voice or type → saved + synced</span>
+            </div>
+            <div class="anno" id="annoJournal">
+              💡 <strong>Journal:</strong> Your response to the brief. Voice or type. Auto-tagged with date + domain. Waymaker reads recent entries when generating your next brief — your voice shapes its voice.
+            </div>
+            <div class="journal-input-row">
+              <textarea class="journal-textarea" id="journalInput" placeholder="Write a note — or type /brief /task /gap /ally /grant /roadmap /sweep" rows="3"></textarea>
+              <div class="journal-input-actions">
+                <button class="btn-mic" id="btnMic" onclick="toggleVoiceInput()">🎤 Voice</button>
+                <button class="btn-ember" onclick="saveJournalEntry()">✓ Save</button>
+              </div>
+            </div>
+            <div class="cmd-hint">Commands: <code>/brief</code> <code>/sweep</code> <code>/task</code> <code>/gap</code> <code>/ally</code> <code>/grant</code> <code>/roadmap</code> — type in journal box &amp; hit Save</div>
+            <div id="cmdOutput" class="cmd-output" style="display:none"></div>
+            <div class="journal-entries" id="journalEntries"></div>
+          </div>
+
+          <!-- BRIEF ARCHIVE (collapsed) -->
+          <details class="archive-section">
+            <summary class="archive-title">📂 Past briefs</summary>
+            <div class="anno" id="annoArchive">
+              💡 <strong>Archive:</strong> Last 20 briefs cached locally. Click to re-read or replay.
+            </div>
+            <div class="archive-list" id="archiveList"></div>
+          </details>
+
+        </div><!-- /cmd-col-main -->
+
+        <!-- RIGHT: TOP 5 TASKS + IDEA CAPTURE -->
+        <div class="cmd-col cmd-col-side">
+
+          <!-- TOP 5 TASKS -->
+          <div class="cmd-card" id="cmdTasksCard">
+            <div class="cmd-section-head">
+              <h3 class="cmd-card-title">⚡ Top 5 Right Now</h3>
+              <button class="cmd-see-all" onclick="switchView('tasks')">See all →</button>
+            </div>
+            <div class="anno" id="annoTop5">
+              💡 <strong>Top 5:</strong> Your highest-priority open tasks. Check off here or tap "See all" for the full task view with action buttons.
+            </div>
+            <div id="cmdTop5"></div>
+          </div>
+
+          <!-- IDEA / SIGNAL CAPTURE -->
+          <div class="cmd-card" id="cmdIdeaCard">
+            <div class="cmd-section-head">
+              <h3 class="cmd-card-title">💡 Capture</h3>
+              <span class="cmd-section-hint">idea · signal · question</span>
+            </div>
+            <div class="anno" id="annoCapture">
+              💡 <strong>Capture:</strong> Raw ideas, signals from conversations, research findings. Choose where it lands — as a Gap (known unknown), Task (action needed), or just a Journal note. Nothing gets lost.
+            </div>
+            <textarea class="journal-textarea" id="captureInput" placeholder="Idea, signal, or question — type it here…" rows="3"></textarea>
+            <div class="capture-route-btns">
+              <button class="capture-btn capture-gap" onclick="captureAs('gap')">⚠️ → Gap</button>
+              <button class="capture-btn capture-task" onclick="captureAs('task')">✅ → Task</button>
+              <button class="capture-btn capture-journal" onclick="captureAs('journal')">📓 → Journal</button>
+              <button class="capture-btn capture-opus" onclick="captureAs('opus')">📋 → Opus</button>
+            </div>
+            <div id="captureConfirm" style="display:none" class="capture-confirm"></div>
+          </div>
+
+          <!-- SENSORY SWEEP -->
+          <div class="cmd-card cmd-sweep-card">
+            <div class="cmd-section-head">
+              <h3 class="cmd-card-title">🔭 Sensory Sweep</h3>
+              <span class="cmd-section-hint">~15 seconds</span>
+            </div>
+            <p style="font-size:12px;color:var(--dim);margin:0 0 10px">Waymaker reads every open task, gap, and safety item — surfaces 3 cheapest experiments + one thing you might be missing.</p>
+            <button class="btn-ember" style="width:100%" onclick="runSensorySweep()">🔭 Run sweep now</button>
+          </div>
+
+          <!-- NLnet COUNTDOWN -->
+          <div id="cmdNLnet"></div>
+
+          <!-- OPEN GAPS SNAPSHOT -->
+          <div class="cmd-card">
+            <div class="cmd-section-head">
+              <h3 class="cmd-card-title">🔍 Open Gaps</h3>
+              <button class="cmd-see-all" onclick="switchView('gaps')">See all →</button>
+            </div>
+            <div id="cmdGapsSnap"></div>
+          </div>
+
+          <!-- ALLY RADAR -->
+          <div class="cmd-card">
+            <div class="cmd-section-head">
+              <h3 class="cmd-card-title">⭐ Ally Radar</h3>
+              <button class="cmd-see-all" onclick="switchView('allies')">See all →</button>
+            </div>
+            <div id="cmdAllyRadar"></div>
+          </div>
+
+        </div><!-- /cmd-col-side -->
+
+      </div><!-- /cmd-layout -->
+    </div>
+
+    <!-- VIEW: MATRIX -->
+    <div class="view-panel" id="view-matrix">
+      <div class="anno" id="annoMatrix">
+        💡 <strong>Entity Matrix:</strong> Every Kamunity entity in one sortable grid. Effort = energy required (🔥×5). Impact = value delivered (⭐×5). Ratio = impact÷effort — your quick-win score. Click a row to see the detail panel. Sidebar filters stack.
+      </div>
+      <div class="matrix-toolbar">
+        <span class="matrix-count" id="matrixCount">— entities</span>
+        <input class="matrix-search" id="matrixSearch" type="search" placeholder="Search…" oninput="applyFilters()" />
+      </div>
+      <div class="matrix-wrapper">
+        <table class="entity-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Zone</th>
+              <th>Status</th>
+              <th>Effort 🔥</th>
+              <th>Impact ⭐</th>
+              <th>Ratio</th>
+              <th>Roadmap</th>
+            </tr>
+          </thead>
+          <tbody id="entityBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIEW: ZONES -->
+    <div class="view-panel" id="view-zones">
+      <div class="anno" id="annoZones">
+        💡 <strong>Zone View:</strong> Same filtered entities grouped by zone. Each zone shows entity count + average impact score. Good for weekly check-in — scan each zone column and spot gaps or overloads.
+      </div>
+      <div class="zones-grid" id="zonesGrid"></div>
+    </div>
+
+    <!-- VIEW: TASKS -->
+    <div class="view-panel" id="view-tasks">
+      <div class="anno" id="annoTasks">
+        💡 <strong>Tasks:</strong> Your full task list grouped by priority. Checkboxes save state to localStorage. Critical tasks always surface first. "Draft Email" on outreach tasks opens a Waymaker comms draft.
+      </div>
+      <div class="filter-bar" id="taskFilterBar"></div>
+      <div id="tasksOut"></div>
+    </div>
+
+    <!-- VIEW: SAFETY -->
+    <div class="view-panel" id="view-safety">
+      <div class="anno" id="annoSafety">
+        💡 <strong>Safety:</strong> Your threat model, tracked here. Click a status badge to cycle it: open → in-progress → done. Critical items surface first. Nothing gets forgotten, everything is honest.
+      </div>
+      <div class="filter-bar" id="safetyFilterBar"></div>
+      <div id="safetyOut"></div>
+    </div>
+
+    <!-- VIEW: GAPS -->
+    <div class="view-panel" id="view-gaps">
+      <div class="anno" id="annoGaps">
+        💡 <strong>Gaps:</strong> Known unknowns and open questions. Honest self-assessment. Toggle “Mark resolved” when you’ve answered a question or closed a gap. Gaps = systemic issues. Questions = things you haven’t figured out yet.
+      </div>
+      <div class="filter-bar" id="gapsFilterBar"></div>
+      <div id="gapsOut"></div>
+    </div>
+
+    <!-- VIEW: MONEY -->
+    <div class="view-panel" id="view-money">
+      <div class="anno" id="annoMoney">
+        💡 <strong>Money:</strong> Revenue MTD (click to edit), consulting services pricing, grant pipeline with deadlines, and revenue trajectory. All in one place so sustainability is never out of sight.
+      </div>
+      <div id="moneyOut"></div>
+    </div>
+
+    <!-- VIEW: PROTOTYPES -->
+    <div class="view-panel" id="view-prototypes">
+      <div class="anno" id="annoPrototypes">
+        💡 <strong>Prototypes:</strong> 16 engine-built prototypes from WORKSHOP/. Each has a potential integration path. Two with local URLs are live tools. Ask Waymaker to evaluate any for fit, cost, or next steps.
+      </div>
+      <div id="prototypesOut"></div>
+    </div>
+
+    <!-- VIEW: ALLIES -->
+    <div class="view-panel" id="view-allies">
+      <div class="anno" id="annoAllies">
+        💡 <strong>Allies:</strong> Your Constellation — Tier 1 (active, priority contact) and Tier 2 (mapped, future). Click any ally for a pre-chewed Waymaker draft email or context brief. Red = overdue follow-up.
+      </div>
+      <div class="filter-bar" id="alliesFilterBar"></div>
+      <div id="alliesOut"></div>
+    </div>
+
+    <!-- VIEW: ROADMAP -->
+    <div class="view-panel" id="view-roadmap">
+      <div class="anno" id="annoRoadmap">
+        💡 <strong>Roadmap:</strong> Live view of your PHASE_QUEUE.md — every phase with progress bar, open items, and pre-chewed Waymaker/Opus prompts. Filter by Active, Complete, or Next. Data lives in <code>control.js</code> PHASES array — update it to keep the queue honest.
+      </div>
+      <div class="filter-bar" id="roadmapFilterBar"></div>
+      <div id="roadmapOut"></div>
+    </div>
+
+  </div><!-- /cc-content -->
+
+</main>
+
+<!-- DETAIL PANEL -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<aside class="entity-drawer" id="entityDrawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="anno" id="annoDrawer">
+    💡 <strong>Detail panel:</strong> Full entity profile — description, tags, roadmap note, URL, effort/impact scores. In the full build this will be editable, saving back to <code>data.js</code> or a sync file that Waymaker and Claude Desktop can also read.
+  </div>
+</aside>
+
+<script src="js/control.js"></script>
+</body>
+</html>

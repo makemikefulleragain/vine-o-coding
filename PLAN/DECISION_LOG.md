@@ -80,6 +80,8 @@
 | 2026-02-24 | Spore Radar concept approved as first implementation step | Basic agent traffic detection via Netlify Edge Function. Data before strategy. Privacy-preserving, internal-only. | KP-12 Sprint 1 |
 | 2026-02-24 | Content-signal headers + llm.txt = complementary layers, not alternatives | Corporate standards serve discoverability. Community standards (llm.txt) encode worldview. Both needed. Play both games. | All 13 sites |
 | 2026-02-24 | API Model Name Correction (`claude-sonnet-4-5-20250929`) | The standard `claude-3-5-sonnet-20241022` model name returned a 404 in this specific 2026 environment. Updated all four API endpoints to use the confirmed valid string `claude-sonnet-4-5-20250929` to restore Kai functionality. | `kamunity.org`, `kamunity-consulting`, `kamunity-reflection`, `kitchen-table` |
+| 2026-02-25 | `renderTask` uses string concatenation not template literals | Template literals with nested `${...}` expressions inside single-quoted HTML strings cannot be used — the outer string swallows the dollar signs. String concatenation (`'...' + varName + '...'`) is the safe pattern for all JS HTML builders in control.js. | `kitchen-table/js/control.js` |
+| 2026-02-25 | Always define a function before referencing it from HTML `onclick` | `grantAsk()` was called from rendered HTML but never defined — silent error, button appeared but did nothing. Pattern: when adding an `onclick="foo()"` in a render function, immediately check `grep -n "function foo" control.js`. | `kitchen-table/js/control.js` |
 
 ---
 

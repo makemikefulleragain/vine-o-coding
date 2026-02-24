@@ -1,6 +1,6 @@
 # KAMUNITY UNIFIED PHASE QUEUE
 ## Cross-Project Priority Queue
-### Last Updated: Feb 20, 2026
+### Last Updated: Feb 25, 2026
 
 *This queue is a hypothesis, not a contract. Evidence changes the plan. Phases can be reordered, split, or replaced based on what reality reveals.*
 
@@ -186,18 +186,35 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 
 ---
 
-### KP-10: Kitchen Table v4 — Zones + Waymaker
+### KP-10: Kitchen Table v4 — Control Centre
 **Project:** Kitchen Table
 **Priority:** NORMAL
-**Timeline:** After KP-06 (consolidation)
+**Timeline:** Feature-complete Feb 24, 2026 — pending UAT
 
-**Goal:** Kitchen Table becomes mission control with project zones + Waymaker integration.
+**Goal:** Kitchen Table becomes mission control with full Waymaker integration, audio brief, and feature parity with old system.
+
+**R&R Triggered Feb 24:** Multiple bugs found in live control.html. Root cause: features assumed ported were never actually there. 10 fixes applied. R&R doc: `kitchen-table/phases/kp-10/review-reflect.md`.
+
+**Process change from R&R:** No new features until UAT passes on live URL. Checkpoint summaries are intent, not proof.
 
 **Done When:**
-- [ ] Zones: Kamunity Build, WALGA, Wedding, Meetings
-- [ ] KNOWLEDGE/ sync (allies, grants, services from canonical source)
-- [ ] Transcript intake (paste → Waymaker processes → routes to zones)
-- [ ] Waymaker system prompt drafted and tested
+- [x] Matrix + Zones views with filters and detail drawer
+- [x] Brief generation fixed (/.netlify/functions/waymaker endpoint)
+- [x] Canonical data: 48 tasks, 16 allies, 13 gaps, 13 safety items
+- [x] Waymaker FAB ported (🔮 orb, 11 shortcuts, conversation history)
+- [x] Allies view (Tier 1/2 grid, filter bar, draft email / Waymaker brief buttons)
+- [x] NLnet countdown + ally radar on Command Day
+- [x] Sensory Sweep dedicated button
+- [x] Prototypes view (16 engine prototypes)
+- [x] Recommended tools + Export/Import/Clear state in Money view
+- [x] ElevenLabs audio brief (brief-audio.mjs + 🎙 Listen button, works on mobile)
+- [x] Ask Waymaker buttons call _wmSend() (Tasks, Safety, Gaps, Roadmap phases, Entity drawer, Grants, Prototypes)
+- [x] Task click-to-expand detail + actions (action buttons now render correctly — string concat bug fixed Feb 25)
+- [x] grantAsk() function added — Money view grant cards wired to Waymaker
+- [ ] **UAT REQUIRED** — live test on Mike's phone: task expand buttons visible, Ask Waymaker works on all data points
+- [ ] Archive old index.html system (only after UAT passes)
+- [ ] KNOWLEDGE/ sync (allies/grants/services from canonical source — stretch goal)
+- [ ] Transcript intake → Waymaker routing (stretch goal)
 
 ---
 
@@ -285,6 +302,7 @@ Done When:
 | 2026-02-19 | WORKSHOP/ concept added to KP-06 | Mike needs a creative sandbox folder |
 | 2026-02-20 | KP-04: 3 of 5 items ticked — ecosystem-state v0.2.0, cross-links, Kai system prompt strengthened | Evening session completing Opus gap analysis tasks |
 | 2026-02-20 | KP-02: AI Safety Checklist leave-behind created (tools/ai-safety-checklist.html) | Done in earlier session |
+| 2026-02-25 | KP-10: Task expand action buttons fixed + grantAsk() added | Root cause: id="ta-${t.id}" was in a plain string not a template literal — getElementById always returned null. grantAsk() function was missing entirely. Both deployed. |
 
 ---
 

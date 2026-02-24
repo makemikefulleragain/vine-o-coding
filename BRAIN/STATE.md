@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 24, 2026 (Strategic reordering to Option C, API models upgraded to Sonnet 3.5, Kitchen Table v3 dashboard deployed)
+### Last Updated: Feb 25, 2026 (KP-10 UAT bugs fixed — task expand action buttons, Ask Waymaker coverage complete, grantAsk function added)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -9,6 +9,12 @@
 ## Current Period: Pre-Launch Sprint
 
 **Week of Feb 24-28, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
+
+### Session Highlight (Feb 25 — Morning)
+KP-10 UAT bug-fix session. Two root-cause fixes deployed: (1) Task expand action buttons — `id="ta-${t.id}"` was inside a plain string (not template literal) so `getElementById('ta-t6')` always returned null and buttons never appeared; rewritten as proper string concatenation. (2) `grantAsk()` function was missing — Money view grant cards called it but it didn't exist; added with full Waymaker context prompt. Ask Waymaker now confirmed wired on every data point: Tasks, Safety, Gaps, Roadmap phases, Entity drawer, Allies, Grants (Money), Prototypes, Command Day sweep. Deployed to https://coruscating-naiad-c0ccb9.netlify.app. node --check passes (IDE TS lint errors are false positives — control.js treated as TSX). KP-10 UAT still required on Mike's phone before archiving old system.
+
+### Session Highlight (Feb 24 — Evening)
+KP-10 Kitchen Table Control Centre — R&R triggered after multiple bugs found in live control.html. Root cause: features assumed ported from old system were never actually there. 10 fixes applied: brief endpoint path, canonical data (48 tasks/16 allies/13 gaps), Waymaker FAB ported from waymaker.js, Allies view (tier grouping, action buttons), NLnet countdown + ally radar widgets, Sensory Sweep button, Prototypes view (16 items), ElevenLabs brief-audio.mjs Netlify Function + Listen button, all Ask Waymaker buttons (Tasks/Safety/Gaps) now call _wmSend() not clipboard, task click-to-expand detail. R&R doc written at kitchen-table/phases/kp-10/review-reflect.md. UAT still pending (live test on Mike's phone required before archiving old system). Process change: no new features until UAT passes on live URL.
 
 ### Session Highlight (Feb 24 — Afternoon)
 Strategic phase reordering: with KP-03 (Revenue) achieved, Option B (Ecosystem Polish - KP-04, KP-06) and Option C (Value Creation - KP-08, KP-09) are prioritised over Option A (WALGA/NLnet). Anthropic API key upgraded to Build tier; `claude-sonnet-4-5-20250929` reinstated across all four ecosystem endpoints (`kamunity.org`, `kamunity-consulting`, `kamunity-reflection`, `kitchen-table`). Kitchen Table v3 visual overhaul deployed to match the new Parchment & Ember aesthetic of the public tools, including a new Revenue Pipeline widget and dynamic priority-based task filtering for the Today view. Perth Community Services Directory integrated into Kai (kamunity.org). KP-09 (Community Rooms) parked for a future session.
@@ -66,9 +72,9 @@ Three meetings next week:
 | Nonna's Knitting | ✅ Live | Proof of concept, community testing. |
 | Grants Hub | ✅ Live | Grant reporting tool, community testing. |
 | Wedding site | ✅ Live | Planning site, community rooms dogfood. |
-| Kitchen Table | ✅ Live | kamunity-kitchen-table.netlify.app — password protected. v2: live data, Source editor, Today widgets. |
-| Waymaker (Kai) | ✅ Live | AI ops assistant in Kitchen Table. Reads full BRAIN/PLAN markdown files as context. Deployed + local. |
-| Waymaker Brief | 🔊 Live locally | Mon/Wed/Sat audio brief. STATE.md → Claude → ElevenLabs TTS. Plays in Kitchen Table. |
+| Kitchen Table | ✅ Live | https://coruscating-naiad-c0ccb9.netlify.app/control.html — control.html is ACTIVE system. Views: Command Day, Tasks, Roadmap, Allies, Matrix, Zones, Safety, Gaps, Money, Prototypes. UAT bug-fix deployed Feb 25: task expand buttons + grantAsk. |
+| Waymaker FAB | ✅ Live | 🔮 floating orb in control.html. 11 shortcuts. Conversation history. Calls /.netlify/functions/waymaker. |
+| Waymaker Brief | ✅ Live on Netlify | Text brief + ElevenLabs audio via brief-audio.mjs. 🎙 Listen button on brief card. Works on mobile. |
 | Campfire Architecture | ✅ Complete | All 7 layers built. BRAIN/, PLAN/, ENGINE/, KNOWLEDGE/, PROJECTS/, WORKSHOP/, ARCHIVE/. |
 
 ---
@@ -243,15 +249,14 @@ Revenue target: $5-8K/month by April 2026.
 
 ## Next Session Should...
 
-1. **Monday brief** — test the Week Opener brief on Monday Feb 23 (first real use)
-2. **Meeting week (Feb 24)** — use meeting-briefs.md + print AI Safety Checklist before each meeting
-3. **Demo flow** — open kamunity.org → Kai mode → type "We use Microsoft 365, Teams, Copilot" → confirm /calculator + /copilot-check cards surface. This is the ALIKE demo moment.
-4. **Post-meeting** — update STATE.md + allies page within 24hrs of each meeting (use Source editor)
-5. **Insurance** — get PI insurance quotes before first paid engagement (S3 still open — CRITICAL)
-6. **NLnet draft** — April 1 deadline is ~40 days away. KNOWLEDGE/nlnet-application-draft.md needs finishing.
-7. **server.py FILE_MAP** — add 5 ROADMAP.md entries (manual step — see kitchen-table/netlify/functions/markdown.mjs FILE_KEYS for format)
-8. **Priya audio story** — 400-word script + ElevenLabs generation before ALIKE meeting (Opus handoff Part 3 Move 1)
-9. **MIKE_FULLER_PROFILE.md is ready** — use it for NLnet bio section, ALIKE meeting prep, ally emails. Key pitch facts: RAC $500K in 9 months, WA Health Hackathon win, WALGA 3-engagement relationship, Captain America = the Kamunity archetype.
+1. **UAT on mobile** — hard refresh https://coruscating-naiad-c0ccb9.netlify.app/control.html on Mike's phone: confirm task expand shows action buttons, Ask Waymaker opens orb on Tasks/Safety/Gaps/Grants/Roadmap/Entities.
+2. **After UAT passes** — archive old index.html system (todo P3-1). Then KP-10 is COMPLETE.
+3. **NLnet draft** — April 1 deadline is ~35 days away. KNOWLEDGE/nlnet-application-draft.md needs finishing.
+4. **Real-time web sensing (todo 14)** — Brave/Tavily API integration for Waymaker.
+5. **Session handoff (todo 15)** — mobile End Session → Netlify Blobs → PC /new-session flow.
+6. **Rename Netlify site (todo 13)** — kamunity-table (Netlify dashboard, manual).
+7. **DNS cutover** — when ready: point kamunityconsulting.com from Wix to Netlify.
+8. **MIKE_FULLER_PROFILE.md is ready** — use it for NLnet bio, ALIKE meeting prep. Key pitch facts: RAC $500K in 9 months, WA Health Hackathon win, WALGA 3-engagement relationship.
 
 ---
 
