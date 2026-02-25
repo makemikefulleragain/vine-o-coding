@@ -1430,11 +1430,20 @@ async function _wmSend(text){
   }finally{_wmSetLoading(false);}
 }
 
+function _wmFormatContent(content){
+  return content
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,'<a href="$2" target="_blank" rel="noopener noreferrer" class="wm-link">$1 ↗</a>')
+    .replace(/\n/g,'<br>');
+}
 function _wmAppend(role,content){
   const c=document.getElementById('wm-messages');if(!c)return;
   const d=document.createElement('div');
   d.className=`wm-msg wm-${role}`;
-  d.innerHTML=`<div class="wm-msg-content">${content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>').replace(/\n/g,'<br>')}</div>`;
+  d.innerHTML=`<div class="wm-msg-content">${_wmFormatContent(content)}</div>`;
   c.appendChild(d);
   c.scrollTop=c.scrollHeight;
 }

@@ -313,6 +313,16 @@ export default function App() {
               <span className="block font-mono text-[0.55rem] tracking-widest uppercase text-ember mb-1">Find who to talk to</span>
               Help me find the right connections in WA
             </button>
+            <a
+              href="https://kamunity.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-mono text-[0.6rem] tracking-wide text-ember border border-ember/30 rounded-full px-3 py-1.5 hover:bg-ember/10 hover:border-ember/60 transition-colors no-underline mt-1"
+            >
+              <span>🔥</span>
+              <span>Explore the full Kamunity ecosystem</span>
+              <span className="opacity-60">↗</span>
+            </a>
           </div>
         ) : (
           <ChatInput onSend={sendMessage} isLoading={isLoading} isSending={isSending} />

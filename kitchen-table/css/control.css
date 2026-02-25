@@ -983,6 +983,8 @@
 .wm-user .wm-msg-content { background: var(--active); color: var(--text); border-radius: 12px 12px 2px 12px; }
 .wm-assistant .wm-msg-content { background: var(--bg); color: var(--text); border-radius: 12px 12px 12px 2px; border: 1px solid var(--hover); }
 .wm-msg-content code { background: var(--hover); padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+.wm-link { color: var(--sky); text-decoration: underline; text-underline-offset: 2px; word-break: break-all; }
+.wm-link:hover { color: var(--ember); }
 
 .wm-dots span {
   animation: wm-dot 1.2s infinite; display: inline-block;

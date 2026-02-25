@@ -37,11 +37,32 @@
   });
 
   /* ── Append a message bubble ── */
-  function appendBubble(role, text) {
+  function appendBubble(role, text, cards) {
+    var wrap = document.createElement('div');
+    wrap.className = 'kai-bubble-wrap';
+
     var div = document.createElement('div');
     div.className = 'kai-bubble kai-bubble-' + role;
     div.textContent = text;
-    msgs.appendChild(div);
+    wrap.appendChild(div);
+
+    if (role === 'ai' && cards && cards.length > 0) {
+      var pillRow = document.createElement('div');
+      pillRow.className = 'kai-pills';
+      cards.forEach(function (card) {
+        var a = document.createElement('a');
+        a.className = 'kai-pill';
+        a.href = card.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.innerHTML = '<span class="kai-pill-icon">' + card.icon + '</span><span class="kai-pill-label">' + card.title + '</span><span class="kai-pill-arrow">↗</span>';
+        a.title = card.description;
+        pillRow.appendChild(a);
+      });
+      wrap.appendChild(pillRow);
+    }
+
+    msgs.appendChild(wrap);
     msgs.scrollTop = msgs.scrollHeight;
     return div;
   }
@@ -73,7 +94,7 @@
       .then(function (data) {
         thinking.remove();
         var reply = data.reply || 'Something went wrong. Try again shortly.';
-        appendBubble('ai', reply);
+        appendBubble('ai', reply, data.cards || []);
         history.push({ role: 'assistant', content: reply });
       })
       .catch(function () {
