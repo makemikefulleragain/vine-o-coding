@@ -50,6 +50,8 @@
       cards.forEach(function (card) {
         if (card.type === 'signal-form') {
           wrap.appendChild(buildSignalForm());
+        } else if (card.type === 'opt-in-form') {
+          wrap.appendChild(buildOptInForm());
         } else {
           var pillRow = wrap.querySelector('.kai-pills');
           if (!pillRow) {
@@ -160,6 +162,66 @@
     return form;
   }
 
+  /* ── Opt-in form card ── */
+  var OPTIN_URL = 'https://community-signal.netlify.app/.netlify/functions/opt-in';
+
+  function buildOptInForm() {
+    var form = document.createElement('div');
+    form.className = 'kai-signal-form';
+    form.innerHTML = [
+      '<p class="kai-signal-intro">📬 <strong>Get useful things when we make them.</strong><br>No newsletter. No marketing. Just the thing itself, when it matches what you\'re working on.</p>',
+      '<input class="kai-optin-email" type="email" placeholder="Your email address" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid #ccc;font-family:Georgia,serif;font-size:13px;margin-bottom:8px"/>',
+      '<input class="kai-optin-name" type="text" placeholder="First name (optional)" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid #ccc;font-family:Georgia,serif;font-size:13px;margin-bottom:8px"/>',
+      '<input class="kai-optin-org" type="text" placeholder="Organisation name (optional)" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid #ccc;font-family:Georgia,serif;font-size:13px;margin-bottom:8px"/>',
+      '<p style="font-size:11px;color:#888;margin:0 0 8px;line-height:1.5">You can unsubscribe instantly at any time — one click, no questions, all data deleted. We store your email and interests only.</p>',
+      '<button class="kai-signal-submit">📬 Yes, send me useful things</button>',
+      '<div class="kai-signal-status"></div>'
+    ].join('');
+
+    form.querySelector('.kai-signal-submit').addEventListener('click', function () {
+      var email    = form.querySelector('.kai-optin-email').value.trim();
+      var name     = form.querySelector('.kai-optin-name').value.trim();
+      var org      = form.querySelector('.kai-optin-org').value.trim();
+      var statusEl = form.querySelector('.kai-signal-status');
+
+      if (!email || !email.includes('@')) { statusEl.textContent = 'Please enter a valid email address.'; return; }
+
+      statusEl.textContent = 'Saving…';
+
+      fetch(OPTIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email:          email,
+          first_name:     name  || null,
+          org_name:       org   || null,
+          consent_source: 'kai-consulting',
+          consent_text:   'Opted in via Kai on kamunityconsulting.com — "Get useful things when we make them."',
+          interest_summary: history.length > 0
+            ? history.filter(function(m){return m.role==='user';}).map(function(m){return m.content;}).slice(-3).join(' | ')
+            : null,
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.opted_in) {
+            statusEl.textContent = '✓ Done. We\'ll be in touch when we make something useful for you.';
+            form.querySelector('.kai-optin-email').disabled = true;
+            form.querySelector('.kai-optin-name').disabled  = true;
+            form.querySelector('.kai-optin-org').disabled   = true;
+            form.querySelector('.kai-signal-submit').disabled = true;
+          } else {
+            statusEl.textContent = 'Something went wrong: ' + (d.error || 'unknown error');
+          }
+        })
+        .catch(function () {
+          statusEl.textContent = 'Couldn\'t submit right now. Try again in a moment.';
+        });
+    });
+
+    return form;
+  }
+
   /* ── Send message to Netlify Function ── */
   function sendMessage() {
     var text = input.value.trim();
@@ -187,7 +249,8 @@
       .then(function (data) {
         thinking.remove();
         var reply = data.reply || 'Something went wrong. Try again shortly.';
-        appendBubble('ai', reply, data.cards || []);
+        var displayReply = reply.replace(/\n?\[opt-in-shown\]/g, '');
+        appendBubble('ai', displayReply, data.cards || []);
         history.push({ role: 'assistant', content: reply });
       })
       .catch(function () {

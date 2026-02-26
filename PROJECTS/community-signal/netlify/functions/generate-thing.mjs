@@ -66,13 +66,15 @@ export const handler = async (event) => {
   // ── Generate trigger: fire background function, return 202 immediately ─────
   const bgUrl = `${process.env.URL || 'https://community-signal.netlify.app'}/.netlify/functions/generate-thing-background${libraryId ? '?library_id=' + libraryId : ''}`;
   try {
-    fetch(bgUrl, {
+    const bgRes = await fetch(bgUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-ingest-secret': INGEST_SECRET },
       body: event.body || '{}',
-    }).catch(err => console.error('Background trigger failed:', err.message));
+    });
+    console.log(`Background function triggered: ${bgRes.status}`);
   } catch (err) {
     console.error('Background trigger error:', err.message);
+    return json(502, { error: 'Failed to trigger background generation', detail: err.message });
   }
 
   return json(202, { status: 'generating', message: 'Background generation started — poll library for results' });

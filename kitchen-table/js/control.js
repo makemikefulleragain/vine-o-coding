@@ -2038,5 +2038,206 @@ function mmAsk(id){
   _wmSend('Community Signal Match+Make — I\'m reviewing this commons artifact: "'+title+'". Is this the right response to the pattern? Is there anything missing or that needs adjusting before I approve it for the commons library? Mike Fuller, Kamunity, Perth WA.');
 }
 
+// ── OUTREACH (Phase 4) ──────────────────────────────────────────────────────
+
+const OPTIN_URL  ='https://community-signal.netlify.app/.netlify/functions/opt-in';
+const DM_URL     ='https://community-signal.netlify.app/.netlify/functions/dm-send';
+
+let outMode='pending';
+
+function setOutreachMode(mode,btn){
+  outMode=mode;
+  document.querySelectorAll('#outFilterPending,#outFilterAll,#outFilterSent,#outFilterContacts').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadOutreach();
+}
+
+async function loadOutreach(){
+  const out=document.getElementById('outOut');
+  const status=document.getElementById('outStatus');
+  if(!out)return;
+  if(outMode==='contacts'){
+    await loadContacts();
+    return;
+  }
+  out.innerHTML='<p style="color:var(--faint);padding:16px">Loading…</p>';
+  try{
+    const r=await fetch(DM_URL+'?mode=queue',{headers:{'x-ingest-secret':getPulseSecret()}});
+    if(!r.ok){out.innerHTML='<p style="color:var(--faint);padding:16px">Failed to load queue ('+r.status+')</p>';return;}
+    const data=await r.json();
+    const items=(data.queue||[]).filter(i=>{
+      if(outMode==='pending')return i.status==='pending';
+      if(outMode==='sent')return i.status==='sent'||i.status==='responded';
+      return true;
+    });
+    if(status)status.textContent=items.length+' item'+(items.length!==1?'s':'');
+    if(!items.length){out.innerHTML='<p style="color:var(--faint);padding:16px">No items in this view</p>';return;}
+    out.innerHTML=items.map(renderOutreachItem).join('');
+  }catch(e){
+    out.innerHTML='<p style="color:var(--faint);padding:16px">Error: '+e.message+'</p>';
+  }
+}
+
+function renderOutreachItem(item){
+  const contact=item.opted_in_contacts||{};
+  const artifact=item.commons_library||{};
+  const statusColor={'pending':'#e67e22','approved':'#27ae60','sent':'#2980b9','rejected':'#95a5a6','responded':'#8e44ad'}[item.status]||'#888';
+  const name=(contact.first_name||contact.email||'Unknown').slice(0,40);
+  const org=contact.org_name?'<span style="color:var(--dim);font-size:12px"> — '+contact.org_name+'</span>':'';
+  const artTitle=artifact.artifact_title||item.artifact_title||'(no artifact)';
+  const sentDate=item.sent_at?'Sent '+new Date(item.sent_at).toLocaleDateString('en-AU',{day:'numeric',month:'short'}):'';
+
+  return '<div id="out-'+item.id+'" style="background:var(--surface);border-radius:10px;padding:16px;margin-bottom:12px;border:1px solid var(--border)">'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+    +'<span style="background:'+statusColor+';color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700">'+item.status.toUpperCase()+'</span>'
+    +'<span style="font-weight:600;font-size:14px">'+name+'</span>'+org
+    +(sentDate?'<span style="margin-left:auto;font-size:12px;color:var(--dim)">'+sentDate+'</span>':'')
+    +'</div>'
+    +'<div style="font-size:13px;color:var(--dim);margin-bottom:4px">📄 '+artTitle+'</div>'
+    +'<div style="font-size:12px;color:var(--faint);margin-bottom:10px">'+escHtml(item.subject||'')+'</div>'
+    +(item.match_reason?'<div style="font-size:12px;background:var(--bg);border-radius:6px;padding:6px 10px;margin-bottom:10px;color:var(--text)">Match: '+escHtml(item.match_reason)+'</div>':'')
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +(item.status==='pending'
+      ?'<button class="fbtn" style="background:var(--sky);color:#fff" onclick="outPreview(\''+item.id+'\')">👁 Preview</button>'
+       +'<button class="fbtn" style="background:var(--moss);color:#fff" onclick="outApprove(\''+item.id+'\')">✓ Approve & Send</button>'
+       +'<button class="fbtn" style="background:var(--border);color:var(--text)" onclick="outReject(\''+item.id+'\')">✕ Reject</button>'
+      :'')
+    +(item.status==='sent'&&!item.responded_at?'<button class="fbtn" onclick="outMarkResponded(\''+item.id+'\')">↩ Mark responded</button>':'')
+    +'<button class="fbtn" onclick="outAsk(\''+item.id+'\')">Ask Waymaker</button>'
+    +'</div>'
+    +'</div>';
+}
+
+function outPreview(id){
+  const card=document.getElementById('out-'+id);
+  const existing=card.querySelector('.out-preview');
+  if(existing){existing.remove();return;}
+  // fetch full item from queue and show body
+  fetch(DM_URL+'?mode=queue',{headers:{'x-ingest-secret':getPulseSecret()}})
+    .then(r=>r.json()).then(data=>{
+      const item=(data.queue||[]).find(i=>i.id===id);
+      if(!item)return;
+      const pre=document.createElement('div');
+      pre.className='out-preview';
+      pre.style.cssText='background:var(--bg);border-radius:6px;padding:12px;margin-top:10px;font-size:12px;white-space:pre-wrap;font-family:Georgia,serif;line-height:1.6;border:1px solid var(--border)';
+      pre.textContent='SUBJECT: '+item.subject+'\n\n'+item.body_text+(item.artifact_content?'\n\n---\n'+item.artifact_title+'\n\n'+item.artifact_content:'');
+      card.appendChild(pre);
+    });
+}
+
+async function outApprove(id){
+  const status=document.getElementById('outStatus');
+  if(status)status.textContent='Sending…';
+  const r=await fetch(DM_URL+'?mode=approve&queue_id='+id,{
+    method:'POST',
+    headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+    body:'{}'
+  });
+  const data=await r.json();
+  if(r.ok){
+    if(status)status.textContent='✓ Sent via Resend (ID: '+(data.resend_id||'ok')+')';
+    loadOutreach();
+  }else{
+    if(status)status.textContent='Send failed: '+(data.error||r.status);
+  }
+}
+
+async function outReject(id){
+  await fetch(DM_URL+'?mode=reject&queue_id='+id,{
+    method:'POST',
+    headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+    body:'{}'
+  });
+  loadOutreach();
+}
+
+async function outMarkResponded(id){
+  // Quick supabase update via match-engine read endpoint not available — use dm-send with future mode
+  // For now: show confirmation, reload
+  showCmdResult('Response noted — update manually in Supabase if needed');
+}
+
+function outAsk(id){
+  const card=document.getElementById('out-'+id);
+  const subj=card?.querySelector('div[style*="font-size:12px"]')?.textContent||'an outreach DM';
+  _wmSend('Community Signal Outreach — I\'m reviewing this DM before sending: "'+subj+'". Is this the right tone for a WA community sector contact? Is the match reason clear and non-identifying? Any suggested changes? Mike Fuller, Kamunity, Perth WA.');
+}
+
+async function loadContacts(){
+  const out=document.getElementById('outOut');
+  const status=document.getElementById('outStatus');
+  out.innerHTML='<p style="color:var(--faint);padding:16px">Loading contacts…</p>';
+  try{
+    const r=await fetch(DM_URL+'?mode=contacts',{headers:{'x-ingest-secret':getPulseSecret()}});
+    if(!r.ok){out.innerHTML='<p style="color:var(--faint);padding:16px">Failed ('+r.status+')</p>';return;}
+    const data=await r.json();
+    const contacts=data.contacts||[];
+    if(status)status.textContent=contacts.length+' contact'+(contacts.length!==1?'s':'');
+    if(!contacts.length){out.innerHTML='<p style="color:var(--faint);padding:16px">No opted-in contacts yet</p>';return;}
+    out.innerHTML=contacts.map(renderContact).join('');
+  }catch(e){
+    out.innerHTML='<p style="color:var(--faint);padding:16px">Error: '+e.message+'</p>';
+  }
+}
+
+function renderContact(c){
+  const name=(c.first_name||c.email||'Unknown').slice(0,40);
+  const org=c.org_name?'<span style="color:var(--dim);font-size:12px"> — '+escHtml(c.org_name)+'</span>':'';
+  const since=new Date(c.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+  const interest=c.interest_summary?'<div style="font-size:12px;color:var(--faint);margin:4px 0 8px;line-height:1.4">'+escHtml(c.interest_summary).slice(0,200)+'</div>':'';
+  const contacted=c.last_contacted_at?'Last contacted '+new Date(c.last_contacted_at).toLocaleDateString('en-AU',{day:'numeric',month:'short'}):'Never contacted';
+
+  return '<div style="background:var(--surface);border-radius:10px;padding:16px;margin-bottom:12px;border:1px solid var(--border)">'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+    +'<span style="font-weight:600;font-size:14px">'+escHtml(name)+'</span>'+org
+    +'<span style="margin-left:auto;font-size:11px;color:var(--faint)">Since '+since+'</span>'
+    +'</div>'
+    +'<div style="font-size:12px;color:var(--dim);margin-bottom:4px">'+escHtml(c.email)+' · '+contacted+' · Sent: '+c.contact_count+'</div>'
+    +interest
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +'<button class="fbtn" style="background:var(--sky);color:#fff" onclick="outDraftForContact(\''+c.id+'\')">✉ Draft DM</button>'
+    +'</div>'
+    +'</div>';
+}
+
+async function outDraftForContact(contactId){
+  const status=document.getElementById('outStatus');
+  if(status)status.textContent='Fetching library items…';
+  try{
+    const r=await fetch('https://community-signal.netlify.app/.netlify/functions/match-engine?mode=library',{headers:{'x-ingest-secret':getPulseSecret()}});
+    const data=await r.json();
+    const items=(data.items||data.library||[]).filter(i=>i.artifact_title);
+    if(!items.length){if(status)status.textContent='No commons library artifacts to send. Generate one first (Phase 3).';return;}
+
+    const pick=items.slice(0,10).map((it,i)=>(i+1)+'. '+it.artifact_title).join('\n');
+    const choice=prompt('Pick an artifact to send (enter number):\n\n'+pick);
+    if(!choice)return;
+    const idx=parseInt(choice,10)-1;
+    if(isNaN(idx)||idx<0||idx>=items.length){if(status)status.textContent='Invalid choice';return;}
+
+    const libraryId=items[idx].id;
+    if(status)status.textContent='Drafting DM with Claude…';
+
+    const dr=await fetch(DM_URL+'?mode=draft&contact_id='+contactId+'&library_id='+libraryId,{
+      method:'POST',
+      headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+      body:'{}'
+    });
+    const dd=await dr.json();
+    if(dr.ok&&dd.queued){
+      if(status)status.textContent='✓ DM drafted — switch to Pending to review';
+      setOutreachMode('pending',document.getElementById('outFilterPending'));
+    }else{
+      if(status)status.textContent='Draft failed: '+(dd.error||dr.status);
+    }
+  }catch(e){
+    if(status)status.textContent='Error: '+e.message;
+  }
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // Boot
 loadEntityEdits();

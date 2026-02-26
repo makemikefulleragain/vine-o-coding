@@ -73,6 +73,14 @@ const CARD_REGISTRY = {
     external: false,
     type: 'artifact-link',
   },
+  'opt-in': {
+    title: 'Get useful things when we make them',
+    icon: '📬',
+    description: 'If we generate something that matches what you\'re working on, we\'ll send it directly — no newsletter, no marketing. Just the thing itself.',
+    url: null,
+    external: false,
+    type: 'opt-in-form',
+  },
 };
 
 const CARD_LIST = Object.entries(CARD_REGISTRY)
@@ -131,6 +139,12 @@ RULE 4 — OFFERS:
 RULE 5 — COMMONS ARTIFACTS:
 - Person asks for a template, policy, guide, checklist, or practical tool related to governance, grant reporting, compliance, or workforce — AND the conversation has 2+ exchanges → surface "commons-artifact"
 - Do not surface "commons-artifact" if you already surfaced it in this conversation.
+
+RULE 6 — OPT-IN:
+- The conversation has 4+ total exchanges (the human has sent at least 4 messages)
+- AND you are surfacing "community-signal" or "commons-artifact" this turn, OR you already surfaced either of those in a previous turn and the person responded with a follow-up
+- AND you have NOT already surfaced "opt-in" in this conversation
+→ Surface "opt-in" alongside the other cards. One per conversation. Never before the 4th exchange.
 
 AVAILABLE CARDS:
 ${CARD_LIST}`;
@@ -196,6 +210,21 @@ export const handler = async function (event) {
       } catch (_) {
         // JSON parse failed — use full text as reply, no cards
       }
+    }
+
+    // Code-level opt-in injection — stateless, reliable.
+    // After 5+ user messages and the LLM hasn't already surfaced opt-in,
+    // inject it exactly once. The "[opt-in-shown]" marker in the reply
+    // lets the client track it was shown (stored in history for next turn).
+    const userMsgCount = messages.filter(m => m.role === 'user').length;
+    const optInShownBefore = messages.some(m =>
+      m.role === 'assistant' && (m.content || '').includes('[opt-in-shown]')
+    );
+    const optInThisTurn = cards.some(c => c.id === 'opt-in');
+
+    if (userMsgCount >= 5 && !optInShownBefore && !optInThisTurn) {
+      cards.push({ id: 'opt-in', ...CARD_REGISTRY['opt-in'] });
+      reply += '\n[opt-in-shown]';
     }
 
     return {

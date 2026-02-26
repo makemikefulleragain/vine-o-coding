@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unsubscribe — Kamunity</title>
+  <style>
+    body { font-family: Georgia, serif; background: #f5f0e8; color: #2c2c2c; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 1rem; box-sizing: border-box; }
+    .card { background: #fff; border-radius: 12px; padding: 2.5rem 2rem; max-width: 480px; width: 100%; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    h1 { font-size: 1.4rem; margin: 0 0 0.75rem; color: #1a1a1a; }
+    p { color: #555; line-height: 1.6; margin: 0 0 1.5rem; }
+    button { background: #c0392b; color: #fff; border: none; border-radius: 8px; padding: 0.75rem 2rem; font-size: 1rem; font-family: Georgia, serif; cursor: pointer; }
+    button:hover { background: #a93226; }
+    .done { color: #27ae60; font-weight: bold; font-size: 1.1rem; }
+    .small { font-size: 0.85rem; color: #888; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <h1>Unsubscribe</h1>
+    <p id="msg">You'll be removed immediately. No confirmation email, no questions, no data retained.</p>
+    <button id="btn" onclick="doUnsubscribe()">Remove me now</button>
+    <p class="small" id="email-display"></p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const email  = params.get('email') || '';
+    if (email) {
+      document.getElementById('email-display').textContent = email;
+    } else {
+      document.getElementById('msg').textContent = 'No email address found in this link. If you need to unsubscribe, reply to the email you received and we\'ll remove you manually.';
+      document.getElementById('btn').style.display = 'none';
+    }
+
+    async function doUnsubscribe() {
+      const btn = document.getElementById('btn');
+      btn.disabled = true;
+      btn.textContent = 'Removing…';
+      try {
+        const r = await fetch(`/.netlify/functions/opt-in?mode=unsubscribe&email=${encodeURIComponent(email)}`, { method: 'POST' });
+        const data = await r.json();
+        if (r.ok) {
+          document.getElementById('msg').innerHTML = '<span class="done">Done.</span><br>You\'ve been removed. No more contact from Kamunity.';
+          btn.style.display = 'none';
+          document.getElementById('email-display').textContent = '';
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Try again';
+          document.getElementById('msg').textContent = 'Something went wrong. Please reply to the email you received and we\'ll remove you manually.';
+        }
+      } catch (e) {
+        btn.disabled = false;
+        btn.textContent = 'Try again';
+      }
+    }
+  </script>
+</body>
+</html>
