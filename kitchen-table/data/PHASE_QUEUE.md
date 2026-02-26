@@ -115,6 +115,28 @@ Before BUILD, check SAFETY_GATES.md. If any critical/high gate fails → BLOCKED
 - [x] Kai matching logic integrated (system prompt)
 - [x] Tested with Persona (Priya)
 
+### ~~CS-03: Community Signal Phase 3 — MATCH + MAKE~~ ✅ COMPLETE — Feb 26, 2026
+**Project:** Community Signal System
+**Priority:** HIGH (Phase 3 of 5)
+
+**Goal:** Triage patterns against prosocial tech directory, generate usable artifacts (templates, policies, guides), accumulate commons library.
+
+**Done When:**
+- [x] Prosocial tech directory triage (match-engine.mjs — FIND/CONNECT/EXTEND/MAKE)
+- [x] Artifact generation (generate-thing-background.mjs — Sonnet, Priya quality check)
+- [x] Commons library accumulates in Supabase (commons_library table)
+- [x] Kitchen Table Match+Make view — triage + generate + approve/reject
+- [x] Kai generative mode — commons-artifact card surfaced in kamunity-consulting
+- [x] Background function architecture (15-min timeout, fire-and-poll UI)
+- [x] Phase 3 UAT PASSED — artifact generated, quality check passed, review working
+
+**Architecture decisions:**
+- Background function pattern: `generate-thing-background.mjs` (AI work, 15-min) + `generate-thing.mjs` (CORS proxy + review ops, sync)
+- Fire-and-poll: Kitchen Table fires trigger → polls library every 5s → updates on result
+- Do not downgrade models — expand the container
+
+---
+
 ### KP-09: Community Rooms (Active)
 **Project:** kamunity.ai
 **Priority:** NORMAL (Option C)

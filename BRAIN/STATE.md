@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 25, 2026 (KP-10 UAT bugs fixed — task expand action buttons, Ask Waymaker coverage complete, grantAsk function added)
+### Last Updated: Feb 27, 2026 (Community Signal Phase 3 MATCH+MAKE complete — background function architecture, fire-and-poll UI, Phase 3 UAT PASSED, Phase 3 completion)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -9,6 +9,9 @@
 ## Current Period: Pre-Launch Sprint
 
 **Week of Feb 24-28, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
+
+### Session Highlight (Feb 26 — Evening)
+Community Signal Phase 3 MATCH+MAKE complete. Root cause fixed for generate-thing timeout: architectural split into background function (`generate-thing-background.mjs` with 15-min Netlify timeout) + sync CORS-safe proxy (`generate-thing.mjs` triggers background server-side, handles OPTIONS/CORS, returns 202 immediately). Kitchen Table `runGenerate()` updated to fire-and-poll pattern — fires trigger, then polls `match-engine?mode=library` every 5s for up to 90s until artifact appears. Kept `claude-sonnet-4-5-20250929` + Priya quality check (no downgrade). Phase 3 UAT PASSED: artifact generated ("Using Kamunity Grants Hub for Grant Compliance & Acquittal"), polling counter visible, approve/reject working. R&R completed: `phases/phase-03/review-reflect.md`. All three Community Signal phases (SENSE, PROPAGATE, MATCH+MAKE) now complete. Ready for Phase 4: OFFER.
 
 ### Session Highlight (Feb 25 — Morning)
 KP-10 UAT bug-fix session. Two root-cause fixes deployed: (1) Task expand action buttons — `id="ta-${t.id}"` was inside a plain string (not template literal) so `getElementById('ta-t6')` always returned null and buttons never appeared; rewritten as proper string concatenation. (2) `grantAsk()` function was missing — Money view grant cards called it but it didn't exist; added with full Waymaker context prompt. Ask Waymaker now confirmed wired on every data point: Tasks, Safety, Gaps, Roadmap phases, Entity drawer, Allies, Grants (Money), Prototypes, Command Day sweep. Deployed to https://coruscating-naiad-c0ccb9.netlify.app. node --check passes (IDE TS lint errors are false positives — control.js treated as TSX). KP-10 UAT still required on Mike's phone before archiving old system.

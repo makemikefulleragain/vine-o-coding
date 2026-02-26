@@ -50,6 +50,7 @@
       <button class="view-btn" data-view="prototypes" onclick="switchView('prototypes')">🧪 Prototypes</button>
       <button class="view-btn" data-view="pulse" onclick="switchView('pulse');loadPulse()">📡 Sector Pulse</button>
       <button class="view-btn" data-view="patterns" onclick="switchView('patterns');loadPatterns()">🧬 Patterns</button>
+      <button class="view-btn" data-view="matchmake" onclick="switchView('matchmake');loadMatchMake()">⚡ Match+Make</button>
       <span class="nav-divider"></span>
       <button class="view-btn view-btn-guide" onclick="toggleGuides()" title="Toggle section guides">?</button>
     </nav>
@@ -421,6 +422,23 @@
       </details>
 
       <div id="patOut"><p style="color:var(--faint);padding:16px">Loading patterns…</p></div>
+    </div>
+
+    <!-- VIEW: MATCH + MAKE -->
+    <div class="view-panel" id="view-matchmake">
+      <div class="cmd-section-head" style="margin-bottom:16px">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text);margin:0">⚡ Match+Make</h2>
+        <span class="cmd-section-hint">Community Signal System — Phase 3 MATCH+MAKE layer</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <button class="fbtn active" id="mmFilterLibrary" onclick="setMMMode('library',this)">Commons library</button>
+        <button class="fbtn" id="mmFilterReview" onclick="setMMMode('review',this)">Review queue</button>
+        <button class="btn-ghost" style="margin-left:auto" onclick="loadMatchMake()" id="mmRefreshBtn">↺ Refresh</button>
+        <button class="fbtn" style="background:var(--moss);color:#fff" onclick="runTriage()">🔍 Triage patterns</button>
+        <button class="fbtn" style="background:var(--ember);color:#fff" onclick="runGenerate()">✨ Generate artifacts</button>
+      </div>
+      <div id="mmStatus" style="font-size:12px;color:var(--dim);margin-bottom:12px"></div>
+      <div id="mmOut"><p style="color:var(--faint);padding:16px">Loading commons library…</p></div>
     </div>
 
     <!-- VIEW: SECTOR PULSE -->

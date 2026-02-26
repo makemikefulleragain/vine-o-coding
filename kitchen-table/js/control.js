@@ -1840,5 +1840,203 @@ function patternAsk(id){
   _wmSend('Community Signal — I\'m reviewing this emerging pattern: "'+summary+'". Help me think through: What does this structural pattern mean for WA community orgs? What would a useful response look like? Are there existing tools or resources I should connect people to first? Mike Fuller, Kamunity, Perth WA.');
 }
 
+// ── MATCH + MAKE (Phase 3) ──────────────────────────────────────────────────
+
+const MATCH_URL    ='https://community-signal.netlify.app/.netlify/functions/match-engine';
+const GENERATE_URL ='https://community-signal.netlify.app/.netlify/functions/generate-thing';
+const GENERATE_BG_URL='https://community-signal.netlify.app/.netlify/functions/generate-thing-background';
+
+let mmMode='library';
+
+function setMMMode(mode,btn){
+  mmMode=mode;
+  document.querySelectorAll('#mmFilterLibrary,#mmFilterReview').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadMatchMake();
+}
+
+async function loadMatchMake(){
+  const out=document.getElementById('mmOut');
+  const status=document.getElementById('mmStatus');
+  if(!out)return;
+  out.innerHTML='<p style="color:var(--faint);padding:16px">Loading…</p>';
+
+  const url=MATCH_URL+'?mode=library';
+  try{
+    const r=await fetch(url,{headers:{'x-ingest-secret':getPulseSecret()}});
+    if(!r.ok){out.innerHTML='<p style="color:var(--danger);padding:16px">Load failed: HTTP '+r.status+'</p>';return;}
+    const data=await r.json();
+    const items=data.library||[];
+
+    if(mmMode==='review'){
+      renderMMReview(items.filter(i=>i.review_status==='pending'),out);
+    } else {
+      renderMMLibrary(items,out);
+    }
+    if(status)status.textContent=items.length+' item'+(items.length!==1?'s':'')+' in commons library';
+  }catch(e){
+    out.innerHTML='<p style="color:var(--danger);padding:16px">Could not reach Match+Make endpoint.<br><small>'+e.message+'</small></p>';
+  }
+}
+
+function renderMMLibrary(items,out){
+  if(!items||items.length===0){
+    out.innerHTML='<p style="color:var(--faint);padding:16px">No items yet — run 🔍 Triage patterns to start, then ✨ Generate artifacts.</p>';
+    return;
+  }
+  const triageColour={'FIND':'#2e7d32','CONNECT':'#1565c0','EXTEND':'#6a1b9a','INTEGRATE':'#e65100','MAKE':'#c62828'};
+  out.innerHTML=items.map(item=>{
+    const tc=triageColour[item.triage_result]||'#555';
+    const isPending=item.artifact_content&&item.artifact_content.includes('(pending');
+    const qPass=item.quality_check_passed;
+    const statusBadge=item.review_status==='approved'
+      ?'<span style="color:#2e7d32;font-size:11px;font-weight:600">✓ Approved</span>'
+      :item.review_status==='rejected'
+      ?'<span style="color:var(--danger);font-size:11px;font-weight:600">✗ Rejected</span>'
+      :'<span style="color:var(--dim);font-size:11px">Pending review</span>';
+
+    const artifactBlock=isPending
+      ?'<div style="background:var(--hover);border-radius:6px;padding:10px 14px;font-size:12px;color:var(--dim);margin-bottom:10px">Artifact not yet generated — click ✨ Generate artifacts</div>'
+      :`<details style="margin-bottom:10px">
+          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text)">📄 ${item.artifact_title||'View artifact'}</summary>
+          <div style="background:var(--hover);border-radius:6px;padding:12px;margin-top:8px;font-size:12px;white-space:pre-wrap;max-height:300px;overflow-y:auto">${escHtml(item.artifact_content||'')}</div>
+        </details>`;
+
+    const scaffolds=(!isPending&&(item.substack_scaffold||item.linkedin_scaffold))
+      ?`<details style="margin-bottom:10px">
+          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text)">📣 Publication scaffolds</summary>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+            ${item.substack_scaffold?`<div style="background:var(--hover);border-radius:6px;padding:10px;font-size:12px"><strong>Substack:</strong><br>${escHtml(item.substack_scaffold)}</div>`:''}
+            ${item.linkedin_scaffold?`<div style="background:var(--hover);border-radius:6px;padding:10px;font-size:12px"><strong>LinkedIn:</strong><br>${escHtml(item.linkedin_scaffold)}</div>`:''}
+          </div>
+        </details>`
+      :'';
+
+    const actions=isPending
+      ?''
+      :item.review_status==='pending'
+      ?`<div style="display:flex;gap:8px;margin-top:8px">
+          <button class="task-action-btn" style="background:var(--moss);color:#fff" onclick="mmApprove('${item.id}')">✓ Approve</button>
+          <button class="task-action-btn" onclick="mmReject('${item.id}')">✗ Reject</button>
+          <button class="task-action-btn" onclick="mmCopyArtifact('${item.id}')">📋 Copy</button>
+          <button class="task-action-btn" onclick="mmAsk('${item.id}')">🔮 Ask WM</button>
+        </div>`
+      :`<div style="display:flex;gap:8px;margin-top:8px">
+          <button class="task-action-btn" onclick="mmCopyArtifact('${item.id}')">📋 Copy artifact</button>
+          <button class="task-action-btn" onclick="mmAsk('${item.id}')">🔮 Ask WM</button>
+        </div>`;
+
+    return `<div id="mm-${item.id}" style="border:1px solid var(--hover);border-radius:10px;padding:16px;margin-bottom:12px;background:var(--bg)">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
+        <span style="background:${tc};color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-top:2px">${item.triage_result}</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--text);line-height:1.4">${escHtml(item.artifact_title||item.triage_reasoning||'Untitled')}</div>
+          ${item.existing_tool?`<div style="font-size:11px;color:var(--dim);margin-top:2px">Tool: ${escHtml(item.existing_tool)}</div>`:''}
+        </div>
+        ${statusBadge}
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        ${(item.sector_tags||[]).map(t=>`<span style="background:var(--hover);border-radius:4px;padding:1px 7px;font-size:11px">${t}</span>`).join('')}
+        ${qPass===false?'<span style="background:#fff3e0;color:#e65100;border-radius:4px;padding:1px 7px;font-size:11px">⚠ Quality review needed</span>':''}
+      </div>
+      ${artifactBlock}
+      ${scaffolds}
+      <div style="font-size:11px;color:var(--dim);margin-bottom:6px">${escHtml(item.triage_reasoning||'')}</div>
+      ${actions}
+    </div>`;
+  }).join('');
+}
+
+function renderMMReview(items,out){
+  if(!items||items.length===0){
+    out.innerHTML='<p style="color:var(--faint);padding:16px">No items pending review.</p>';
+    return;
+  }
+  renderMMLibrary(items,out);
+}
+
+function escHtml(s){
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function runTriage(){
+  const status=document.getElementById('mmStatus');
+  if(status)status.textContent='Running triage…';
+  try{
+    const r=await fetch(MATCH_URL,{method:'POST',headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},body:'{}'});
+    const data=await r.json();
+    if(status)status.textContent=`Triage complete: ${data.triaged||0} pattern${data.triaged!==1?'s':''} triaged`;
+    loadMatchMake();
+  }catch(e){
+    if(status)status.textContent='Triage failed: '+e.message;
+  }
+}
+
+async function runGenerate(){
+  const status=document.getElementById('mmStatus');
+  if(status)status.textContent='Kicking off generation… (background, Sonnet + quality check)';
+  try{
+    // Fire via sync proxy (handles CORS) — triggers background function server-side, returns 202
+    await fetch(GENERATE_URL,{method:'POST',headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},body:'{}'});
+    if(status)status.textContent='Generating… polling for results (up to 90s)';
+    // Poll library endpoint every 5s to see when artifacts land
+    let elapsed=0;
+    const poll=setInterval(async()=>{
+      elapsed+=5;
+      if(elapsed>90){clearInterval(poll);if(status)status.textContent='Still generating — click ↺ Refresh in a moment';return;}
+      try{
+        const r=await fetch(MATCH_URL+'?mode=library',{headers:{'x-ingest-secret':getPulseSecret()}});
+        if(!r.ok)return;
+        const data=await r.json();
+        const items=data.library||[];
+        const hasArtifact=items.some(i=>i.artifact_content&&!i.artifact_content.includes('pending'));
+        if(hasArtifact){
+          clearInterval(poll);
+          if(status)status.textContent='✓ Artifact generated — review below';
+          loadMatchMake();
+        }else{
+          if(status)status.textContent=`Generating… ${elapsed}s elapsed`;
+        }
+      }catch(e){}
+    },5000);
+  }catch(e){
+    if(status)status.textContent='Generation failed: '+e.message;
+  }
+}
+
+async function mmApprove(id){
+  const r=await fetch(GENERATE_URL+'?mode=review&library_id='+id,{
+    method:'POST',
+    headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+    body:JSON.stringify({action:'approve'})
+  });
+  if(r.ok)loadMatchMake();
+  else showCmdResult('Approve failed: HTTP '+r.status);
+}
+
+async function mmReject(id){
+  const note=prompt('Reason for rejection (optional):','');
+  if(note===null)return;
+  const r=await fetch(GENERATE_URL+'?mode=review&library_id='+id,{
+    method:'POST',
+    headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+    body:JSON.stringify({action:'reject',review_notes:note||null})
+  });
+  if(r.ok)loadMatchMake();
+  else showCmdResult('Reject failed: HTTP '+r.status);
+}
+
+function mmCopyArtifact(id){
+  const card=document.getElementById('mm-'+id);
+  const content=card?.querySelector('pre,div[style*="white-space:pre-wrap"]')?.textContent||'';
+  navigator.clipboard.writeText(content).then(()=>showCmdResult('Artifact copied to clipboard')).catch(()=>showCmdResult('Copy failed — try manually'));
+}
+
+function mmAsk(id){
+  const card=document.getElementById('mm-'+id);
+  const title=card?.querySelector('div[style*="font-weight:600"]')?.textContent||'a commons artifact';
+  _wmSend('Community Signal Match+Make — I\'m reviewing this commons artifact: "'+title+'". Is this the right response to the pattern? Is there anything missing or that needs adjusting before I approve it for the commons library? Mike Fuller, Kamunity, Perth WA.');
+}
+
 // Boot
 loadEntityEdits();

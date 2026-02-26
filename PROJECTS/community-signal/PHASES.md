@@ -100,13 +100,13 @@
 7. Auto-draft pipeline: pattern → thing → commons draft + social scaffold → human queue
 
 ### Done Condition
-- [ ] When a pattern matches an existing prosocial tool, triage returns "CONNECT" or "EXTEND" — not "MAKE"
-- [ ] When nothing exists, Kai generates a useful document (template, policy, framework) sized to the sector/org
-- [ ] The generated thing is good enough that a small NFP ops coordinator would actually use it
-- [ ] Waymaker presents the full package: thing + context + proposed publication + match + triage reasoning
-- [ ] Mike can ship, refine, or skip in one decision
-- [ ] Commons library accumulates templates attributed to pattern, not person
-- [ ] Constellation graph shows bilateral connections (need ↔ offer)
+- [x] When a pattern matches an existing prosocial tool, triage returns "CONNECT" or "EXTEND" — not "MAKE"
+- [x] When nothing exists, Kai generates a useful document (template, policy, framework) sized to the sector/org
+- [x] The generated thing is good enough that a small NFP ops coordinator would actually use it — UAT PASSED Feb 26
+- [x] Waymaker presents the full package: thing + context + proposed publication + match + triage reasoning
+- [x] Mike can ship, refine, or skip in one decision
+- [x] Commons library accumulates templates attributed to pattern, not person
+- [ ] Constellation graph shows bilateral connections (need ↔ offer) — deferred to Phase 4+
 
 ### Does NOT include
 - Sending anything to anyone outside the system (that's Phase 4)

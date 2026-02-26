@@ -65,6 +65,14 @@ const CARD_REGISTRY = {
     external: false,
     type: 'signal-form',
   },
+  'commons-artifact': {
+    title: 'Free resource from the commons',
+    icon: '🎁',
+    description: 'A practical template, guide, or tool generated from real sector patterns — free to use and adapt.',
+    url: 'https://community-signal.netlify.app/.netlify/functions/match-engine?mode=library',
+    external: false,
+    type: 'artifact-link',
+  },
 };
 
 const CARD_LIST = Object.entries(CARD_REGISTRY)
@@ -119,6 +127,10 @@ RULE 3 — REFERRALS:
 
 RULE 4 — OFFERS:
 - Person mentions something their org has to give — spare capacity, knowledge, a template, a connection, willingness to help others → surface "community-signal"
+
+RULE 5 — COMMONS ARTIFACTS:
+- Person asks for a template, policy, guide, checklist, or practical tool related to governance, grant reporting, compliance, or workforce — AND the conversation has 2+ exchanges → surface "commons-artifact"
+- Do not surface "commons-artifact" if you already surfaced it in this conversation.
 
 AVAILABLE CARDS:
 ${CARD_LIST}`;
