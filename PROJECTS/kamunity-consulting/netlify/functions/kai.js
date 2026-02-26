@@ -57,6 +57,14 @@ const CARD_REGISTRY = {
     url: 'mailto:mike@kamunityconsulting.com?subject=Workshop%20Enquiry',
     external: true,
   },
+  'community-signal': {
+    title: 'Share a sector signal',
+    icon: '📡',
+    description: 'Let us know what your community organisation needs — or what you could offer. Anonymous, sector-level only. No names, no personal detail.',
+    url: null,
+    external: false,
+    type: 'signal-form',
+  },
 };
 
 const CARD_LIST = Object.entries(CARD_REGISTRY)
@@ -90,13 +98,27 @@ CARD SURFACING — you can surface link cards alongside your response. At the EN
 
 Surface 1-2 cards maximum. Only surface cards that are genuinely relevant. If nothing fits, omit the JSON block entirely.
 
-CARD TRIGGERS:
+CARD TRIGGERS (apply in order — earlier rules take priority):
+
+RULE 1 — COMMUNITY SIGNAL (highest priority for community sector topics):
+- The conversation has 2 or more prior exchanges (the human has sent at least 2 messages before this one)
+- AND the person is from a community organisation (NFP, charity, community group, social service)
+- AND they mention ANY of: funding, grants, costs, budget, governance, compliance, digital tools, workforce, volunteers, housing, procurement, data, capacity, sustainability
+→ You MUST surface "community-signal" as one of the cards. This is mandatory, not optional.
+→ Exception: if you already surfaced "community-signal" earlier in this conversation, skip it.
+
+RULE 2 — TOOLS:
 - Microsoft / Copilot / Teams / M365 / Office 365 mentioned → surface "copilot-check" and "sovereignty-calculator"
 - Vendor lock-in / tool costs / digital sovereignty / "how much does this cost" → surface "sovereignty-calculator" and "sovereignty-audit"
 - AI readiness / "should we use AI" / AI policy / AI governance → surface "ai-readiness"
+
+RULE 3 — REFERRALS:
 - Want hands-on help / consulting / working with Mike / QA / innovation sprints → surface "contact-mike" or "book-workshop"
 - "What else does Kamunity do" / "what tools are there" / want to explore more → surface "kamunity-org"
 - Community org wants to reflect on their purpose / identity → surface "kamunity-reflection"
+
+RULE 4 — OFFERS:
+- Person mentions something their org has to give — spare capacity, knowledge, a template, a connection, willingness to help others → surface "community-signal"
 
 AVAILABLE CARDS:
 ${CARD_LIST}`;

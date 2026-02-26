@@ -1,0 +1,11 @@
+{
+  "name": "community-signal",
+  "version": "1.0.0",
+  "description": "Kamunity Community Signal System — SENSE layer",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.3",
+    "@supabase/supabase-js": "^2.49.1",
+    "rss-parser": "^3.13.0"
+  }
+}

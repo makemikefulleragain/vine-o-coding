@@ -1,0 +1,132 @@
+{
+  "directory_version": "1.0",
+  "last_updated": "2026-02-26",
+  "updated_by": "Opus encounter — seed data from ecosystem research",
+  "note": "This directory grows via Layer 1 weak tie sensing. New tools added after human review.",
+  
+  "tools": [
+    {
+      "name": "CiviCRM",
+      "url": "https://civicrm.org",
+      "what_it_does": "Open-source constituent relationship management for nonprofits. Contacts, memberships, donations, events, mailings, case management.",
+      "wa_sector_fit": 7,
+      "strengths": "Mature, well-supported, strong community. Handles most CRM needs for small-medium NFPs. WordPress and Drupal integration.",
+      "limitations": "Setup complexity for small orgs without tech capacity. Hosting requires some technical knowledge or a managed provider.",
+      "known_deployments_wa": "Unknown — needs sector research",
+      "best_for": ["contact management", "membership tracking", "donation processing", "event management", "case management"],
+      "community_link": "https://civicrm.org/community"
+    },
+    {
+      "name": "Loomio",
+      "url": "https://www.loomio.com",
+      "what_it_does": "Collaborative decision-making platform. Proposals, polls, discussions, threads. Designed for democratic governance.",
+      "wa_sector_fit": 8,
+      "strengths": "Purpose-built for the kind of decisions community orgs actually make. Cooperative-owned. Aotearoa roots — culturally aligned.",
+      "limitations": "Another tool to check. Adoption requires behaviour change — people default to email.",
+      "known_deployments_wa": "Unknown — needs sector research",
+      "best_for": ["board decisions", "committee governance", "member consultation", "policy discussion"],
+      "community_link": "https://www.loomio.com/contact"
+    },
+    {
+      "name": "Decidim",
+      "url": "https://decidim.org",
+      "what_it_does": "Participatory democracy platform. Proposals, budgets, assemblies, consultations. Designed for citizen participation at scale.",
+      "wa_sector_fit": 6,
+      "strengths": "Powerful for large-scale consultation. Open source, well-funded by Barcelona City Council origins. Multi-language.",
+      "limitations": "Overkill for small orgs. Setup requires Rails knowledge. Better for councils and peak bodies than individual NFPs.",
+      "known_deployments_wa": "Unknown — needs sector research",
+      "best_for": ["community consultation", "participatory budgeting", "strategic planning at scale"],
+      "community_link": "https://meta.decidim.org"
+    },
+    {
+      "name": "Open Food Network",
+      "url": "https://www.openfoodnetwork.org",
+      "what_it_does": "Open-source platform for local food distribution. Online shopfronts, hub management, producer profiles.",
+      "wa_sector_fit": 5,
+      "strengths": "Strong Australian presence (OFN Australia). Community-owned. Proven at scale.",
+      "limitations": "Food-specific. Not generalisable to other community needs without significant adaptation.",
+      "known_deployments_wa": "Active in WA — OFN Australia has WA hubs",
+      "best_for": ["food distribution", "local food systems", "community food hubs"],
+      "community_link": "https://www.openfoodnetwork.org.au"
+    },
+    {
+      "name": "Bonfire Networks",
+      "url": "https://bonfirenetworks.org",
+      "what_it_does": "Federated social networking toolkit. Modular, customisable, ActivityPub-compatible. Build your own social space.",
+      "wa_sector_fit": 4,
+      "strengths": "Genuinely sovereign — communities own their instance. Federated by design. Modular architecture.",
+      "limitations": "Early stage. Technical setup required. Small community. Not ready for non-technical deployment.",
+      "known_deployments_wa": "None known",
+      "best_for": ["federated community spaces", "sovereign social networking", "custom community platforms"],
+      "community_link": "https://bonfirenetworks.org"
+    },
+    {
+      "name": "Hypha Worker Co-operative",
+      "url": "https://hypha.coop",
+      "what_it_does": "Not a tool — a cooperative that builds and maintains digital infrastructure for communities. Consulting + hosting + development.",
+      "wa_sector_fit": 3,
+      "strengths": "Model for how Kamunity itself could operate. Deep expertise in cooperative digital infrastructure.",
+      "limitations": "Based in Toronto. Not directly deployable in WA. Value is as model and ally, not service provider.",
+      "known_deployments_wa": "None — international sibling",
+      "best_for": ["cooperative models", "digital infrastructure governance", "inspiration for Kamunity structure"],
+      "community_link": "https://hypha.coop"
+    },
+    {
+      "name": "Humanitix",
+      "url": "https://www.humanitix.com",
+      "what_it_does": "Event ticketing platform that donates profits to children's charities. Australian-founded.",
+      "wa_sector_fit": 8,
+      "strengths": "Drop-in Eventbrite replacement with social mission. Easy to use. Australian. Free for free events.",
+      "limitations": "Not open source. Platform dependency still exists, just with better values.",
+      "known_deployments_wa": "Widely used in WA community sector",
+      "best_for": ["event ticketing", "fundraising events", "community events"],
+      "community_link": "https://www.humanitix.com/au"
+    },
+    {
+      "name": "Tally",
+      "url": "https://tally.so",
+      "what_it_does": "Form builder. Free tier is generous. Clean, simple, no-code.",
+      "wa_sector_fit": 7,
+      "strengths": "Replaces Google Forms and Typeform for most use cases. Generous free tier. Simple to use.",
+      "limitations": "Not open source. Data stored on their servers. But pragmatically better than Google for privacy.",
+      "known_deployments_wa": "Unknown",
+      "best_for": ["surveys", "intake forms", "feedback collection", "registration forms"],
+      "community_link": "https://tally.so"
+    },
+    {
+      "name": "Baserow",
+      "url": "https://baserow.io",
+      "what_it_does": "Open-source Airtable alternative. No-code database with views, forms, automations.",
+      "wa_sector_fit": 6,
+      "strengths": "Self-hostable. Open source. Replaces Airtable dependency. Good for small org data management.",
+      "limitations": "Self-hosting requires technical capacity. Cloud version is a SaaS dependency.",
+      "known_deployments_wa": "Unknown",
+      "best_for": ["data management", "volunteer tracking", "project management", "inventory"],
+      "community_link": "https://baserow.io"
+    },
+    {
+      "name": "Kamunity Grants Hub",
+      "url": "https://grants-hub.netlify.app",
+      "what_it_does": "Grant acquittal and reporting helper for WA community sector organisations. Built by Kamunity.",
+      "wa_sector_fit": 9,
+      "strengths": "Purpose-built for WA NFPs. Free. No account required. Directly addresses the most common signal pattern (grant acquittal). Kamunity-maintained.",
+      "limitations": "Early stage — live testing phase. Limited to grant reporting use case.",
+      "known_deployments_wa": "Live — Kamunity ecosystem tool, built for WA sector",
+      "best_for": ["grant acquittal", "grant reporting", "funder reporting templates"],
+      "community_link": "https://grants-hub.netlify.app"
+    },
+    {
+      "name": "Nextcloud",
+      "url": "https://nextcloud.com",
+      "what_it_does": "Self-hosted file storage, collaboration, and office suite. Google Workspace / Microsoft 365 alternative.",
+      "wa_sector_fit": 5,
+      "strengths": "True sovereignty — your data, your server. Mature. Full office suite. Calendar, contacts, email integration.",
+      "limitations": "Requires hosting and maintenance. Not practical for orgs without any tech capacity unless using managed hosting.",
+      "known_deployments_wa": "Unknown — needs sector research",
+      "best_for": ["file storage", "document collaboration", "replacing Google Workspace"],
+      "community_link": "https://nextcloud.com/community/"
+    }
+  ],
+
+  "taxonomy_notes": "wa_sector_fit scored 1-10 based on: ease of adoption for small NFPs (weight 3), sovereignty alignment (weight 2), existing WA presence (weight 2), maturity (weight 2), cost (weight 1). Scores are initial estimates — to be validated through sector research and user feedback."
+}

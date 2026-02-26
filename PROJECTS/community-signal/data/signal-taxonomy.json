@@ -1,0 +1,108 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "description": "Signal taxonomy for WA community sector — seeded from ecosystem-state categories. New tags proposed by signal-extraction.md are queued for human review before being added here.",
+    "last_reviewed": "2026-02-26"
+  },
+  "tags": [
+    {
+      "tag": "grant-acquittal",
+      "label": "Grant Acquittal & Reporting",
+      "description": "Signals related to funder reporting, acquittal templates, compliance burden",
+      "sector_fit": "high",
+      "related_tools": ["Kamunity Grants Hub"]
+    },
+    {
+      "tag": "governance",
+      "label": "Governance & Board",
+      "description": "Board management, constitution, AGM, compliance, ACNC obligations",
+      "sector_fit": "high",
+      "related_tools": ["Loomio", "CiviCRM"]
+    },
+    {
+      "tag": "data-sovereignty",
+      "label": "Data Sovereignty & Privacy",
+      "description": "Community data ownership, privacy policy, client data handling, GDPR/Privacy Act",
+      "sector_fit": "high",
+      "related_tools": ["Nextcloud", "Baserow"]
+    },
+    {
+      "tag": "digital-tools",
+      "label": "Digital Tools & Adoption",
+      "description": "Technology adoption, software selection, digital literacy, platform migration",
+      "sector_fit": "high",
+      "related_tools": ["CiviCRM", "Baserow", "Tally"]
+    },
+    {
+      "tag": "funding-landscape",
+      "label": "Funding Landscape",
+      "description": "New funding opportunities, grant rounds, policy changes affecting funding",
+      "sector_fit": "high",
+      "related_tools": ["Kamunity Grants Hub"]
+    },
+    {
+      "tag": "workforce",
+      "label": "Workforce & Volunteering",
+      "description": "Recruitment, retention, volunteer management, sector workforce trends",
+      "sector_fit": "high",
+      "related_tools": []
+    },
+    {
+      "tag": "community-engagement",
+      "label": "Community Engagement",
+      "description": "Participatory decision-making, consultation, co-design, community voice",
+      "sector_fit": "high",
+      "related_tools": ["Loomio", "Decidim"]
+    },
+    {
+      "tag": "food-security",
+      "label": "Food Security & Access",
+      "description": "Food relief, community food systems, pantry operations",
+      "sector_fit": "medium",
+      "related_tools": ["Open Food Network"]
+    },
+    {
+      "tag": "events",
+      "label": "Events & Fundraising",
+      "description": "Event management, ticketing, fundraising campaigns",
+      "sector_fit": "medium",
+      "related_tools": ["Humanitix"]
+    },
+    {
+      "tag": "sector-policy",
+      "label": "Sector Policy & Advocacy",
+      "description": "WA government policy, NDIS, aged care, community services reform",
+      "sector_fit": "high",
+      "related_tools": []
+    },
+    {
+      "tag": "ai-tools",
+      "label": "AI & Automation for NFPs",
+      "description": "AI tools relevant to small nonprofits — writing, admin, reporting",
+      "sector_fit": "medium",
+      "related_tools": []
+    },
+    {
+      "tag": "financial-sustainability",
+      "label": "Financial Sustainability",
+      "description": "Revenue diversification, fee-for-service, cost pressures, financial planning",
+      "sector_fit": "high",
+      "related_tools": []
+    },
+    {
+      "tag": "collaboration",
+      "label": "Sector Collaboration & Partnerships",
+      "description": "Mergers, shared services, consortium approaches, peak body activity",
+      "sector_fit": "high",
+      "related_tools": ["Loomio", "Nextcloud"]
+    },
+    {
+      "tag": "small-cohort-flag",
+      "label": "Small Cohort — Heightened Scrutiny",
+      "description": "Reserved tag: applied automatically when signal source sector has fewer than ~20 organisations in WA. Triggers heightened traceability scrutiny. Do not use for general tagging.",
+      "sector_fit": "system",
+      "related_tools": []
+    }
+  ],
+  "pending_review": []
+}

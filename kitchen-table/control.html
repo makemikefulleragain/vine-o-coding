@@ -48,6 +48,8 @@
       <button class="view-btn" data-view="gaps" onclick="switchView('gaps')">Gaps</button>
       <button class="view-btn" data-view="money" onclick="switchView('money')">Money</button>
       <button class="view-btn" data-view="prototypes" onclick="switchView('prototypes')">🧪 Prototypes</button>
+      <button class="view-btn" data-view="pulse" onclick="switchView('pulse');loadPulse()">📡 Sector Pulse</button>
+      <button class="view-btn" data-view="patterns" onclick="switchView('patterns');loadPatterns()">🧬 Patterns</button>
       <span class="nav-divider"></span>
       <button class="view-btn view-btn-guide" onclick="toggleGuides()" title="Toggle section guides">?</button>
     </nav>
@@ -366,6 +368,75 @@
       </div>
       <div class="filter-bar" id="alliesFilterBar"></div>
       <div id="alliesOut"></div>
+    </div>
+
+    <!-- VIEW: PATTERNS (Phase 2 PROPAGATE) -->
+    <div class="view-panel" id="view-patterns">
+      <div class="cmd-section-head" style="margin-bottom:16px">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text);margin:0">🧬 Patterns</h2>
+        <span class="cmd-section-hint">Community Signal System — Phase 2 PROPAGATE layer</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <button class="fbtn active" id="patFilterPatterns" onclick="setPatternMode('patterns',this)">Patterns</button>
+        <button class="fbtn" id="patFilterQueue" onclick="setPatternMode('queue',this)">Newsletter queue</button>
+        <button class="btn-ghost" style="margin-left:auto" onclick="loadPatterns()" id="patRefreshBtn">↺ Refresh</button>
+        <button class="fbtn" style="background:var(--moss);color:#fff" onclick="runPatternDetect()">⚡ Detect patterns</button>
+      </div>
+      <div id="patStatus" style="font-size:12px;color:var(--dim);margin-bottom:12px"></div>
+
+      <!-- MOB FIELD SIGNAL FORM -->
+      <details style="margin-bottom:16px;border:1px solid var(--hover);border-radius:8px;padding:12px">
+        <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--text);user-select:none">➕ Add field signal (Mob)</summary>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+          <select id="mobSignalType" style="padding:6px 10px;border-radius:6px;border:1px solid var(--hover);background:var(--bg);color:var(--text);font-size:13px">
+            <option value="signal">📥 Signal — something the sector needs</option>
+            <option value="offer">📤 Offer — something an org can share</option>
+          </select>
+          <textarea id="mobSignalText" rows="3" placeholder="Describe the need or offer in one sentence (sector-level only — no names, no personal detail)…" style="padding:8px;border-radius:6px;border:1px solid var(--hover);background:var(--bg);color:var(--text);font-size:13px;resize:vertical"></textarea>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select id="mobSignalTag1" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid var(--hover);background:var(--bg);color:var(--text);font-size:12px">
+              <option value="">Primary tag…</option>
+              <option>funding</option><option>governance</option><option>digital-tools</option>
+              <option>housing</option><option>workforce</option><option>advocacy</option>
+              <option>climate-resilience</option><option>health-wellbeing</option>
+              <option>children-families</option><option>disability</option>
+              <option>homelessness</option><option>data-sovereignty</option>
+              <option>procurement</option><option>volunteering</option>
+              <option>collaboration</option><option>infrastructure</option>
+              <option>policy</option><option>emergency-relief</option>
+            </select>
+            <select id="mobSignalSize" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid var(--hover);background:var(--bg);color:var(--text);font-size:12px">
+              <option value="unknown">Org size unknown</option>
+              <option value="micro">Micro (&lt;5 staff)</option>
+              <option value="small">Small (5–20)</option>
+              <option value="medium">Medium (20–50)</option>
+              <option value="large">Large (50+)</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="task-action-btn" style="background:var(--moss);color:#fff;flex:1" onclick="submitMobSignal()">Submit signal</button>
+            <div id="mobSignalStatus" style="flex:2;font-size:12px;color:var(--dim);padding:6px 0"></div>
+          </div>
+        </div>
+      </details>
+
+      <div id="patOut"><p style="color:var(--faint);padding:16px">Loading patterns…</p></div>
+    </div>
+
+    <!-- VIEW: SECTOR PULSE -->
+    <div class="view-panel" id="view-pulse">
+      <div class="cmd-section-head" style="margin-bottom:16px">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text);margin:0">📡 Sector Pulse</h2>
+        <span class="cmd-section-hint">Community Signal System — Phase 1 SENSE layer</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="fbtn active" id="pulseFilterAll" onclick="setPulseMode('pulse',this)">This week</button>
+        <button class="fbtn" id="pulseFilterReview" onclick="setPulseMode('review',this)">Needs review</button>
+        <button class="fbtn" id="pulseFilterAll2" onclick="setPulseMode('all',this)">All signals</button>
+        <button class="btn-ghost" style="margin-left:auto" onclick="loadPulse()" id="pulseRefreshBtn">↺ Refresh</button>
+      </div>
+      <div id="pulseStatus" style="font-size:12px;color:var(--dim);margin-bottom:12px"></div>
+      <div id="pulseOut"><p style="color:var(--faint);padding:16px">Loading signals…</p></div>
     </div>
 
     <!-- VIEW: ROADMAP -->

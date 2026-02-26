@@ -47,24 +47,117 @@
     wrap.appendChild(div);
 
     if (role === 'ai' && cards && cards.length > 0) {
-      var pillRow = document.createElement('div');
-      pillRow.className = 'kai-pills';
       cards.forEach(function (card) {
-        var a = document.createElement('a');
-        a.className = 'kai-pill';
-        a.href = card.url;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.innerHTML = '<span class="kai-pill-icon">' + card.icon + '</span><span class="kai-pill-label">' + card.title + '</span><span class="kai-pill-arrow">↗</span>';
-        a.title = card.description;
-        pillRow.appendChild(a);
+        if (card.type === 'signal-form') {
+          wrap.appendChild(buildSignalForm());
+        } else {
+          var pillRow = wrap.querySelector('.kai-pills');
+          if (!pillRow) {
+            pillRow = document.createElement('div');
+            pillRow.className = 'kai-pills';
+            wrap.appendChild(pillRow);
+          }
+          var a = document.createElement('a');
+          a.className = 'kai-pill';
+          a.href = card.url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.innerHTML = '<span class="kai-pill-icon">' + card.icon + '</span><span class="kai-pill-label">' + card.title + '</span><span class="kai-pill-arrow">↗</span>';
+          a.title = card.description;
+          pillRow.appendChild(a);
+        }
       });
-      wrap.appendChild(pillRow);
     }
 
     msgs.appendChild(wrap);
     msgs.scrollTop = msgs.scrollHeight;
     return div;
+  }
+
+  /* ── Signal form card ── */
+  var SIGNAL_TAGS = [
+    'funding','governance','digital-tools','housing','workforce','advocacy',
+    'climate-resilience','health-wellbeing','children-families','disability',
+    'homelessness','data-sovereignty','procurement','volunteering',
+    'collaboration','infrastructure','policy','emergency-relief'
+  ];
+  var SIGNAL_STORE_URL = 'https://community-signal.netlify.app/.netlify/functions/signal-store';
+  var SIGNAL_SECRET    = 'kdte765whtualp9w54cnq09vcd86ancg';
+
+  function buildSignalForm() {
+    var form = document.createElement('div');
+    form.className = 'kai-signal-form';
+    form.innerHTML = [
+      '<p class="kai-signal-intro">Share what your organisation needs — or has to offer. Anonymous, sector-level only.</p>',
+      '<div class="kai-signal-tabs">',
+        '<button class="kai-stab active" data-type="signal">📥 We need…</button>',
+        '<button class="kai-stab" data-type="offer">📤 We can offer…</button>',
+      '</div>',
+      '<textarea class="kai-signal-text" rows="3" placeholder="Describe in one sentence (no names, no personal detail)…" maxlength="500"></textarea>',
+      '<select class="kai-signal-tag">',
+        '<option value="">Select a topic…</option>',
+        SIGNAL_TAGS.map(function(t){return'<option value="'+t+'">'+t+'</option>';}).join(''),
+      '</select>',
+      '<select class="kai-signal-size">',
+        '<option value="unknown">Org size (optional)</option>',
+        '<option value="micro">Micro (≤5 staff)</option>',
+        '<option value="small">Small (5–20)</option>',
+        '<option value="medium">Medium (20–50)</option>',
+        '<option value="large">Large (50+)</option>',
+      '</select>',
+      '<button class="kai-signal-submit">📡 Submit anonymously</button>',
+      '<div class="kai-signal-status"></div>'
+    ].join('');
+
+    var currentType = 'signal';
+    var tabs = form.querySelectorAll('.kai-stab');
+    tabs.forEach(function(tab){
+      tab.addEventListener('click', function(){
+        tabs.forEach(function(t){t.classList.remove('active');});
+        tab.classList.add('active');
+        currentType = tab.getAttribute('data-type');
+        var ta = form.querySelector('.kai-signal-text');
+        ta.placeholder = currentType === 'signal'
+          ? 'Describe the need in one sentence (no names, no personal detail)…'
+          : 'Describe what your org could offer (no names, no personal detail)…';
+      });
+    });
+
+    form.querySelector('.kai-signal-submit').addEventListener('click', function(){
+      var text = form.querySelector('.kai-signal-text').value.trim();
+      var tag  = form.querySelector('.kai-signal-tag').value;
+      var size = form.querySelector('.kai-signal-size').value || 'unknown';
+      var statusEl = form.querySelector('.kai-signal-status');
+
+      if (!text || text.length < 10) { statusEl.textContent = 'Please enter at least one sentence.'; return; }
+
+      var payload = { type: currentType, sector_tags: tag ? [tag] : [], org_size: size, region: 'WA', source: 'kai' };
+      if (currentType === 'signal') payload.need_summary  = text;
+      else                          payload.offer_summary = text;
+
+      statusEl.textContent = 'Sending…';
+      fetch(SIGNAL_STORE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-ingest-secret': SIGNAL_SECRET },
+        body: JSON.stringify(payload)
+      })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if (d.stored) {
+            statusEl.textContent = '✓ Signal noted — thank you. It’s anonymous and sector-level only.';
+            form.querySelector('.kai-signal-text').value = '';
+            form.querySelector('.kai-signal-tag').value = '';
+            form.querySelector('.kai-signal-size').value = 'unknown';
+          } else {
+            statusEl.textContent = 'Something went wrong: ' + (d.error || 'unknown error');
+          }
+        })
+        .catch(function(){
+          statusEl.textContent = 'Couldn’t submit right now. Try again in a moment.';
+        });
+    });
+
+    return form;
   }
 
   /* ── Send message to Netlify Function ── */

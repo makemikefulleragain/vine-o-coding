@@ -1535,5 +1535,310 @@ function _wmAbilities(){
   document.getElementById('wm-panel')?.appendChild(modal);
 }
 
+// ── SECTOR PULSE VIEW ─────────────────────────
+const PULSE_URL='https://community-signal.netlify.app/.netlify/functions/signals-read';
+function getPulseSecret(){
+  let s=localStorage.getItem('pulse_secret');
+  if(!s){s=prompt('Enter the Community Signal secret key (stored locally, never sent to Kamunity servers):','');if(s)localStorage.setItem('pulse_secret',s);}
+  return s||'';
+}
+let _pulseMode='pulse';
+
+function setPulseMode(mode,btn){
+  _pulseMode=mode;
+  document.querySelectorAll('#view-pulse .fbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadPulse();
+}
+
+async function loadPulse(){
+  const out=document.getElementById('pulseOut');
+  const status=document.getElementById('pulseStatus');
+  if(!out)return;
+  out.innerHTML='<p style="color:var(--faint);padding:16px">Loading…</p>';
+  if(status)status.textContent='';
+  try{
+    const r=await fetch(PULSE_URL+'?mode='+_pulseMode,{
+      headers:{'x-ingest-secret':getPulseSecret()}
+    });
+    if(!r.ok){
+      const err=await r.json().catch(()=>({error:'HTTP '+r.status}));
+      out.innerHTML='<p style="color:var(--danger);padding:16px">Error: '+(err.error||r.status)+'</p>';
+      return;
+    }
+    const data=await r.json();
+    if(status)status.textContent=data.count+' signal'+(data.count!==1?'s':'')+' — '+modeLabel(_pulseMode);
+    renderPulseSignals(data.signals||[]);
+  }catch(e){
+    out.innerHTML='<p style="color:var(--danger);padding:16px">Could not reach Community Signal endpoint. Deploy the community-signal site first.<br><small>'+e.message+'</small></p>';
+  }
+}
+
+function modeLabel(m){
+  if(m==='pulse')return'this week';
+  if(m==='review')return'awaiting review';
+  return'all time';
+}
+
+function renderPulseSignals(signals){
+  const out=document.getElementById('pulseOut');if(!out)return;
+  if(!signals.length){
+    out.innerHTML='<p style="color:var(--faint);padding:16px">No signals yet. Forward a sector newsletter to the ingest endpoint to get started.</p>';
+    return;
+  }
+  out.innerHTML=signals.map(s=>{
+    const conf_color=s.confidence==='high'?'var(--moss)':s.confidence==='medium'?'var(--ember)':'var(--dim)';
+    const age=s.age_days!==undefined?s.age_days+'d ago':'';
+    const tags=(s.tags||[]).map(t=>`<span style="background:var(--hover);border-radius:4px;padding:2px 6px;font-size:10px;color:var(--dim)">${t}</span>`).join(' ');
+    const weighted=s.weighted_score!==undefined?` <span style="color:var(--sky);font-size:11px">(weighted: ${s.weighted_score})</span>`:'';
+    return`<div class="gap-card" style="margin-bottom:12px" id="pulse-${s.id}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:4px">${escHtml(s.summary)}</div>
+          <div style="font-size:12px;color:var(--dim);margin-bottom:6px">${escHtml(s.why_it_matters)}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+            <span style="font-size:11px;color:var(--faint)">R:${s.relevance_score} A:${s.actionability_score} N:${s.novelty_score} avg:<strong>${s.average_score}</strong>${weighted}</span>
+            <span style="font-size:11px;color:${conf_color}">${s.confidence}</span>
+            <span style="font-size:11px;color:var(--faint)">${escHtml(s.source_name)} ${age?'· '+age:''}</span>
+          </div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">${tags}</div>
+          ${s.new_tag_proposed?`<div style="margin-top:4px;font-size:11px;color:var(--ember)">⚠ New tag proposed: ${escHtml(s.new_tag_proposed)}</div>`:''}
+          ${s.reviewed?`<div style="margin-top:4px;font-size:11px;color:var(--moss)">✓ Reviewed${s.review_notes?' — '+escHtml(s.review_notes):''}</div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:90px">
+          ${!s.reviewed?`<button class="task-action-btn" style="background:var(--moss);color:#fff" onclick="pulseApprove('${s.id}')">✓ Approve</button>
+          <button class="task-action-btn" style="color:var(--danger)" onclick="pulseReject('${s.id}')">✕ Reject</button>`:''}
+          <button class="task-action-btn" onclick="pulseAsk('${s.id}')">🤖 Ask WM</button>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--faint);margin-top:4px;border-top:1px solid var(--hover);padding-top:4px">${escHtml(s.source_attribution||s.source_name)}</div>
+    </div>`;
+  }).join('');
+}
+
+async function pulseApprove(id){
+  await pulseReview(id,true,'');
+}
+async function pulseReject(id){
+  const note=prompt('Optional note for rejection (or press Enter to skip):','');
+  if(note===null)return;
+  await pulseReview(id,true,'REJECTED'+(note?' — '+note:''));
+}
+async function pulseReview(id,reviewed,note){
+  try{
+    const r=await fetch(PULSE_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-ingest-secret':getPulseSecret()},
+      body:JSON.stringify({id,reviewed,review_notes:note||null})
+    });
+    if(r.ok)loadPulse();
+    else showCmdResult('Review failed: HTTP '+r.status);
+  }catch(e){showCmdResult('Review failed: '+e.message);}
+}
+function pulseAsk(id){
+  const card=document.getElementById('pulse-'+id);
+  if(!card)return;
+  const summary=card.querySelector('div[style*="font-weight:600"]')?.textContent||'a sector signal';
+  _wmSend('Community Signal — I\'m reviewing this sector signal: "'+summary+'". Help me think through: What does this mean for WA community orgs right now? What\'s the best way to respond to this pattern? Any similar patterns I should cross-reference? Mike Fuller, Kamunity, Perth WA.');
+}
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── PATTERNS VIEW (Phase 2 PROPAGATE) ─────────────────────────────────────────
+const PATTERN_URL   ='https://community-signal.netlify.app/.netlify/functions/pattern-detect';
+const STORE_URL     ='https://community-signal.netlify.app/.netlify/functions/signal-store';
+const NEWSLETTER_URL='https://community-signal.netlify.app/.netlify/functions/newsletter-draft';
+
+let _patMode='patterns';
+
+function setPatternMode(mode,btn){
+  _patMode=mode;
+  document.querySelectorAll('#view-patterns .fbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadPatterns();
+}
+
+async function loadPatterns(){
+  const out=document.getElementById('patOut');
+  const status=document.getElementById('patStatus');
+  if(!out)return;
+  out.innerHTML='<p style="color:var(--faint);padding:16px">Loading…</p>';
+  if(status)status.textContent='';
+  try{
+    const url=_patMode==='queue'
+      ?NEWSLETTER_URL+'?mode=queue'
+      :PATTERN_URL+'?mode=patterns';
+    const r=await fetch(url,{headers:{'x-ingest-secret':getPulseSecret()}});
+    if(!r.ok){
+      const err=await r.json().catch(()=>({error:'HTTP '+r.status}));
+      out.innerHTML='<p style="color:var(--danger);padding:16px">Error: '+(err.error||r.status)+'</p>';
+      return;
+    }
+    const data=await r.json();
+    if(_patMode==='queue'){
+      if(status)status.textContent=(data.count||0)+' pattern'+(data.count!==1?'s':'')+' in newsletter queue';
+      renderNewsletterQueue(data.queue||[]);
+    } else {
+      if(status)status.textContent=(data.count||0)+' pattern'+(data.count!==1?'s':'')+' detected';
+      renderPatterns(data.patterns||[]);
+    }
+  }catch(e){
+    out.innerHTML='<p style="color:var(--danger);padding:16px">Could not reach Pattern endpoint.<br><small>'+e.message+'</small></p>';
+  }
+}
+
+function renderPatterns(patterns){
+  const out=document.getElementById('patOut');if(!out)return;
+  if(!patterns.length){
+    out.innerHTML='<p style="color:var(--faint);padding:16px">No patterns yet. Add field signals or run ⚡ Detect patterns after signals accumulate.</p>';
+    return;
+  }
+  const verdictColor=v=>v==='PASS'?'var(--moss)':v==='FAIL'?'var(--danger)':v==='REVIEW'?'var(--ember)':'var(--dim)';
+  const statusIcon=s=>s==='ready'?'✅':s==='published'?'📢':s==='skipped'?'⏭':s==='accumulating'?'⏳':'❓';
+  out.innerHTML=patterns.map(p=>{
+    const tags=(p.sector_tags||[]).map(t=>`<span style="background:var(--hover);border-radius:4px;padding:2px 6px;font-size:10px;color:var(--dim)">${t}</span>`).join(' ');
+    return`<div class="gap-card" style="margin-bottom:12px" id="pat-${p.id}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:4px">${escHtml(p.summary)}</div>
+          <div style="font-size:11px;color:var(--dim);margin-bottom:6px">${p.signal_count} signal${p.signal_count!==1?'s':''} · ${statusIcon(p.status)} ${p.status}</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px">${tags}</div>
+          <span style="font-size:11px;color:${verdictColor(p.traceability_verdict)};font-weight:600">Traceability: ${p.traceability_verdict||'PENDING'}</span>
+          ${p.traceability_reasoning?.recommendation?`<span style="font-size:11px;color:var(--dim)"> — ${escHtml(p.traceability_reasoning.recommendation)}</span>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:100px">
+          ${p.traceability_verdict==='PASS'&&!p.drafts_generated_at?`<button class="task-action-btn" style="background:var(--sky);color:#fff" onclick="generateDrafts('${p.id}')">✍ Draft</button>`:''}
+          ${p.newsletter_draft?`<button class="task-action-btn" onclick="viewDraft('${p.id}')">👁 View draft</button>`:''}
+          <button class="task-action-btn" onclick="patternAsk('${p.id}')">🤖 Ask WM</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderNewsletterQueue(queue){
+  const out=document.getElementById('patOut');if(!out)return;
+  if(!queue.length){
+    out.innerHTML='<p style="color:var(--faint);padding:16px">No drafts in queue yet. Run ⚡ Detect patterns then ✍ Draft on any PASS patterns.</p>';
+    return;
+  }
+  out.innerHTML=queue.map(p=>{
+    if(!p.newsletter_draft&&!p.substack_draft)return'';
+    return`<div class="gap-card" style="margin-bottom:16px" id="qpat-${p.id}">
+      <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:8px">${escHtml(p.summary)}</div>
+      <div style="font-size:11px;color:var(--dim);margin-bottom:8px">${p.signal_count} signals · Tags: ${(p.sector_tags||[]).join(', ')}</div>
+      ${p.newsletter_draft?`<div style="margin-bottom:8px">
+        <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px">📰 Newsletter blurb</div>
+        <div style="font-size:12px;color:var(--text);background:var(--hover);border-radius:6px;padding:10px;line-height:1.5">${escHtml(p.newsletter_draft)}</div>
+      </div>`:''}
+      ${p.linkedin_draft?`<div style="margin-bottom:8px">
+        <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px">💼 LinkedIn</div>
+        <div style="font-size:12px;color:var(--text);background:var(--hover);border-radius:6px;padding:10px;line-height:1.5">${escHtml(p.linkedin_draft)}</div>
+      </div>`:''}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <button class="task-action-btn" style="background:var(--moss);color:#fff" onclick="patternApprove('${p.id}')">✓ Approve & mark published</button>
+        <button class="task-action-btn" style="color:var(--danger)" onclick="patternSkip('${p.id}')">✕ Skip</button>
+        <button class="task-action-btn" onclick="copyDraft('${p.id}','${escHtml(p.newsletter_draft||'').replace(/'/g,"\\'")}')">📋 Copy newsletter</button>
+        ${p.substack_draft?`<button class="task-action-btn" onclick="copyDraft('sub-${p.id}','${escHtml(p.substack_draft||'').replace(/'/g,"\\'")}')">📋 Copy Substack</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function runPatternDetect(){
+  const status=document.getElementById('patStatus');
+  if(status)status.textContent='Running pattern detection…';
+  try{
+    const r=await fetch(PATTERN_URL,{method:'POST',headers:{'x-ingest-secret':getPulseSecret()}});
+    const data=await r.json();
+    if(status)status.textContent=`Detection complete: ${data.patterns_created||0} created, ${data.patterns_updated||0} updated`;
+    loadPatterns();
+  }catch(e){
+    if(status)status.textContent='Detection failed: '+e.message;
+  }
+}
+
+async function generateDrafts(patternId){
+  const status=document.getElementById('patStatus');
+  if(status)status.textContent='Generating newsletter drafts…';
+  try{
+    const r=await fetch(NEWSLETTER_URL,{method:'POST',headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'}});
+    const data=await r.json();
+    if(status)status.textContent=`Drafted ${data.drafted||0} pattern${data.drafted!==1?'s':''}`;
+    loadPatterns();
+  }catch(e){
+    if(status)status.textContent='Draft generation failed: '+e.message;
+  }
+}
+
+async function patternApprove(id){
+  const r=await fetch(NEWSLETTER_URL+'?mode=approve',{
+    method:'POST',
+    headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+    body:JSON.stringify({pattern_id:id,action:'approve'})
+  });
+  if(r.ok)loadPatterns();
+  else showCmdResult('Approve failed: HTTP '+r.status);
+}
+
+async function patternSkip(id){
+  const note=prompt('Optional note for skipping (or press Enter):','');
+  if(note===null)return;
+  const r=await fetch(NEWSLETTER_URL+'?mode=approve',{
+    method:'POST',
+    headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+    body:JSON.stringify({pattern_id:id,action:'skip',review_notes:note||null})
+  });
+  if(r.ok)loadPatterns();
+  else showCmdResult('Skip failed: HTTP '+r.status);
+}
+
+function viewDraft(id){
+  setPatternMode('queue',document.getElementById('patFilterQueue'));
+}
+
+function copyDraft(id,text){
+  navigator.clipboard.writeText(text).then(()=>showCmdResult('Copied to clipboard')).catch(()=>showCmdResult('Copy failed — try manually'));
+}
+
+async function submitMobSignal(){
+  const type=document.getElementById('mobSignalType')?.value||'signal';
+  const text=(document.getElementById('mobSignalText')?.value||'').trim();
+  const tag=document.getElementById('mobSignalTag1')?.value;
+  const size=document.getElementById('mobSignalSize')?.value||'unknown';
+  const statusEl=document.getElementById('mobSignalStatus');
+
+  if(!text){if(statusEl)statusEl.textContent='Please enter a description.';return;}
+  if(text.length<10){if(statusEl)statusEl.textContent='Too short — at least 10 characters.';return;}
+
+  const payload={type,sector_tags:tag?[tag]:[],org_size:size,region:'WA',source:'mob-field'};
+  if(type==='signal')payload.need_summary=text;
+  else payload.offer_summary=text;
+
+  if(statusEl)statusEl.textContent='Submitting…';
+  try{
+    const r=await fetch(STORE_URL,{
+      method:'POST',
+      headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    if(r.ok){
+      if(statusEl)statusEl.textContent='✓ Signal stored anonymously';
+      document.getElementById('mobSignalText').value='';
+      document.getElementById('mobSignalTag1').value='';
+    } else {
+      const err=await r.json().catch(()=>({error:'HTTP '+r.status}));
+      if(statusEl)statusEl.textContent='Error: '+(err.error||r.status);
+    }
+  }catch(e){
+    if(statusEl)statusEl.textContent='Submit failed: '+e.message;
+  }
+}
+
+function patternAsk(id){
+  const card=document.getElementById('pat-'+id);
+  const summary=card?.querySelector('div[style*="font-weight:600"]')?.textContent||'a sector pattern';
+  _wmSend('Community Signal — I\'m reviewing this emerging pattern: "'+summary+'". Help me think through: What does this structural pattern mean for WA community orgs? What would a useful response look like? Are there existing tools or resources I should connect people to first? Mike Fuller, Kamunity, Perth WA.');
+}
+
 // Boot
 loadEntityEdits();

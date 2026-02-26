@@ -1,0 +1,29 @@
+# Kamunity Community Signal System
+
+> Kamunity Community Signal — anonymised weak-tie sensing for the WA community sector.
+
+This system identifies emerging patterns across the Western Australian community sector by aggregating anonymised signals from public sources (RSS, newsletters, sector publications). No personal data is collected or stored.
+
+## What this system does
+
+- Reads public sector content (RSS feeds, forwarded newsletters)
+- Extracts sector-relevant signals using constitutional AI filtering
+- Aggregates signals into anonymised patterns
+- Generates matched responses for WA community organisations
+
+## Constitutional principles
+
+- No personal data stored — sector-level signals only
+- Traceability test applied before any pattern is published
+- Human review required before any outbound communication
+- Built by Kamunity (kamunity.org) for the WA community sector
+
+## Ecosystem
+
+- Kamunity: https://kamunity.org
+- Kitchen Table (ops): https://coruscating-naiad-c0ccb9.netlify.app/control.html
+- Grants Hub: https://grants-hub.netlify.app
+
+## Contact
+
+community@kamunity.org
