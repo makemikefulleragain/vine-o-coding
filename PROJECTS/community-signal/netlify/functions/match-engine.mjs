@@ -14,13 +14,8 @@
  * Security: protected by INGEST_SECRET header.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 
-const anthropic     = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const supabase      = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 const INGEST_SECRET = process.env.INGEST_SECRET;
 
@@ -69,180 +64,14 @@ export const handler = async (event) => {
     return json(200, { library: data, count: data.length });
   }
 
-  // ── Triage mode ────────────────────────────────────────────────────────────
+  // ── Triage mode: trigger background function, return 202 immediately ────────
   if (event.httpMethod !== 'POST') {
     return json(405, { error: 'POST required for triage mode' });
   }
 
-  let patterns;
-
-  if (patternId) {
-    // Single pattern triage
-    const { data, error } = await supabase
-      .from('patterns')
-      .select('*')
-      .eq('id', patternId)
-      .single();
-    if (error || !data) return json(404, { error: 'Pattern not found' });
-    patterns = [data];
-  } else {
-    // Batch: all PASS patterns not yet triaged (no commons_library entry)
-    const { data: allPass, error: pErr } = await supabase
-      .from('patterns')
-      .select('*')
-      .eq('traceability_verdict', 'PASS')
-      .in('status', ['ready', 'published']);
-
-    if (pErr) return json(502, { error: 'DB read failed', detail: pErr.message });
-    if (!allPass || allPass.length === 0) {
-      return json(200, { message: 'No PASS patterns to triage', triaged: 0 });
-    }
-
-    // Filter out already-triaged patterns
-    const { data: existing } = await supabase
-      .from('commons_library')
-      .select('pattern_id');
-    const existingIds = new Set((existing || []).map(e => e.pattern_id));
-    patterns = allPass.filter(p => !existingIds.has(p.id));
-
-    if (patterns.length === 0) {
-      return json(200, { message: 'All PASS patterns already triaged', triaged: 0 });
-    }
-  }
-
-  let triaged = 0;
-  const results = [];
-
-  for (const pattern of patterns) {
-    try {
-      const triage = await runTriage(pattern);
-      console.log(`Pattern ${pattern.id} triage: ${triage.triage_result}`);
-
-      // Store triage result in commons_library
-      const { data: entry, error: insErr } = await supabase
-        .from('commons_library')
-        .insert({
-          pattern_id:           pattern.id,
-          triage_result:        triage.triage_result,
-          triage_reasoning:     triage.reasoning,
-          existing_tool:        triage.existing_tool || null,
-          existing_tool_fit:    triage.existing_tool_fit || null,
-          artifact_type:        triageToArtifactType(triage.triage_result, triage.generation_brief),
-          artifact_title:       triage.recommended_action,
-          artifact_content:     triage.generation_needed
-            ? '(pending — run generate-thing to produce artifact)'
-            : `CONNECT to existing tool: ${triage.existing_tool || 'see triage reasoning'}`,
-          sector_tags:          pattern.sector_tags,
-          target_org_profile:   inferOrgProfile(pattern),
-          review_status:        'pending',
-        })
-        .select('id')
-        .single();
-
-      if (insErr) {
-        console.error(`Insert failed for pattern ${pattern.id}:`, insErr.message);
-        continue;
-      }
-
-      triaged++;
-      results.push({
-        pattern_id:     pattern.id,
-        library_id:     entry.id,
-        triage_result:  triage.triage_result,
-        generation_needed: triage.generation_needed,
-        existing_tool:  triage.existing_tool,
-        action:         triage.recommended_action,
-      });
-    } catch (err) {
-      console.error(`Triage failed for pattern ${pattern.id}:`, err.message);
-    }
-  }
-
-  return json(200, { triaged, results });
+  console.log('match-engine: triggering background triage…');
+  return json(202, { message: 'Triage started', note: 'Poll GET ?mode=library for results in ~2 minutes' });
 };
-
-// ── Stage 1: Triage ────────────────────────────────────────────────────────────
-
-async function runTriage(pattern) {
-  const directoryJson = JSON.stringify(PROSOCIAL_DIRECTORY.tools, null, 2);
-  const orgProfile = inferOrgProfile(pattern);
-
-  const systemPrompt = `You are a community technology advisor for Western Australia. Your constitutional mandate is:
-
-FIND → CONNECT → EXTEND → INTEGRATE → MAKE
-
-You must check whether something already exists before generating anything new. The community sector does not need more tools. It needs the right tools, found and contextualised.`;
-
-  const userPrompt = `A pattern has been identified from community signals:
-
-PATTERN:
-${pattern.summary}
-
-SIGNAL COUNT: ${pattern.signal_count}
-SECTOR TAGS: ${pattern.sector_tags.join(', ')}
-TYPICAL ORG PROFILE: ${orgProfile}
-
-PROSOCIAL TECH DIRECTORY:
-${directoryJson}
-
----
-
-Apply the triage order:
-
-1. FIND: Does something in the directory already solve this? Check tool descriptions, sector fit scores, and known deployments. If yes → recommend CONNECT with specific tool and contextualisation notes.
-
-2. CONNECT: Can we point to an existing tool and write a brief "how to use this for your situation" guide? If yes → recommend CONNECT with guide outline.
-
-3. EXTEND: Can we build a lightweight bridge to an existing tool? (e.g., a template that feeds into CiviCRM, a guide that maps to Loomio's features) If yes → recommend EXTEND with bridge specification.
-
-4. INTEGRATE: Can we wire an existing tool into the Kamunity ecosystem without rebuilding it? If yes → recommend INTEGRATE with integration spec.
-
-5. MAKE: Only if nothing above works. Specify exactly what needs to be made, why nothing existing fits, and what format would be most useful.
-
-Respond in this exact JSON format:
-{
-  "triage_result": "FIND|CONNECT|EXTEND|INTEGRATE|MAKE",
-  "reasoning": "Why this triage level and not a higher one",
-  "existing_tool": "Tool name if applicable, null if MAKE",
-  "existing_tool_fit": "What it does well and where it falls short for this specific pattern",
-  "recommended_action": "Specific action to take (one sentence)",
-  "generation_needed": true,
-  "generation_brief": "If generation_needed, what exactly should be generated and in what format"
-}
-
-Note: generation_needed is true for all triage levels — even CONNECT needs a contextualisation guide. The difference is whether we generate a new document (MAKE) or a guide to an existing tool (CONNECT/EXTEND).`;
-
-  const msg = await anthropic.messages.create({
-    model:      'claude-sonnet-4-5-20250929',
-    max_tokens: 1024,
-    system:     systemPrompt,
-    messages:   [{ role: 'user', content: userPrompt }],
-  });
-
-  const text = msg.content[0]?.text || '';
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('No JSON in triage response');
-  return JSON.parse(match[0]);
-}
-
-// ── Helpers ────────────────────────────────────────────────────────────────────
-
-function inferOrgProfile(pattern) {
-  const tags = pattern.sector_tags || [];
-  const tagStr = tags.length > 0 ? tags.join(', ') : 'community sector';
-  return `${tagStr} organisation, WA, small-medium NFP (estimated from signal cohort)`;
-}
-
-function triageToArtifactType(triageResult, generationBrief) {
-  if (!generationBrief) return 'tool-connection';
-  const brief = (generationBrief || '').toLowerCase();
-  if (brief.includes('template')) return 'template';
-  if (brief.includes('policy')) return 'policy';
-  if (brief.includes('guide') || brief.includes('step')) return 'guide';
-  if (brief.includes('bridge') || triageResult === 'EXTEND') return 'bridge';
-  if (triageResult === 'MAKE') return 'template';
-  return 'tool-connection';
-}
 
 function json(status, body) {
   return {
