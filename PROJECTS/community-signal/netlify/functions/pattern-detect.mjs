@@ -54,16 +54,32 @@ export const handler = async (event) => {
     return json(405, { error: 'Method not allowed' });
   }
 
-  // 1. Load unpatternated signals (no pattern_id yet, PENDING traceability)
-  const { data: signals, error: sigErr } = await supabase
-    .from('community_signals')
-    .select('*')
-    .is('pattern_id', null)
-    .order('created_at', { ascending: true });
+  // 1. Load unpatternated signals from BOTH tables:
+  //    - sector_signals: ingested via RSS/email (signal-ingest → signal-filter), reviewed=true, pattern_id null
+  //    - community_signals: bilateral signals submitted via Kai card (signal-store), pattern_id null
+  const [sectorRes, communityRes] = await Promise.all([
+    supabase.from('sector_signals').select('*').is('pattern_id', null).eq('reviewed', true).order('created_at', { ascending: true }),
+    supabase.from('community_signals').select('*').is('pattern_id', null).order('created_at', { ascending: true }),
+  ]);
 
-  if (sigErr) return json(502, { error: 'DB read failed', detail: sigErr.message });
+  if (sectorRes.error)    return json(502, { error: 'DB read failed (sector_signals)', detail: sectorRes.error.message });
+  if (communityRes.error) return json(502, { error: 'DB read failed (community_signals)', detail: communityRes.error.message });
 
-  if (!signals || signals.length === 0) {
+  // Normalise sector_signals columns to match community_signals shape expected by Claude prompt
+  const normalisedSector = (sectorRes.data || []).map(s => ({
+    ...s,
+    need_summary: s.summary,      // sector_signals uses 'summary', community_signals uses 'need_summary'
+    sector_tags:  s.tags,         // sector_signals uses 'tags', community_signals uses 'sector_tags'
+    _source_table: 'sector_signals',
+  }));
+  const normalisedCommunity = (communityRes.data || []).map(s => ({
+    ...s,
+    _source_table: 'community_signals',
+  }));
+
+  const signals = [...normalisedSector, ...normalisedCommunity];
+
+  if (signals.length === 0) {
     return json(200, { message: 'No unprocessed signals', patterns_created: 0 });
   }
 
@@ -86,7 +102,7 @@ export const handler = async (event) => {
     const contributing = signals.filter(s => signalIds.includes(s.id));
     if (contributing.length === 0) continue;
 
-    const allTags = [...new Set(contributing.flatMap(s => s.sector_tags))];
+    const allTags = [...new Set(contributing.flatMap(s => s.sector_tags || s.tags || []))];
     const earliest = contributing.reduce((a, b) => a.created_at < b.created_at ? a : b).created_at;
     const latest   = contributing.reduce((a, b) => a.created_at > b.created_at ? a : b).created_at;
 
@@ -120,11 +136,8 @@ export const handler = async (event) => {
         .eq('id', matchedPattern.id);
 
       if (!upErr) {
-        // Link signals to this pattern
-        await supabase
-          .from('community_signals')
-          .update({ pattern_id: matchedPattern.id, traceability_verdict: traceResult.verdict, traceability_reasoning: traceResult })
-          .in('id', signalIds);
+        // Link signals back to their source table
+        await linkSignalsToPattern(signals, signalIds, matchedPattern.id, traceResult);
         patternsUpdated++;
         results.push({ pattern_id: matchedPattern.id, action: 'updated', verdict: traceResult.verdict, signals: contributing.length });
       }
@@ -147,11 +160,8 @@ export const handler = async (event) => {
         .single();
 
       if (!insErr && newPattern) {
-        // Link signals to this new pattern
-        await supabase
-          .from('community_signals')
-          .update({ pattern_id: newPattern.id, traceability_verdict: traceResult.verdict, traceability_reasoning: traceResult })
-          .in('id', signalIds);
+        // Link signals back to their source table
+        await linkSignalsToPattern(signals, signalIds, newPattern.id, traceResult);
         patternsCreated++;
         results.push({ pattern_id: newPattern.id, action: 'created', verdict: traceResult.verdict, signals: contributing.length });
       }
@@ -309,6 +319,21 @@ function findMatchingPattern(summary, existingPatterns) {
     if (overlap >= 3) return p; // 3+ meaningful words in common = same pattern
   }
   return null;
+}
+
+// ── Write pattern_id back to correct source table per signal ──────────────────
+async function linkSignalsToPattern(allSignals, signalIds, patternId, traceResult) {
+  const sectorIds    = allSignals.filter(s => signalIds.includes(s.id) && s._source_table === 'sector_signals').map(s => s.id);
+  const communityIds = allSignals.filter(s => signalIds.includes(s.id) && s._source_table === 'community_signals').map(s => s.id);
+
+  await Promise.allSettled([
+    sectorIds.length > 0
+      ? supabase.from('sector_signals').update({ pattern_id: patternId }).in('id', sectorIds)
+      : Promise.resolve(),
+    communityIds.length > 0
+      ? supabase.from('community_signals').update({ pattern_id: patternId, traceability_verdict: traceResult.verdict, traceability_reasoning: traceResult }).in('id', communityIds)
+      : Promise.resolve(),
+  ]);
 }
 
 // ── Match offers to patterns ───────────────────────────────────────────────────

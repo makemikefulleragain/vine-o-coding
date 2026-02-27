@@ -5,3 +5,13 @@
 [functions]
   node_bundler = "esbuild"
   included_files = ["data/**"]
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"

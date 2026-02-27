@@ -194,17 +194,74 @@ const GAP_STATE_KEY='kt-gap-state';
 const MTD_KEY='kt-mtd';
 
 function daysBetween(a,b){return Math.floor((new Date(b)-new Date(a))/86400000);}
+
+// ── SUPABASE STATE SYNC ─────────────────────────
+// Reads/writes via /.netlify/functions/kt-state with localStorage fallback
+const KT_STATE_URL='/.netlify/functions/kt-state';
+let _ktRemote={};  // last known remote state
+
+async function ktLoadRemote(){
+  try{
+    const res=await fetch(KT_STATE_URL);
+    if(!res.ok)throw new Error('status '+res.status);
+    _ktRemote=await res.json();
+    _applyRemote(_ktRemote);
+    const b=document.getElementById('syncBadge');
+    if(b){const t=new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',second:'2-digit'});b.textContent='✅ synced '+t;b.style.color='#4caf50';}
+  }catch(e){
+    console.warn('kt-state load failed, using localStorage fallback:',e.message);
+    _loadLocalFallback();
+    const b=document.getElementById('syncBadge');
+    if(b){b.textContent='⚠️ offline';b.style.color='#e57373';}
+  }
+}
+
+function _applyRemote(r){
+  if(r.tasks&&typeof r.tasks==='object'){TASKS.forEach(t=>{if(r.tasks[t.id]!==undefined)t.done=r.tasks[t.id];});try{localStorage.setItem(TASK_STATE_KEY,JSON.stringify(r.tasks));}catch{}}
+  if(r.safety&&typeof r.safety==='object'){SAFETY_ITEMS.forEach(x=>{if(r.safety[x.id])x.st=r.safety[x.id];});try{localStorage.setItem(SAFETY_STATE_KEY,JSON.stringify(r.safety));}catch{}}
+  if(r.gaps&&typeof r.gaps==='object'){GAPS.forEach(g=>{if(r.gaps[g.id]!==undefined)g.resolved=r.gaps[g.id];});try{localStorage.setItem(GAP_STATE_KEY,JSON.stringify(r.gaps));}catch{}}
+  if(r.entities&&typeof r.entities==='object'){ENTITIES.forEach(e=>{if(r.entities[e.id]){if(r.entities[e.id].effort)e.effort=r.entities[e.id].effort;if(r.entities[e.id].impact)e.impact=r.entities[e.id].impact;if(r.entities[e.id].lastReviewed)e.lastReviewed=r.entities[e.id].lastReviewed;}});try{localStorage.setItem('kt-entity-edits',JSON.stringify(r.entities));}catch{}}
+  if(Array.isArray(r.journal)){try{localStorage.setItem(JOURNAL_KEY,JSON.stringify(r.journal));}catch{}}
+  if(r.mtd){try{localStorage.setItem(MTD_KEY,r.mtd);}catch{}}
+  if(Array.isArray(r.waymaker_history)){_wmHistory=r.waymaker_history;}
+}
+
+function _loadLocalFallback(){
+  try{const s=JSON.parse(localStorage.getItem(TASK_STATE_KEY)||'{}');TASKS.forEach(t=>{if(s[t.id]!==undefined)t.done=s[t.id];});}catch{}
+  try{const s=JSON.parse(localStorage.getItem(SAFETY_STATE_KEY)||'{}');SAFETY_ITEMS.forEach(x=>{if(s[x.id])x.st=s[x.id];});}catch{}
+  try{const s=JSON.parse(localStorage.getItem(GAP_STATE_KEY)||'{}');GAPS.forEach(g=>{if(s[g.id]!==undefined)g.resolved=s[g.id];});}catch{}
+  try{const s=JSON.parse(localStorage.getItem('kt-entity-edits')||'{}');ENTITIES.forEach(e=>{if(s[e.id]){if(s[e.id].effort)e.effort=s[e.id].effort;if(s[e.id].impact)e.impact=s[e.id].impact;if(s[e.id].lastReviewed)e.lastReviewed=s[e.id].lastReviewed;}});}catch{}
+}
+
+async function ktPatch(patch){
+  try{
+    const res=await fetch(KT_STATE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(patch)});
+    if(!res.ok)throw new Error('status '+res.status);
+  }catch(e){
+    console.warn('kt-state save failed (localStorage kept):',e.message);
+  }
+}
+
 function loadTaskState(){try{const s=JSON.parse(localStorage.getItem(TASK_STATE_KEY)||'{}');TASKS.forEach(t=>{if(s[t.id]!==undefined)t.done=s[t.id];});}catch{}}
-function saveTaskDone(id,done){try{const s=JSON.parse(localStorage.getItem(TASK_STATE_KEY)||'{}');s[id]=done;localStorage.setItem(TASK_STATE_KEY,JSON.stringify(s));}catch{}}
+function saveTaskDone(id,done){
+  try{const s=JSON.parse(localStorage.getItem(TASK_STATE_KEY)||'{}');s[id]=done;localStorage.setItem(TASK_STATE_KEY,JSON.stringify(s));ktPatch({tasks:s});}catch{}
+}
 function loadSafetyState(){try{const s=JSON.parse(localStorage.getItem(SAFETY_STATE_KEY)||'{}');SAFETY_ITEMS.forEach(x=>{if(s[x.id])x.st=s[x.id];});}catch{}}
-function saveSafetySt(id,st){try{const s=JSON.parse(localStorage.getItem(SAFETY_STATE_KEY)||'{}');s[id]=st;localStorage.setItem(SAFETY_STATE_KEY,JSON.stringify(s));}catch{}}
+function saveSafetySt(id,st){
+  try{const s=JSON.parse(localStorage.getItem(SAFETY_STATE_KEY)||'{}');s[id]=st;localStorage.setItem(SAFETY_STATE_KEY,JSON.stringify(s));ktPatch({safety:s});}catch{}
+}
 function loadGapState(){try{const s=JSON.parse(localStorage.getItem(GAP_STATE_KEY)||'{}');GAPS.forEach(g=>{if(s[g.id]!==undefined)g.resolved=s[g.id];});}catch{}}
-function saveGapResolved(id,resolved){try{const s=JSON.parse(localStorage.getItem(GAP_STATE_KEY)||'{}');s[id]=resolved;localStorage.setItem(GAP_STATE_KEY,JSON.stringify(s));}catch{}}
+function saveGapResolved(id,resolved){
+  try{const s=JSON.parse(localStorage.getItem(GAP_STATE_KEY)||'{}');s[id]=resolved;localStorage.setItem(GAP_STATE_KEY,JSON.stringify(s));ktPatch({gaps:s});}catch{}
+}
 function getJournal(){try{return JSON.parse(localStorage.getItem(JOURNAL_KEY)||'[]');}catch{return[];}}
-function saveJournalStore(e){try{localStorage.setItem(JOURNAL_KEY,JSON.stringify(e));}catch{}}
+function saveJournalStore(e){
+  try{localStorage.setItem(JOURNAL_KEY,JSON.stringify(e));ktPatch({journal:e});}catch{}
+}
 
 // Boot
 document.addEventListener('DOMContentLoaded',()=>{
+  // Load local fallback immediately so UI renders fast, then overlay remote state
   loadTaskState(); loadSafetyState(); loadGapState(); loadEntityEdits();
   const lastOpen=localStorage.getItem(LAST_OPEN_KEY);
   const now=new Date().toISOString();
@@ -225,6 +282,20 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.anno').forEach(el=>el.classList.add('hidden'));
   _wmInitUI();
   startInactivityTimer();
+  // Async: overlay Supabase state on top (re-renders affected views when done)
+  ktLoadRemote().then(()=>{
+    renderTasks(); renderSafety(); renderGaps(); renderMoney();
+    renderJournalEntries(); applyFilters(); updateHeaderStats();
+    renderCmdTop5(); renderCmdGapsSnap();
+  });
+  // Poll every 30s so changes on other devices appear automatically
+  setInterval(()=>{
+    ktLoadRemote().then(()=>{
+      renderTasks(); renderSafety(); renderGaps(); renderMoney();
+      renderJournalEntries(); applyFilters(); updateHeaderStats();
+      renderCmdTop5(); renderCmdGapsSnap();
+    });
+  }, 30000);
 });
 
 function showAwayBanner(days){
@@ -898,7 +969,12 @@ function renderMoney(){
 function editMTD(){
   const cur=localStorage.getItem(MTD_KEY)||'$0';
   const val=prompt('Enter MTD revenue (e.g. $1,200):',cur);
-  if(val!==null){localStorage.setItem(MTD_KEY,val.trim()||'$0');document.getElementById('mtdVal').textContent=val.trim()||'$0';}
+  if(val!==null){
+    const v=val.trim()||'$0';
+    localStorage.setItem(MTD_KEY,v);
+    document.getElementById('mtdVal').textContent=v;
+    ktPatch({mtd:v});
+  }
 }
 function grantAsk(name){
   const g=GRANTS.find(x=>x.name===name||x.name.replace(/'/g,'')===name);if(!g)return;
@@ -975,6 +1051,7 @@ function saveEntityEdits(id){
     const s=JSON.parse(localStorage.getItem('kt-entity-edits')||'{}');
     s[id]={effort:e.effort,impact:e.impact,lastReviewed:e.lastReviewed};
     localStorage.setItem('kt-entity-edits',JSON.stringify(s));
+    ktPatch({entities:s});
   }catch{}
   applyFilters();
 }
@@ -994,6 +1071,7 @@ function loadEntityEdits(){
     const s=JSON.parse(localStorage.getItem('kt-entity-edits')||'{}');
     ENTITIES.forEach(e=>{if(s[e.id]){if(s[e.id].effort)e.effort=s[e.id].effort;if(s[e.id].impact)e.impact=s[e.id].impact;if(s[e.id].lastReviewed)e.lastReviewed=s[e.id].lastReviewed;}});
   }catch{}
+  // Remote state overlaid async in ktLoadRemote()
 }
 
 function drawerAction(type,id){
@@ -1214,6 +1292,7 @@ function clearKTState(){
   localStorage.removeItem(GAP_STATE_KEY);
   localStorage.removeItem(JOURNAL_KEY);
   localStorage.removeItem(BRIEF_KEY);
+  ktPatch({tasks:{},safety:{},gaps:{},journal:[],entities:{},mtd:'$0',waymaker_history:[]});
   TASKS.forEach(t=>t.done=false);
   SAFETY_ITEMS.forEach(s=>s.st=s.id==='S1'||s.id==='S2'||s.id==='S5'?'done':'open');
   GAPS.forEach(g=>g.resolved=false);
@@ -1367,7 +1446,7 @@ const WM_SHORTCUTS={
 let _wmHistory=[];let _wmOpen=false;let _wmLoading=false;
 
 function _wmLoadHistory(){try{_wmHistory=JSON.parse(localStorage.getItem(WM_STORAGE)||'[]');}catch{_wmHistory=[];}}
-function _wmSaveHistory(){if(_wmHistory.length>20)_wmHistory=_wmHistory.slice(-20);localStorage.setItem(WM_STORAGE,JSON.stringify(_wmHistory));}
+function _wmSaveHistory(){if(_wmHistory.length>20)_wmHistory=_wmHistory.slice(-20);localStorage.setItem(WM_STORAGE,JSON.stringify(_wmHistory));ktPatch({waymaker_history:_wmHistory});}
 
 function _wmBuildSystem(){
   const critTasks=TASKS.filter(t=>!t.done&&t.pri==='critical').length;

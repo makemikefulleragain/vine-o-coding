@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kitchen Table — Control Centre MVP</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -147,6 +150,7 @@
               <div class="brief-meta">
                 <span class="brief-domain-badge" id="briefDomainBadge">Loading…</span>
                 <span class="brief-date" id="briefDate"></span>
+                <span id="syncBadge" style="font-size:11px;color:#888;margin-left:8px">⏳ syncing…</span>
               </div>
               <div class="brief-actions">
                 <button class="btn-speak" id="btnSpeak" onclick="speakBrief()" title="Browser read aloud">🔊 Aloud</button>
@@ -533,6 +537,6 @@
   </div>
 </aside>
 
-<script src="js/control.js"></script>
+<script src="js/control.js?v=20260227"></script>
 </body>
 </html>
