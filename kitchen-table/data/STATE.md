@@ -1,6 +1,6 @@
 # KAMUNITY GLOBAL STATE
 ## What's Live, What's Building, What's Blocked
-### Last Updated: Feb 27, 2026 (Community Signal Phase 3 MATCH+MAKE complete — background function architecture, fire-and-poll UI, Phase 3 UAT PASSED, Phase 3 completion)
+### Last Updated: Feb 27, 2026 (HitLoop Phase 5 built + confirmed — self-improving research engine live, 2 runs scored 7.94)
 
 *This document is the pulse check. Any AI session reads this first to know: where are we right now?*
 
@@ -10,8 +10,14 @@
 
 **Week of Feb 24-28, 2026** — Meeting prep, safety-critical items, ecosystem stabilisation.
 
-### Session Highlight (Feb 26 — Evening)
-Community Signal Phase 3 MATCH+MAKE complete. Root cause fixed for generate-thing timeout: architectural split into background function (`generate-thing-background.mjs` with 15-min Netlify timeout) + sync CORS-safe proxy (`generate-thing.mjs` triggers background server-side, handles OPTIONS/CORS, returns 202 immediately). Kitchen Table `runGenerate()` updated to fire-and-poll pattern — fires trigger, then polls `match-engine?mode=library` every 5s for up to 90s until artifact appears. Kept `claude-sonnet-4-5-20250929` + Priya quality check (no downgrade). Phase 3 UAT PASSED: artifact generated ("Using Kamunity Grants Hub for Grant Compliance & Acquittal"), polling counter visible, approve/reject working. R&R completed: `phases/phase-03/review-reflect.md`. All three Community Signal phases (SENSE, PROPAGATE, MATCH+MAKE) now complete. Ready for Phase 4: OFFER.
+### Session Highlight (Feb 27 — HitLoop Research Engine)
+Community Signal **Phase 5 HITLOOP** built, deployed, and first research runs confirmed. Root cause R&R: Netlify scheduled functions are cron-only, not HTTP-invocable — split into `hitloop-scheduler.mjs` (cron wrapper) + `research-engine-background.mjs` (HTTP background function with 15-min timeout). First trigger: 3 initial research topics seeded (funding+governance, digital-tools+workforce, housing+health-wellbeing). Two runs confirmed successful in Supabase `research_runs` table (scores: 7.94 both). Daily cron fires at 3am AWST. Mob Field Report path (`[FIELD]` email prefix) deployed via `signal-ingest.mjs` — untested via real Resend inbound. Key architectural learning: always use the thin-scheduler → background-function pattern for long-running Netlify work. Memory saved. R&R doc at `phases/phase-5-hitloop/review-reflect.md`. PHASES.md updated with Phase 5 HITLOOP (Phases 5-8 renumbered).
+
+### Session Highlight (Feb 27 — Strategic Architecture)
+Community Signal System extended from 4-phase pipeline to **7-phase full-loop organism**. Phases 5 (BROADCAST), 6 (LISTEN), and 7 (RETURN) architected through dialectical session with Mike. Key insights: (1) LinkedIn is a sensing surface, not a publishing tool — comments are signals, consented and public, zero overhead for respondents. (2) Content Studio is the publishing arm of the same system — not a separate thing. (3) The gift is Phase 7: Return — unconditional, following the constitutional triage order (Find → Connect → Extend → Integrate → Make). (4) Late.dev API selected for LinkedIn scheduling — free tier (20 posts/month, 2 profiles) sufficient to start, $13/month Build tier if volume grows. (5) Rural WA explicitly added as design constraint from the start — country-first architecture, not city-export. (6) Phase transition framing: Perth community sector is below Kauffman’s edge of chaos threshold due to chronic underfunding and fragmentation — Community Signal System is the cooperative substrate that makes the leap possible. MISSION.md updated to reflect full loop. STATE.md updated. CHANGELOG entry added.
+
+### Session Highlight (Feb 26 — Late Evening)
+Community Signal **ALL 4 PHASES COMPLETE**. Phase 4 OFFER built and UAT-passed end-to-end: (1) Supabase tables `opted_in_contacts` + `outreach_queue` with RLS policies. (2) Opt-in card in Kai (`kamunity-consulting`) — R&R triggered after card wouldn't surface; root cause: client strips card JSON from history before sending back to server, so server's history-based checks always failed. Fixed with stateless message-count injection (5+ messages → inject opt-in once, append `[opt-in-shown]` marker, client strips for display but keeps in history). (3) `opt-in.mjs` Netlify function stores contact + consent. (4) `dm-send.mjs` generates personalised DMs via Claude, queues for Mike's review, sends via Resend. (5) Kitchen Table Outreach view: contacts list, Draft DM button (picks artifact from commons library), approve/send. (6) Unsubscribe mechanism. (7) Resend API key configured (sandbox mode — custom domain needed for production). **Full UAT loop passed**: opted in via Kai → contact in Supabase → drafted DM → approved → email delivered to inbox. Second R&R: `generate-thing-background.mjs` wasn't firing — root cause: sync proxy's `fetch()` wasn't awaited, Netlify killed context before trigger completed. Fixed: awaited fetch + broadened batch query filter. **Community Signal System is now live**: Signal → Pattern → Triage → Generate → Opt-in → Draft → Approve → Send.
 
 ### Session Highlight (Feb 25 — Morning)
 KP-10 UAT bug-fix session. Two root-cause fixes deployed: (1) Task expand action buttons — `id="ta-${t.id}"` was inside a plain string (not template literal) so `getElementById('ta-t6')` always returned null and buttons never appeared; rewritten as proper string concatenation. (2) `grantAsk()` function was missing — Money view grant cards called it but it didn't exist; added with full Waymaker context prompt. Ask Waymaker now confirmed wired on every data point: Tasks, Safety, Gaps, Roadmap phases, Entity drawer, Allies, Grants (Money), Prototypes, Command Day sweep. Deployed to https://coruscating-naiad-c0ccb9.netlify.app. node --check passes (IDE TS lint errors are false positives — control.js treated as TSX). KP-10 UAT still required on Mike's phone before archiving old system.
@@ -75,9 +81,10 @@ Three meetings next week:
 | Nonna's Knitting | ✅ Live | Proof of concept, community testing. |
 | Grants Hub | ✅ Live | Grant reporting tool, community testing. |
 | Wedding site | ✅ Live | Planning site, community rooms dogfood. |
-| Kitchen Table | ✅ Live | https://coruscating-naiad-c0ccb9.netlify.app/control.html — control.html is ACTIVE system. Views: Command Day, Tasks, Roadmap, Allies, Matrix, Zones, Safety, Gaps, Money, Prototypes. UAT bug-fix deployed Feb 25: task expand buttons + grantAsk. |
+| Kitchen Table | ✅ Live | https://coruscating-naiad-c0ccb9.netlify.app/control.html — control.html is ACTIVE system. Views: Command Day, Tasks, Roadmap, Allies, Matrix, Zones, Safety, Gaps, Money, Prototypes, Sector Pulse, Match+Make, Outreach. UAT bug-fix deployed Feb 25: task expand buttons + grantAsk. |
 | Waymaker FAB | ✅ Live | 🔮 floating orb in control.html. 11 shortcuts. Conversation history. Calls /.netlify/functions/waymaker. |
 | Waymaker Brief | ✅ Live on Netlify | Text brief + ElevenLabs audio via brief-audio.mjs. 🎙 Listen button on brief card. Works on mobile. |
+| Community Signal System | ✅ Live | https://community-signal.netlify.app — Phase 5 HITLOOP live. Signal → Pattern → Triage → Generate → Opt-in → Draft → Approve → Send → **Research Loop**. Supabase backend, Claude Sonnet 4.5 research, Resend email. Daily cron 3am AWST. |
 | Campfire Architecture | ✅ Complete | All 7 layers built. BRAIN/, PLAN/, ENGINE/, KNOWLEDGE/, PROJECTS/, WORKSHOP/, ARCHIVE/. |
 
 ---
@@ -252,14 +259,18 @@ Revenue target: $5-8K/month by April 2026.
 
 ## Next Session Should...
 
-1. **UAT on mobile** — hard refresh https://coruscating-naiad-c0ccb9.netlify.app/control.html on Mike's phone: confirm task expand shows action buttons, Ask Waymaker opens orb on Tasks/Safety/Gaps/Grants/Roadmap/Entities.
-2. **After UAT passes** — archive old index.html system (todo P3-1). Then KP-10 is COMPLETE.
-3. **NLnet draft** — April 1 deadline is ~35 days away. KNOWLEDGE/nlnet-application-draft.md needs finishing.
-4. **Real-time web sensing (todo 14)** — Brave/Tavily API integration for Waymaker.
-5. **Session handoff (todo 15)** — mobile End Session → Netlify Blobs → PC /new-session flow.
-6. **Rename Netlify site (todo 13)** — kamunity-table (Netlify dashboard, manual).
-7. **DNS cutover** — when ready: point kamunityconsulting.com from Wix to Netlify.
-8. **MIKE_FULLER_PROFILE.md is ready** — use it for NLnet bio, ALIKE meeting prep. Key pitch facts: RAC $500K in 9 months, WA Health Hackathon win, WALGA 3-engagement relationship.
+1. **Community Signal Phase 5 HITLOOP — remaining items** — (a) Test `[FIELD]` Mob Field Report via real Resend inbound email to `signals@delisava.resend.app` with subject `[FIELD] <topic>`. Verify `research_strategy` row appears with `source_type: mob_field`, `priority_weight: 1.5`. (b) Monitor `research_runs` after daily cron (3am AWST) — check score evolution. (c) Phase 5 fully complete when 7 days of automated runs visible with score data.
+2. **Community Signal Phase 6 — BROADCAST** (previously Phase 5) — Build Content Studio view in Kitchen Table. Three new Netlify Functions: `post-draft.mjs`, `post-schedule.mjs`. Late.dev API account setup (free tier). Connect to existing pattern pipeline. Four-column Draft/Polish/Scheduled/Published view.
+2. **Community Signal Phase 6 — LISTEN** — Route LinkedIn comment ingestion back into `signal-ingest.mjs`. Late.dev inbox API or manual paste fallback to start.
+3. **Community Signal Phase 7 — RETURN** — Gift triage layer in Kitchen Table. Research enrichment per strong signal. Gift recommendation engine using constitutional triage order. Connects to existing `dm-send.mjs` pipeline.
+4. **LinkedIn post drafts** — Write first batch of posts across three types. Spicy sector truth-telling. Signal-derived insights. Personal Mike voice. Schedule via Content Studio once built.
+5. **Community Signal — ready for real traffic** — (previously item 1, still valid) — All 4 phases live. Next: (a) Verify custom sending domain in Resend dashboard (kamunity.org or similar) to replace sandbox `onboarding@resend.dev`. (b) Start real Kai conversations on kamunity-consulting to accumulate signals. (c) Monitor Sector Pulse for pattern emergence. (d) When patterns hit threshold, run Triage + Generate. (e) When opted-in contacts exist, draft + send first real DM.
+2. **Community Signal — production checklist** — (a) Supabase RLS policies tested with non-service-role key. (b) Rate limiting on opt-in endpoint (prevent spam). (c) GDPR-compliant data retention policy documented. (d) Unsubscribe flow tested end-to-end.
+3. **UAT on mobile** — hard refresh https://coruscating-naiad-c0ccb9.netlify.app/control.html on Mike's phone: confirm task expand shows action buttons, Ask Waymaker opens orb on Tasks/Safety/Gaps/Grants/Roadmap/Entities.
+4. **After UAT passes** — archive old index.html system (todo P3-1). Then KP-10 is COMPLETE.
+5. **NLnet draft** — April 1 deadline is ~35 days away. KNOWLEDGE/nlnet-application-draft.md needs finishing. Community Signal is now a live demonstrable system to include in application.
+6. **DNS cutover** — when ready: point kamunityconsulting.com from Wix to Netlify.
+7. **MIKE_FULLER_PROFILE.md is ready** — use it for NLnet bio, ALIKE meeting prep. Key pitch facts: RAC $500K in 9 months, WA Health Hackathon win, WALGA 3-engagement relationship.
 
 ---
 

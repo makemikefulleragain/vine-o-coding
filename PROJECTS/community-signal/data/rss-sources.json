@@ -1,0 +1,395 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "last_reviewed": "2026-02-27",
+    "ingest_email": "signals@delisava.resend.app",
+    "notes": "Tier 1-4 active. Tier 5 identified but deferred — see ethical constraints in PHASES.md."
+  },
+
+  "sources": [
+
+    {
+      "id": "wacoss",
+      "name": "WACOSS",
+      "full_name": "WA Council of Social Service",
+      "website": "https://wacoss.org.au",
+      "rss_url": "https://wacoss.org.au/feed/",
+      "sector_tags": ["advocacy", "policy", "funding", "workforce", "housing", "health-wellbeing"],
+      "tier": 1,
+      "fetch_frequency": "weekly",
+      "priority": 1,
+      "small_cohort_flag": false,
+      "status": "active",
+      "notes": "Peak body for WA community services sector. Cost of living reports, policy submissions, sector news. RSS verified 2026-02-27."
+    },
+
+    {
+      "id": "walga",
+      "name": "WALGA",
+      "full_name": "WA Local Government Association",
+      "website": "https://walga.asn.au",
+      "rss_url": null,
+      "sector_tags": ["policy", "governance", "funding", "infrastructure", "advocacy"],
+      "tier": 1,
+      "fetch_frequency": "weekly",
+      "priority": 1,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Peak body for 139 WA local governments. Budget submissions, policy positions, local govt community services. No RSS feed available — manual submission from https://walga.asn.au/media-and-resources/latest-news"
+    },
+
+    {
+      "id": "linkwest",
+      "name": "Linkwest",
+      "full_name": "Linkwest — Neighbourhood and Community Resource Centres",
+      "website": "https://linkwest.asn.au",
+      "rss_url": null,
+      "sector_tags": ["digital-tools", "funding", "collaboration", "volunteering", "children-families"],
+      "tier": 1,
+      "fetch_frequency": "weekly",
+      "priority": 1,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Peak body for 140+ neighbourhood and community resource centres. Digital inclusion, grant opportunities, centre news. No RSS feed available — manual submission from https://linkwest.asn.au/Web/Web/News/Latest.aspx"
+    },
+
+    {
+      "id": "yacwa",
+      "name": "YACWA",
+      "full_name": "Youth Affairs Council of Western Australia",
+      "website": "https://www.yacwa.org.au",
+      "rss_url": "https://www.yacwa.org.au/feed/",
+      "sector_tags": ["advocacy", "policy", "children-families", "workforce"],
+      "tier": 1,
+      "fetch_frequency": "weekly",
+      "priority": 1,
+      "small_cohort_flag": false,
+      "status": "active",
+      "notes": "Peak non-government youth organisation in WA. Youth sector policy, awards, media releases, pre-budget submissions. RSS verified 2026-02-27."
+    },
+
+    {
+      "id": "waamh",
+      "name": "WAAMH",
+      "full_name": "WA Association for Mental Health",
+      "website": "https://waamh.org.au",
+      "rss_url": null,
+      "sector_tags": ["health-wellbeing", "advocacy", "policy", "workforce", "disability"],
+      "tier": 1,
+      "fetch_frequency": "weekly",
+      "priority": 1,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Peak body for community mental health in WA (200+ members). NDIS, mental health reform, conferences, training. No RSS feed available — manual submission from https://waamh.org.au/news-and-media"
+    },
+
+    {
+      "id": "eccwa",
+      "name": "ECCWA",
+      "full_name": "Ethnic Communities Council of WA",
+      "website": "https://www.eccwa.org.au",
+      "rss_url": "https://www.eccwa.org.au/feed/",
+      "sector_tags": ["advocacy", "policy", "children-families", "collaboration"],
+      "tier": 2,
+      "fetch_frequency": "fortnightly",
+      "priority": 2,
+      "small_cohort_flag": false,
+      "status": "pending_rss_verify",
+      "notes": "Peak body for multicultural communities in WA. Settlement services, multicultural policy, community development."
+    },
+
+    {
+      "id": "shelterwa",
+      "name": "Shelter WA",
+      "full_name": "Shelter WA — Affordable Housing and Homelessness Peak Body",
+      "website": "https://www.shelterwa.org.au",
+      "rss_url": "https://www.shelterwa.org.au/feed/",
+      "sector_tags": ["housing", "homelessness", "advocacy", "policy", "funding"],
+      "tier": 2,
+      "fetch_frequency": "fortnightly",
+      "priority": 2,
+      "small_cohort_flag": false,
+      "status": "pending_rss_verify",
+      "notes": "WA peak body for affordable housing and homelessness. Policy, research, housing crisis responses."
+    },
+
+    {
+      "id": "carerswa",
+      "name": "Carers WA",
+      "full_name": "Carers WA",
+      "website": "https://www.carerswa.asn.au",
+      "rss_url": "https://www.carerswa.asn.au/feed/",
+      "sector_tags": ["health-wellbeing", "disability", "advocacy", "policy", "workforce"],
+      "tier": 2,
+      "fetch_frequency": "fortnightly",
+      "priority": 2,
+      "small_cohort_flag": false,
+      "status": "pending_rss_verify",
+      "notes": "Peak body for carers in WA. Carer support services, NDIS, aged care, policy updates."
+    },
+
+    {
+      "id": "fcn-wa",
+      "name": "Financial Counselling Network WA",
+      "full_name": "Financial Counselling Network WA",
+      "website": "https://fcawa.com.au",
+      "rss_url": null,
+      "sector_tags": ["advocacy", "health-wellbeing", "emergency-relief", "policy"],
+      "tier": 2,
+      "fetch_frequency": "fortnightly",
+      "priority": 2,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Financial counselling and inclusion services in WA. No confirmed RSS — manual email submission until RSS found via source discovery."
+    },
+
+    {
+      "id": "city-of-perth-notices",
+      "name": "City of Perth — Public Notices",
+      "full_name": "City of Perth Council — Public Notices",
+      "website": "https://perth.wa.gov.au/public-notices",
+      "rss_url": null,
+      "sector_tags": ["governance", "infrastructure", "policy", "collaboration"],
+      "tier": 3,
+      "fetch_frequency": "weekly",
+      "priority": 3,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Council meetings, planning notices, community programs. Manual weekly check — no RSS available."
+    },
+
+    {
+      "id": "city-of-bayswater-news",
+      "name": "City of Bayswater — Community News",
+      "full_name": "City of Bayswater — Community News and Notices",
+      "website": "https://www.bayswater.wa.gov.au/city-and-council/news",
+      "rss_url": null,
+      "sector_tags": ["governance", "infrastructure", "policy", "collaboration"],
+      "tier": 3,
+      "fetch_frequency": "weekly",
+      "priority": 3,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Local community news, grants, programs. Manual weekly check — no RSS confirmed."
+    },
+
+    {
+      "id": "wa-gov-announcements",
+      "name": "WA Government Announcements",
+      "full_name": "Western Australian Government — Official Announcements",
+      "website": "https://www.wa.gov.au/government/announcements",
+      "rss_url": null,
+      "sector_tags": ["policy", "funding", "advocacy", "governance"],
+      "tier": 3,
+      "fetch_frequency": "weekly",
+      "priority": 3,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Official WA government announcements affecting community sector. Manual weekly check."
+    },
+
+    {
+      "id": "wa-gov-media",
+      "name": "WA Government Media Statements",
+      "full_name": "Western Australian Government — Media Statements",
+      "website": "https://www.wa.gov.au/government/media-statements",
+      "rss_url": null,
+      "sector_tags": ["policy", "funding", "advocacy", "governance"],
+      "tier": 3,
+      "fetch_frequency": "weekly",
+      "priority": 3,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Ministerial media statements. Filter for Community Services, Housing, Health, Youth, Disability portfolios."
+    },
+
+    {
+      "id": "perthnow-local",
+      "name": "PerthNow Local News",
+      "full_name": "PerthNow — Local Community News",
+      "website": "https://www.perthnow.com.au/local-news",
+      "rss_url": null,
+      "sector_tags": ["advocacy", "collaboration", "emergency-relief", "health-wellbeing"],
+      "tier": 3,
+      "fetch_frequency": "weekly",
+      "priority": 3,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Curated community-relevant articles. Select only items directly relevant to NFPs, community services, or social issues."
+    },
+
+    {
+      "id": "reddit-perth",
+      "name": "Reddit r/perth",
+      "full_name": "Reddit — r/perth community",
+      "website": "https://www.reddit.com/r/perth/",
+      "rss_url": "https://www.reddit.com/r/perth/.rss",
+      "sector_tags": ["advocacy", "collaboration", "emergency-relief", "volunteering"],
+      "tier": 3,
+      "fetch_frequency": "weekly",
+      "priority": 3,
+      "small_cohort_flag": false,
+      "status": "manual_review_only",
+      "notes": "RSS technically available but very noisy. Manual weekly review recommended — curate threads about charities, volunteering, NFPs, community needs. Copy relevant threads to email ingestion."
+    },
+
+    {
+      "id": "linkedin-wa-sector",
+      "name": "LinkedIn WA Community Sector",
+      "full_name": "LinkedIn — WA Community Services sector leaders",
+      "website": "https://www.linkedin.com",
+      "rss_url": null,
+      "sector_tags": ["workforce", "governance", "advocacy", "collaboration"],
+      "tier": 3,
+      "fetch_frequency": "weekly",
+      "priority": 3,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "No API available. Manual weekly review of posts from WACOSS, WALGA, Linkwest, YACWA, WAAMH LinkedIn pages. Forward relevant posts via email."
+    },
+
+    {
+      "id": "facebook-sector-pages",
+      "name": "Facebook Sector Pages",
+      "full_name": "Facebook — WA sector peak body pages",
+      "website": "https://www.facebook.com",
+      "rss_url": null,
+      "sector_tags": ["advocacy", "funding", "collaboration", "emergency-relief"],
+      "tier": 3,
+      "fetch_frequency": "weekly",
+      "priority": 3,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "No API available. Pages to review: WACOSS, Linkwest, YACWA, WAAMH, Shelter WA. Forward announcements not covered by RSS feeds."
+    },
+
+    {
+      "id": "lotterywest-grants",
+      "name": "Lotterywest Grants",
+      "full_name": "Lotterywest — Community Grant Announcements",
+      "website": "https://www.lotterywest.wa.gov.au/grants",
+      "rss_url": null,
+      "sector_tags": ["funding", "collaboration", "governance"],
+      "tier": 4,
+      "fetch_frequency": "fortnightly",
+      "priority": 4,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "WA's primary community grants body. New rounds, funded projects, guideline changes. Fortnightly check."
+    },
+
+    {
+      "id": "wa-dept-communities",
+      "name": "WA Dept of Communities",
+      "full_name": "WA Department of Communities — Grants and Funding",
+      "website": "https://www.communities.wa.gov.au",
+      "rss_url": null,
+      "sector_tags": ["funding", "policy", "children-families", "disability", "housing"],
+      "tier": 4,
+      "fetch_frequency": "fortnightly",
+      "priority": 4,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "State govt community sector funding rounds. Focus on new grant rounds, tender releases, policy changes affecting funded providers."
+    },
+
+    {
+      "id": "linkwest-grants-page",
+      "name": "Linkwest Grant Opportunities",
+      "full_name": "Linkwest — Grant Opportunities Directory",
+      "website": "https://linkwest.asn.au/Web/Web/Resources/Grant-Opportunities.aspx",
+      "rss_url": null,
+      "sector_tags": ["funding", "collaboration", "infrastructure"],
+      "tier": 4,
+      "fetch_frequency": "fortnightly",
+      "priority": 4,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "Curated grant listings for community centres. Good early signal on new funding rounds before they appear elsewhere."
+    },
+
+    {
+      "id": "crc-community-papers",
+      "name": "CRC Community Papers",
+      "full_name": "Linkwest CRC Network — Community Newspapers",
+      "website": "https://linkwest.asn.au/Web/Web/Centres/CommunityNewspapers.aspx",
+      "rss_url": null,
+      "sector_tags": ["collaboration", "advocacy", "children-families", "volunteering"],
+      "tier": 4,
+      "fetch_frequency": "fortnightly",
+      "priority": 4,
+      "small_cohort_flag": false,
+      "status": "manual_only",
+      "notes": "40+ community newspapers published by Linkwest member centres. Weak tie source — forward highlights only, not full papers."
+    }
+
+  ],
+
+  "tier5_deferred": {
+
+    "aboriginal_torres_strait_islander": {
+      "status": "identified_pending_consultation",
+      "blocker": "Requires Aboriginal consultation and cultural safety protocols before any activation. Self-determination principle applies — Aboriginal communities must control how their information is used.",
+      "flags": { "small_cohort": true, "requires_cultural_protocol": true },
+      "identified_sources": [
+        {
+          "id": "caswa",
+          "name": "CASWA",
+          "full_name": "Council of Aboriginal Services Western Australia",
+          "website": "https://www.caswa.org.au"
+        },
+        {
+          "id": "ahcwa",
+          "name": "AHCWA",
+          "full_name": "Aboriginal Health Council of Western Australia",
+          "website": "https://www.ahcwa.org.au"
+        },
+        {
+          "id": "coalition-peaks-wa",
+          "name": "Coalition of Peaks (WA members)",
+          "full_name": "Coalition of Aboriginal and Torres Strait Islander Peak Organisations — WA members",
+          "website": "https://www.coalitionofpeaks.org.au"
+        },
+        {
+          "id": "reconciliation-wa",
+          "name": "Reconciliation WA",
+          "full_name": "Reconciliation WA",
+          "website": "https://www.reconciliationwa.org.au"
+        }
+      ]
+    },
+
+    "high_risk_vulnerable_groups": {
+      "status": "identified_high_risk_defer",
+      "blocker": "Requires specialist consultation and enhanced traceability protocols. Re-identification risk, safety risk (especially DV), and trauma-informed practice requirements must be addressed before activation.",
+      "flags": { "small_cohort": true, "vulnerable_cohort": true, "requires_specialist_review": true },
+      "identified_sources": [
+        {
+          "id": "cwsw",
+          "name": "Centre for Women's Safety and Wellbeing",
+          "full_name": "Centre for Women's Safety and Wellbeing (DV peak body WA)",
+          "website": "https://cwsw.org.au"
+        },
+        {
+          "id": "homelessness-wa",
+          "name": "Homelessness WA",
+          "full_name": "Homelessness WA — peak body for homelessness services",
+          "website": "https://www.homelessnesswa.com.au"
+        },
+        {
+          "id": "ruah",
+          "name": "Ruah Community Services",
+          "full_name": "Ruah Community Services",
+          "website": "https://ruah.org.au"
+        },
+        {
+          "id": "refugee-council-wa",
+          "name": "Refugee Council of Australia (WA)",
+          "full_name": "Refugee Council of Australia — WA connections",
+          "website": "https://www.refugeecouncil.org.au"
+        }
+      ]
+    }
+
+  }
+}

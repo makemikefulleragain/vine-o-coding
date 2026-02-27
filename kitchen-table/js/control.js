@@ -2239,5 +2239,284 @@ function escHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── SOURCES VIEW (Phase 1.5) ──────────────────────────────────────────────────
+const SOURCES_DISCOVERY_URL='https://community-signal.netlify.app/.netlify/functions/source-discovery';
+const SOURCES_SCHEDULER_URL='https://community-signal.netlify.app/.netlify/functions/rss-scheduler';
+const FETCH_LOG_URL='https://community-signal.netlify.app/.netlify/functions/signals-read';
+
+let _sourcesTab='active';
+
+function setSourcesTab(tab,btn){
+  _sourcesTab=tab;
+  document.querySelectorAll('#view-sources .tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadSources();
+}
+
+async function loadSources(){
+  const out=document.getElementById('sourcesOut');
+  const status=document.getElementById('sourcesStatus');
+  if(!out)return;
+  out.innerHTML='<p style="color:var(--faint);padding:16px">Loading…</p>';
+  if(status)status.textContent='';
+
+  if(_sourcesTab==='active'){
+    renderActiveSources(out,status);
+  }else if(_sourcesTab==='discovered'){
+    await loadDiscoveredSources(out,status);
+  }else{
+    renderManualChecklist(out,status);
+  }
+}
+
+function renderActiveSources(out,status){
+  // Static rendering from embedded source list — no API call needed
+  const sources=[
+    {id:'wacoss',name:'WACOSS',tier:1,type:'RSS',freq:'weekly',status:'pending_rss_verify',tags:'advocacy, policy, funding'},
+    {id:'walga',name:'WALGA',tier:1,type:'RSS',freq:'weekly',status:'pending_rss_verify',tags:'policy, governance, funding'},
+    {id:'linkwest',name:'Linkwest',tier:1,type:'RSS',freq:'weekly',status:'pending_rss_verify',tags:'digital-tools, funding'},
+    {id:'yacwa',name:'YACWA',tier:1,type:'RSS',freq:'weekly',status:'pending_rss_verify',tags:'advocacy, children-families'},
+    {id:'waamh',name:'WAAMH',tier:1,type:'RSS',freq:'weekly',status:'pending_rss_verify',tags:'health-wellbeing, policy'},
+    {id:'eccwa',name:'ECCWA',tier:2,type:'RSS',freq:'fortnightly',status:'pending_rss_verify',tags:'advocacy, collaboration'},
+    {id:'shelterwa',name:'Shelter WA',tier:2,type:'RSS',freq:'fortnightly',status:'pending_rss_verify',tags:'housing, homelessness'},
+    {id:'carerswa',name:'Carers WA',tier:2,type:'RSS',freq:'fortnightly',status:'pending_rss_verify',tags:'health-wellbeing, disability'},
+    {id:'fcn-wa',name:'Financial Counselling Network WA',tier:2,type:'Manual',freq:'fortnightly',status:'manual_only',tags:'emergency-relief, advocacy'},
+    {id:'city-of-perth-notices',name:'City of Perth Notices',tier:3,type:'Manual',freq:'weekly',status:'manual_only',tags:'governance, infrastructure'},
+    {id:'city-of-bayswater-news',name:'City of Bayswater News',tier:3,type:'Manual',freq:'weekly',status:'manual_only',tags:'governance, collaboration'},
+    {id:'wa-gov-announcements',name:'WA Gov Announcements',tier:3,type:'Manual',freq:'weekly',status:'manual_only',tags:'policy, funding'},
+    {id:'wa-gov-media',name:'WA Gov Media Statements',tier:3,type:'Manual',freq:'weekly',status:'manual_only',tags:'policy, advocacy'},
+    {id:'perthnow-local',name:'PerthNow Local News',tier:3,type:'Manual',freq:'weekly',status:'manual_only',tags:'advocacy, emergency-relief'},
+    {id:'reddit-perth',name:'Reddit r/perth',tier:3,type:'Manual',freq:'weekly',status:'manual_review_only',tags:'volunteering, collaboration'},
+    {id:'linkedin-wa-sector',name:'LinkedIn WA Sector',tier:3,type:'Manual',freq:'weekly',status:'manual_only',tags:'workforce, governance'},
+    {id:'lotterywest-grants',name:'Lotterywest Grants',tier:4,type:'Manual',freq:'fortnightly',status:'manual_only',tags:'funding'},
+    {id:'wa-dept-communities',name:'WA Dept of Communities',tier:4,type:'Manual',freq:'fortnightly',status:'manual_only',tags:'funding, policy'},
+    {id:'linkwest-grants-page',name:'Linkwest Grants Page',tier:4,type:'Manual',freq:'fortnightly',status:'manual_only',tags:'funding'},
+    {id:'crc-community-papers',name:'CRC Community Papers',tier:4,type:'Manual',freq:'fortnightly',status:'manual_only',tags:'collaboration, volunteering'},
+  ];
+  if(status)status.textContent=sources.length+' sources configured';
+  const statusColor=s=>s==='active'?'var(--moss)':s==='pending_rss_verify'?'var(--ember)':'var(--dim)';
+  const statusLabel=s=>s==='active'?'Active':s==='pending_rss_verify'?'Awaiting RSS verify':s==='manual_only'?'Manual':'Manual review';
+  out.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:12px">'
+    +'<thead><tr style="color:var(--dim);text-align:left;border-bottom:1px solid var(--hover)">'
+    +'<th style="padding:6px 8px">Source</th><th style="padding:6px 8px">Tier</th><th style="padding:6px 8px">Type</th>'
+    +'<th style="padding:6px 8px">Freq</th><th style="padding:6px 8px">Status</th><th style="padding:6px 8px">Tags</th>'
+    +'</tr></thead><tbody>'
+    +sources.map(s=>`<tr style="border-bottom:1px solid var(--hover)">
+      <td style="padding:6px 8px;font-weight:600;color:var(--text)">${escHtml(s.name)}</td>
+      <td style="padding:6px 8px;color:var(--dim)">T${s.tier}</td>
+      <td style="padding:6px 8px;color:var(--dim)">${s.type}</td>
+      <td style="padding:6px 8px;color:var(--dim)">${s.freq}</td>
+      <td style="padding:6px 8px"><span style="color:${statusColor(s.status)};font-size:11px">${statusLabel(s.status)}</span></td>
+      <td style="padding:6px 8px;color:var(--faint);font-size:11px">${escHtml(s.tags)}</td>
+    </tr>`).join('')
+    +'</tbody></table>'
+    +'<div style="margin-top:12px;padding:10px;background:var(--hover);border-radius:6px;font-size:12px;color:var(--dim)">'
+    +'<strong>Manual submission email:</strong> signals@inbox.kamunityconsulting.com<br>'
+    +'<strong>Subject format:</strong> [MANUAL] Source Name - YYYY-MM-DD<br>'
+    +'<strong>Body format:</strong> Source: / Date: / URL: / --- Item 1 --- / Title / Content / Link'
+    +'</div>';
+}
+
+async function loadDiscoveredSources(out,status){
+  try{
+    const r=await fetch(FETCH_LOG_URL+'?mode=discovered',{headers:{'x-ingest-secret':getPulseSecret()}});
+    if(!r.ok){out.innerHTML='<p style="color:var(--dim);padding:16px">Discovered sources endpoint not yet active — run source discovery first.</p>';return;}
+    const data=await r.json();
+    const candidates=data.candidates||[];
+    if(!candidates.length){
+      out.innerHTML='<p style="color:var(--faint);padding:16px">No discovered sources yet — trigger the discovery engine using the button above.</p>';
+      return;
+    }
+    if(status)status.textContent=candidates.length+' candidate'+(candidates.length!==1?'s':'')+' awaiting review';
+    out.innerHTML=candidates.map(c=>{
+      const scoreColor=c.relevance_score>=0.7?'var(--moss)':c.relevance_score>=0.4?'var(--ember)':'var(--danger)';
+      return`<div class="gap-card" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:2px">${escHtml(c.org_name)}</div>
+            <div style="font-size:11px;color:var(--dim);margin-bottom:4px">${escHtml(c.website_url||'')} ${c.rss_url?'→ <span style="color:var(--moss)">RSS found</span>':''}</div>
+            <div style="font-size:11px;color:var(--faint)">Via: ${escHtml(c.discovered_via)} ${c.small_cohort_flag?'<span style="color:var(--danger)">⚠ Small cohort</span>':''}</div>
+          </div>
+          <div style="text-align:right;min-width:80px">
+            <div style="font-size:16px;font-weight:700;color:${scoreColor}">${Math.round((c.relevance_score||0)*100)}%</div>
+            <div style="font-size:10px;color:var(--faint)">relevance</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    out.innerHTML='<p style="color:var(--danger);padding:16px">Error loading discovered sources: '+escHtml(e.message)+'</p>';
+  }
+}
+
+function renderManualChecklist(out,status){
+  const manual=[
+    {id:'city-of-perth-notices',name:'City of Perth — Public Notices',url:'https://perth.wa.gov.au/public-notices',freq:'Weekly'},
+    {id:'city-of-bayswater-news',name:'City of Bayswater — Community News',url:'https://www.bayswater.wa.gov.au/city-and-council/news',freq:'Weekly'},
+    {id:'wa-gov-announcements',name:'WA Government Announcements',url:'https://www.wa.gov.au/government/announcements',freq:'Weekly'},
+    {id:'wa-gov-media',name:'WA Government Media Statements',url:'https://www.wa.gov.au/government/media-statements',freq:'Weekly'},
+    {id:'perthnow-local',name:'PerthNow Local News',url:'https://www.perthnow.com.au/local-news',freq:'Weekly'},
+    {id:'reddit-perth',name:'Reddit r/perth',url:'https://www.reddit.com/r/perth/',freq:'Weekly'},
+    {id:'linkedin-wa-sector',name:'LinkedIn WA Community Sector',url:'https://www.linkedin.com',freq:'Weekly'},
+    {id:'facebook-sector-pages',name:'Facebook Sector Pages (WACOSS, Linkwest, YACWA)',url:'https://www.facebook.com',freq:'Weekly'},
+    {id:'lotterywest-grants',name:'Lotterywest Grant Announcements',url:'https://www.lotterywest.wa.gov.au/grants',freq:'Fortnightly'},
+    {id:'wa-dept-communities',name:'WA Dept of Communities — Grants',url:'https://www.communities.wa.gov.au',freq:'Fortnightly'},
+    {id:'linkwest-grants-page',name:'Linkwest Grant Opportunities',url:'https://linkwest.asn.au/Web/Web/Resources/Grant-Opportunities.aspx',freq:'Fortnightly'},
+    {id:'crc-community-papers',name:'Linkwest CRC Community Papers',url:'https://linkwest.asn.au/Web/Web/Centres/CommunityNewspapers.aspx',freq:'Fortnightly'},
+  ];
+  if(status)status.textContent=manual.length+' manual sources';
+  out.innerHTML='<div style="margin-bottom:12px;padding:10px;background:var(--hover);border-radius:6px;font-size:12px;color:var(--dim)">'
+    +'Send to: <strong>signals@inbox.kamunityconsulting.com</strong> — Subject: <strong>[MANUAL] Source Name - YYYY-MM-DD</strong>'
+    +'</div>'
+    +manual.map(s=>`<div class="gap-card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:12px;color:var(--text)">${escHtml(s.name)}</div>
+        <div style="font-size:11px;color:var(--faint)">${s.freq}</div>
+      </div>
+      <a href="${escHtml(s.url)}" target="_blank" style="font-size:11px;color:var(--sky);text-decoration:none;white-space:nowrap">Open →</a>
+    </div>`).join('');
+}
+
+async function triggerSourceDiscovery(){
+  const btn=event.target;
+  btn.textContent='Running…';btn.disabled=true;
+  try{
+    const r=await fetch(SOURCES_DISCOVERY_URL,{
+      method:'POST',
+      headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+      body:'{}'
+    });
+    const d=await r.json();
+    if(r.ok){
+      showCmdResult('Source discovery complete — crawled:'+d.crawled+' found:'+d.candidates+' stored:'+d.stored);
+      if(_sourcesTab==='discovered')loadSources();
+    }else{
+      showCmdResult('Discovery error: '+(d.error||r.status));
+    }
+  }catch(e){showCmdResult('Discovery failed: '+e.message);}
+  finally{btn.textContent='🔍 Discover';btn.disabled=false;}
+}
+
+async function triggerRSSScheduler(){
+  const btn=event.target;
+  btn.textContent='Fetching…';btn.disabled=true;
+  try{
+    const r=await fetch(SOURCES_SCHEDULER_URL,{
+      method:'POST',
+      headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},
+      body:'{}'
+    });
+    const d=await r.json().catch(()=>({}));
+    showCmdResult(r.ok?'RSS fetch triggered — check Sector Pulse for new signals':'Scheduler error: '+(d.error||r.status));
+  }catch(e){showCmdResult('Scheduler failed: '+e.message);}
+  finally{btn.textContent='⚡ Fetch Now';btn.disabled=false;}
+}
+
+// ── CONSTELLATION VIEW (Phase 1.5) ────────────────────────────────────────────
+const CONSTELLATION_URL='https://community-signal.netlify.app/.netlify/functions/signals-read';
+
+let _constellationTab='sector';
+
+function setConstellationTab(tab,btn){
+  _constellationTab=tab;
+  document.querySelectorAll('#view-constellation .tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadConstellation();
+}
+
+async function loadConstellation(){
+  const out=document.getElementById('constellationOut');
+  const status=document.getElementById('constellationStatus');
+  if(!out)return;
+  out.innerHTML='<p style="color:var(--faint);padding:16px">Loading…</p>';
+  if(status)status.textContent='';
+
+  try{
+    const mode=_constellationTab==='sector'?'sector_constellation':'org_constellation';
+    const r=await fetch(CONSTELLATION_URL+'?mode='+mode,{headers:{'x-ingest-secret':getPulseSecret()}});
+    if(!r.ok){
+      out.innerHTML='<p style="color:var(--dim);padding:16px">Constellation not yet populated — signals need to accumulate first. Run 🔍 Triage patterns to seed.</p>';
+      return;
+    }
+    const data=await r.json();
+    if(_constellationTab==='sector'){
+      renderSectorConstellation(out,status,data);
+    }else{
+      renderOrgConstellation(out,status,data);
+    }
+  }catch(e){
+    out.innerHTML='<p style="color:var(--dim);padding:16px">Constellation endpoint not yet active — deploy Phase 1.5 first.<br><small>'+escHtml(e.message)+'</small></p>';
+  }
+}
+
+function renderSectorConstellation(out,status,data){
+  const edges=data.edges||data.constellation||[];
+  if(!edges.length){
+    out.innerHTML='<p style="color:var(--faint);padding:16px">No sector co-occurrences yet — signals need to accumulate first (7+ days recommended).</p>';
+    return;
+  }
+  const maxCount=Math.max(...edges.map(e=>e.co_occurrence_count||1));
+  if(status)status.textContent=edges.length+' tag relationships';
+  out.innerHTML='<div style="font-size:11px;color:var(--dim);margin-bottom:12px">Tag pairs that appear together in signals. Stronger = more co-occurrences. Click a tag to filter Sector Pulse.</div>'
+    +edges.sort((a,b)=>(b.co_occurrence_count||0)-(a.co_occurrence_count||0))
+    .slice(0,50)
+    .map(e=>{
+      const strength=Math.round(((e.co_occurrence_count||1)/maxCount)*100);
+      const barW=Math.max(4,strength);
+      return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <button onclick="setPulseMode('pulse');document.getElementById('nav-pulse').click();setTimeout(()=>filterPulseByTag('${escHtml(e.tag_a)}'),300)"
+          style="background:var(--hover);border:none;border-radius:4px;padding:2px 7px;font-size:11px;color:var(--sky);cursor:pointer">${escHtml(e.tag_a)}</button>
+        <span style="color:var(--faint);font-size:10px">↔</span>
+        <button onclick="setPulseMode('pulse');document.getElementById('nav-pulse').click();setTimeout(()=>filterPulseByTag('${escHtml(e.tag_b)}'),300)"
+          style="background:var(--hover);border:none;border-radius:4px;padding:2px 7px;font-size:11px;color:var(--sky);cursor:pointer">${escHtml(e.tag_b)}</button>
+        <div style="flex:1;height:6px;background:var(--hover);border-radius:3px;overflow:hidden">
+          <div style="width:${barW}%;height:100%;background:var(--ember);border-radius:3px"></div>
+        </div>
+        <span style="font-size:10px;color:var(--faint);min-width:28px;text-align:right">${e.co_occurrence_count}×</span>
+      </div>`;
+    }).join('');
+}
+
+function renderOrgConstellation(out,status,data){
+  const edges=data.edges||data.constellation||[];
+  if(!edges.length){
+    out.innerHTML='<p style="color:var(--faint);padding:16px">No organisation co-mentions yet — signals need to accumulate first.</p>';
+    return;
+  }
+  const maxCount=Math.max(...edges.map(e=>e.signal_count||1));
+  if(status)status.textContent=edges.length+' organisation relationships';
+  out.innerHTML='<div style="font-size:11px;color:var(--dim);margin-bottom:12px">Organisations mentioned together in signals. Indicates collaboration or shared sector focus. Public organisations only.</div>'
+    +edges.sort((a,b)=>(b.signal_count||0)-(a.signal_count||0))
+    .slice(0,50)
+    .map(e=>{
+      const barW=Math.max(4,Math.round(((e.signal_count||1)/maxCount)*100));
+      return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+            <span style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap">${escHtml(e.org_a)}</span>
+            <span style="color:var(--faint);font-size:10px">↔</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap">${escHtml(e.org_b)}</span>
+          </div>
+          ${e.context_summary?`<div style="font-size:10px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(e.context_summary)}</div>`:''}
+          <div style="height:4px;background:var(--hover);border-radius:2px;overflow:hidden;margin-top:3px">
+            <div style="width:${barW}%;height:100%;background:var(--sky);border-radius:2px"></div>
+          </div>
+        </div>
+        <span style="font-size:10px;color:var(--faint);min-width:28px;text-align:right">${e.signal_count}×</span>
+      </div>`;
+    }).join('');
+}
+
+function filterPulseByTag(tag){
+  const out=document.getElementById('pulseOut');
+  if(!out)return;
+  const cards=out.querySelectorAll('.gap-card');
+  cards.forEach(card=>{
+    const text=card.textContent||'';
+    card.style.display=text.includes(tag)?'':'none';
+  });
+  document.getElementById('pulseStatus').textContent='Filtered by tag: '+tag+' (reload to clear)';
+}
+
 // Boot
 loadEntityEdits();

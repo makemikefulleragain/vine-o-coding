@@ -87,6 +87,11 @@
 
 ---
 
+| 2026-02-27 | HitLoop uses Claude Sonnet 4.5 (not Opus) for research generation | Cost control: Sonnet 4.5 = 2 credits vs Opus = 10 credits. ~$0.15/day at 5 prompts/day. Quality sufficient for sector intelligence reports (confirmed 7.94 avg signal score). | research-engine-background.mjs, API costs |
+| 2026-02-27 | Netlify cron functions must use thin-scheduler + background function pattern | Scheduled functions are cron-only — HTTP POST returns 500. Background function (-background suffix) needed for >10s work. Same pattern as rss-scheduler → signal-ingest. | hitloop-scheduler.mjs, research-engine-background.mjs, all future long-running functions |
+| 2026-02-27 | HitLoop dual input: system-generated topics + Mob Field Reports via [FIELD] email prefix | Humans can seed research direction without a UI — just email with [FIELD] subject prefix. Seeded with priority_weight 1.5 (vs 1.0 for system topics) so human intelligence is prioritised. | signal-ingest.mjs, research_strategy table |
+| 2026-02-27 | Daily research limit set to 5 prompts/day (DAILY_RESEARCH_LIMIT) | Lean cost control. Can increase when value confirmed. 5 × ~$0.03 = ~$0.15/day. | research-engine-background.mjs |
+
 ## Monthly Reflections
 
 *Added during monthly rhythm review.*

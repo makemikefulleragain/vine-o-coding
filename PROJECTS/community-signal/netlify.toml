@@ -5,6 +5,15 @@
 [functions]
   node_bundler = "esbuild"
 
+[functions."rss-scheduler"]
+  schedule = "0 22 * * *"
+
+[functions."source-discovery"]
+  schedule = "0 22 * * 6"
+
+[functions."hitloop-scheduler"]
+  schedule = "0 19 * * *"
+
 [build.environment]
   NODE_VERSION = "18"
 

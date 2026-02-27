@@ -106,6 +106,13 @@ export const handler = async (event) => {
     return json(502, { error: 'DB write failed', detail: dbError.message });
   }
 
+  // ── Phase 1.5: Update Constellation graphs ────────────────────────────────
+  // Run in parallel, non-blocking — constellation failures don't fail ingest
+  await Promise.allSettled([
+    updateSectorConstellation(tagged),
+    updateOrgConstellation(tagged, content, source_name),
+  ]);
+
   // Queue any new tag proposals for human review
   const proposals = tagged.filter(s => s.new_tag_proposed);
   if (proposals.length > 0) {
@@ -239,6 +246,84 @@ async function ensureLoaded() {
       'Prioritise signals that are NEW — not already well-served by existing Kamunity tools.',
     ].join(' ');
   }
+}
+
+// ── Phase 1.5: Sector Constellation ──────────────────────────────────────────
+// For every pair of tags across all stored signals in this batch, increment
+// the co-occurrence count in sector_constellation via the Supabase RPC.
+
+async function updateSectorConstellation(tagged) {
+  const allTagSets = tagged.map(s => s.tags).filter(t => t && t.length > 1);
+  const pairs = [];
+  for (const tags of allTagSets) {
+    for (let i = 0; i < tags.length; i++) {
+      for (let j = i + 1; j < tags.length; j++) {
+        pairs.push([tags[i], tags[j]]);
+      }
+    }
+  }
+  if (pairs.length === 0) return;
+
+  await Promise.allSettled(
+    pairs.map(([a, b]) =>
+      supabase.rpc('increment_tag_cooccurrence', { p_tag_a: a, p_tag_b: b })
+    )
+  );
+}
+
+// ── Phase 1.5: Organisation Constellation ────────────────────────────────────
+// Use Claude NER to extract public organisation names from signal content.
+// For each pair of co-mentioned orgs, increment org_constellation via RPC.
+// Tracks PUBLIC organisations only — never individuals.
+
+async function updateOrgConstellation(tagged, content, source_name) {
+  let orgNames;
+  try {
+    orgNames = await extractOrgNames(content, source_name);
+  } catch (err) {
+    console.log('Org NER skipped:', err.message);
+    return;
+  }
+  if (!orgNames || orgNames.length < 2) return;
+
+  const pairs = [];
+  for (let i = 0; i < orgNames.length; i++) {
+    for (let j = i + 1; j < orgNames.length; j++) {
+      pairs.push([orgNames[i], orgNames[j]]);
+    }
+  }
+
+  await Promise.allSettled(
+    pairs.map(([a, b]) =>
+      supabase.rpc('increment_org_comention', {
+        p_org_a:   a,
+        p_org_b:   b,
+        p_context: `co-mentioned in signal from ${source_name}`,
+      })
+    )
+  );
+}
+
+async function extractOrgNames(content, source_name) {
+  const message = await anthropic.messages.create({
+    model:      'claude-3-haiku-20240307',
+    max_tokens: 256,
+    messages: [{
+      role:    'user',
+      content: `Extract the names of PUBLIC ORGANISATIONS (not individuals) mentioned in this text. Return ONLY a JSON array of organisation name strings. If fewer than 2 organisations are mentioned, return []. Never include personal names.
+
+Text (from ${source_name}):
+${content.slice(0, 3000)}
+
+Return format: ["Org Name 1", "Org Name 2"]`,
+    }],
+  });
+
+  const text = message.content[0]?.text || '';
+  const match = text.match(/\[[\s\S]*\]/);
+  if (!match) return [];
+  const names = JSON.parse(match[0]);
+  return Array.isArray(names) ? names.slice(0, 10) : [];
 }
 
 // ── Util ──────────────────────────────────────────────────────────────────────

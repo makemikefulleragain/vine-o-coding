@@ -1,6 +1,73 @@
 # COMMUNITY SIGNAL SYSTEM — CHANGELOG
 
-## v4.2.0 — Phase 2 PROPAGATE build
+## v5.0.0 — Feb 27, 2026 — Full Loop Architecture (planned)
+
+**Source:** Strategic session with Mike — dialectical design session
+
+### Architected (not yet built)
+
+Three new phases extending the system from a 4-phase pipeline to a 7-phase full-loop organism:
+
+**Phase 5: BROADCAST**
+* `Content Studio` view in Kitchen Table — four-column pipeline (Draft / Polish / Scheduled / Published)
+* Three post types: Personal/organic (Mike-written), Signal-generated (pattern-derived), Auto-generated (spicy/feedback-gathering/pop-culture)
+* Full AI disclosure baked into generated post templates — constitutional, not optional
+* `post-draft.mjs` Netlify Function — Claude generates post from signal/type prompt
+* `post-schedule.mjs` Netlify Function — calls Late.dev API with content + UTC timestamp
+* Late.dev API integration — free tier (20 posts/month, 2 profiles: Mike personal + Kamunity page); $13/month Build tier if volume grows
+* Connects to existing: Community Signal pattern pipeline (signal-generated posts), Kitchen Table Outreach view pattern (approve/send)
+
+**Phase 6: LISTEN**
+* Comments on published LinkedIn posts flow back in as new signals via Late.dev inbox API (paid tier) or manual ingestion via existing `signal-ingest.mjs`
+* Full loop closes: Broadcast → comment → signal → pattern → generate → broadcast
+* Comment triage: Claude scores for signal strength, sector relevance, capacity indicators, openness, research hooks
+* Strong signals surface in Kitchen Table triage dashboard with commenter context
+
+**Phase 7: RETURN (The Gift)**
+* Research engine runs on strong signals — public profile, org website, sector presence
+* Gift recommendation follows constitutional triage order: Find → Connect → Extend → Integrate → Make
+* Gift inventory drawn from full Kamunity capability spectrum (see MISSION.md Gift Inventory table)
+* Kitchen Table triage dashboard: person, org, signal score, key quote, research summary, recommended gift, one-click draft response
+* Gift delivery via existing DM/email pipeline (dm-send.mjs + Resend)
+* Unconditional. No ask attached. No funnel.
+
+### Additional architectural decisions
+* Rural WA added as explicit design constraint from the start — country-first, not city-export. If it works with intermittent connectivity and tiny orgs, it works everywhere. Doug's work as the rural pathway.
+* LinkedIn sensing layer formalised as primary weak-tie surface — comments are consented, public, zero-overhead signals
+* Phase transition framing: Perth community sector needs legibility to self-organise. CSS is the cooperative substrate that makes the leap possible.
+
+### Constitutional checks (pre-build)
+* Principle 1 (Sovereignty): Gift is not a funnel. Unconditional return is structurally enforced — no ask, no tracking of gift recipients for conversion.
+* Principle 2 (Triage): Gift recommendation engine follows Find → Connect → Extend → Integrate → Make. Build is always last resort.
+* Principle 6 (Transparency): All AI-generated posts labelled. All gifts disclosed as gifts.
+* Principle 10 (Ontological Honesty): System says what it is in public. AI disclosure is differentiating, not embarrassing.
+
+---
+
+## v4.5.0 — Phase 1.5 PRODUCTION SOURCES (planned)
+
+**Source:** Cascade — Phase 1.5 (PRODUCTION SOURCES) spec
+
+### Planned
+
+* `data/rss-sources.json` — 4-tier source registry (Tier 1-4 active, Tier 5 deferred pending consultation): WACOSS, WALGA, Linkwest, YACWA, WAAMH + ECCWA, Shelter WA, Carers WA, Financial Counselling Network + Tier 3/4 manual sources. Aboriginal/Islander and high-risk vulnerable sources documented with consultation requirements but NOT activated.
+* `netlify/functions/rss-scheduler.mjs` — daily cron (6am AWST), reads `rss-sources.json`, fetches all active sources, retries with backoff, logs to `source_fetch_log` Supabase table
+* Email ingestion pipeline — `signals@kamunity.org` inbound email → email service (Mailgun/SendGrid/Zapier) → `signal-ingest` webhook
+* `netlify/functions/source-discovery.mjs` — weekly cron (Sunday 6am AWST), RSS autodiscovery, sector directory crawling (WALGA 139 councils, Linkwest 140+ centres, WACOSS/YACWA/WAAMH member lists), org link extraction, relevance scoring (0–1), stores candidates in `discovered_sources` Supabase table for human review
+* Kitchen Table `📡 Sources` view — Active Sources tab, Discovered Sources tab (approve/reject candidates), Manual Checklist tab (Tier 3/4 weekly workflow)
+* `sector_constellation` Supabase table + enhancement to `signal-filter.mjs` — extract tag pairs from each signal, increment co-occurrence counts via `increment_tag_cooccurrence` RPC
+* `org_constellation` Supabase table + enhancement to `signal-filter.mjs` — Claude NER extracts organisation mentions, upserts co-mention edges (public orgs only, never individuals)
+* Kitchen Table `🌐 Constellation` view — Sector Map tab (tag network, click-to-filter) + Organisation Network tab (org co-mention graph, click edge to see source signals)
+* New Supabase migration: `source_fetch_log`, `discovered_sources`, `sector_constellation`, `org_constellation` tables
+
+### Constitutional checks passed (pre-build)
+* Principle 3 (Privacy): no personal data sources; individual case studies filtered by `signal-filter.mjs`
+* Principle 7 (Traceability): small cohort flag on all applicable sources; org constellation tracks public orgs only
+* Principle 11 (Ecosystem Coherence): all active sources are WA sector peak bodies, trusted news, or verified local govt channels
+
+---
+
+## v4.2.0 — Phase 2 PROPAGATE build — ✅ UAT PASSED
 
 **Source:** Cascade — Phase 2 (PROPAGATE) build
 
@@ -24,13 +91,13 @@
 * `kamunity-consulting-new.netlify.app` — Kai with bilateral signal card + CSS
 * Supabase migration pushed: `community_signals`, `community_offers`, `patterns` tables live
 
-### Pending (e2e test required)
+### UAT Passed
 
-* Submit a signal via Kai → verify it appears in `community_signals` Supabase table
-* Run ⚡ Detect patterns in Kitchen Table → verify pattern created with traceability verdict
-* Trigger ✍ Draft → verify newsletter/LinkedIn copy generated in queue
-* Submit field signal via Kitchen Table Mob form → verify stored anonymously
-* Confirm traceability FAIL correctly blocks small-cohort pattern from proceeding to draft
+* Signal via Kai → stored in `community_signals` ✅
+* ⚡ Detect patterns → pattern created with traceability verdict ✅
+* ✍ Draft → newsletter/LinkedIn copy generated in queue ✅
+* Field signal via Kitchen Table Mob form → stored anonymously ✅
+* Traceability FAIL correctly blocks small-cohort pattern ✅
 
 ---
 

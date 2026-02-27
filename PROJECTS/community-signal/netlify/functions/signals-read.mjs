@@ -1,13 +1,16 @@
 /**
  * signals-read.mjs
- * Phase 1 — SENSE layer
+ * Phase 1 + Phase 1.5 — SENSE + PRODUCTION SOURCES layers
  *
- * Read endpoint for Kitchen Table Sector Pulse view.
+ * Read endpoint for Kitchen Table views.
  * Returns signals with decay weighting applied at query time (Stage 3).
  *
- * GET /signals-read?mode=pulse          — this week's summary for Sector Pulse view
- * GET /signals-read?mode=review         — unreviewed signals for Monday morning review
- * GET /signals-read?mode=all&limit=50   — paginated full list
+ * GET /signals-read?mode=pulse                — this week's summary for Sector Pulse view
+ * GET /signals-read?mode=review               — unreviewed signals for Monday morning review
+ * GET /signals-read?mode=all&limit=50         — paginated full list
+ * GET /signals-read?mode=sector_constellation — sector tag co-occurrence graph (Phase 1.5)
+ * GET /signals-read?mode=org_constellation    — organisation co-mention graph (Phase 1.5)
+ * GET /signals-read?mode=discovered           — discovered source candidates (Phase 1.5)
  *
  * POST /signals-read  { id, reviewed, review_notes } — mark a signal reviewed/rejected
  *
@@ -86,6 +89,49 @@ export const handler = async (event) => {
 
     if (error) return json(502, { error: error.message });
     return json(200, { mode: 'review', signals: applyDecay(data), count: data.length });
+  }
+
+  // ── Phase 1.5: Sector Constellation ──────────────────────────────────────
+  if (mode === 'sector_constellation') {
+    const { data, error } = await supabase
+      .from('sector_constellation')
+      .select('tag_a, tag_b, co_occurrence_count, last_seen')
+      .order('co_occurrence_count', { ascending: false })
+      .limit(100);
+
+    if (error) return json(502, { error: error.message });
+
+    const maxCount = data.length ? Math.max(...data.map(r => r.co_occurrence_count)) : 1;
+    const edges = (data || []).map(r => ({
+      ...r,
+      strength: parseFloat((r.co_occurrence_count / maxCount).toFixed(3)),
+    }));
+    return json(200, { mode: 'sector_constellation', edges, count: edges.length });
+  }
+
+  // ── Phase 1.5: Organisation Constellation ────────────────────────────────
+  if (mode === 'org_constellation') {
+    const { data, error } = await supabase
+      .from('org_constellation')
+      .select('org_a, org_b, signal_count, last_seen, context_summary')
+      .order('signal_count', { ascending: false })
+      .limit(100);
+
+    if (error) return json(502, { error: error.message });
+    return json(200, { mode: 'org_constellation', edges: data || [], count: (data || []).length });
+  }
+
+  // ── Phase 1.5: Discovered Sources ────────────────────────────────────────
+  if (mode === 'discovered') {
+    const { data, error } = await supabase
+      .from('discovered_sources')
+      .select('id, org_name, website_url, rss_url, discovered_via, relevance_score, small_cohort_flag, status, discovered_at')
+      .eq('status', 'pending_review')
+      .order('relevance_score', { ascending: false })
+      .limit(50);
+
+    if (error) return json(502, { error: error.message });
+    return json(200, { mode: 'discovered', candidates: data || [], count: (data || []).length });
   }
 
   // ── All mode: paginated ───────────────────────────────────────────────────

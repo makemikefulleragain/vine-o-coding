@@ -52,6 +52,8 @@
       <button class="view-btn" data-view="patterns" onclick="switchView('patterns');loadPatterns()">🧬 Patterns</button>
       <button class="view-btn" data-view="matchmake" onclick="switchView('matchmake');loadMatchMake()">⚡ Match+Make</button>
       <button class="view-btn" data-view="outreach" onclick="switchView('outreach');loadOutreach()">📬 Outreach</button>
+      <button class="view-btn" data-view="sources" onclick="switchView('sources');loadSources()" id="nav-sources">📡 Sources</button>
+      <button class="view-btn" data-view="constellation" onclick="switchView('constellation');loadConstellation()" id="nav-constellation">🌐 Constellation</button>
       <span class="nav-divider"></span>
       <button class="view-btn view-btn-guide" onclick="toggleGuides()" title="Toggle section guides">?</button>
     </nav>
@@ -473,6 +475,39 @@
       </div>
       <div id="pulseStatus" style="font-size:12px;color:var(--dim);margin-bottom:12px"></div>
       <div id="pulseOut"><p style="color:var(--faint);padding:16px">Loading signals…</p></div>
+    </div>
+
+    <!-- VIEW: SOURCES (Phase 1.5) -->
+    <div class="view-panel" id="view-sources">
+      <div class="cmd-section-head" style="margin-bottom:16px">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text);margin:0">📡 Sources</h2>
+        <span class="cmd-section-hint">Community Signal System — Phase 1.5 PRODUCTION SOURCES</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <button class="fbtn tab-btn active" onclick="setSourcesTab('active',this)">Active Sources</button>
+        <button class="fbtn tab-btn" onclick="setSourcesTab('discovered',this)">Discovered</button>
+        <button class="fbtn tab-btn" onclick="setSourcesTab('manual',this)">Manual Checklist</button>
+        <button class="fbtn" style="background:var(--sky);color:#fff;margin-left:auto" onclick="triggerSourceDiscovery()">🔍 Discover</button>
+        <button class="fbtn" style="background:var(--ember);color:#fff" onclick="triggerRSSScheduler()">⚡ Fetch Now</button>
+        <button class="btn-ghost" onclick="loadSources()">↺ Refresh</button>
+      </div>
+      <div id="sourcesStatus" style="font-size:12px;color:var(--dim);margin-bottom:12px"></div>
+      <div id="sourcesOut"><p style="color:var(--faint);padding:16px">Loading sources…</p></div>
+    </div>
+
+    <!-- VIEW: CONSTELLATION (Phase 1.5) -->
+    <div class="view-panel" id="view-constellation">
+      <div class="cmd-section-head" style="margin-bottom:16px">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text);margin:0">🌐 Constellation</h2>
+        <span class="cmd-section-hint">Community Signal System — Sector + Organisation network graphs</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <button class="fbtn tab-btn active" onclick="setConstellationTab('sector',this)">Sector Map</button>
+        <button class="fbtn tab-btn" onclick="setConstellationTab('org',this)">Organisation Network</button>
+        <button class="btn-ghost" style="margin-left:auto" onclick="loadConstellation()">↺ Refresh</button>
+      </div>
+      <div id="constellationStatus" style="font-size:12px;color:var(--dim);margin-bottom:12px"></div>
+      <div id="constellationOut"><p style="color:var(--faint);padding:16px">Loading constellation…</p></div>
     </div>
 
     <!-- VIEW: ROADMAP -->
