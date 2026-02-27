@@ -70,9 +70,18 @@ export const handler = async (event) => {
     .select('*')
     .eq('status', 'accumulating');
 
-  // 3. Ask Claude to group signals into patterns
-  const grouped = await groupSignalsWithClaude(signals, existingPatterns || []);
-  if (!grouped) { console.error('pattern-detect-background: Claude grouping failed'); return; }
+  // 3. Ask Claude to group signals into patterns (chunked to avoid response truncation on large datasets)
+  const CHUNK_SIZE = 25;
+  const allGroups = [];
+  for (let i = 0; i < signals.length; i += CHUNK_SIZE) {
+    const chunk = signals.slice(i, i + CHUNK_SIZE);
+    console.log(`pattern-detect-background: grouping chunk ${Math.floor(i/CHUNK_SIZE)+1}/${Math.ceil(signals.length/CHUNK_SIZE)} (${chunk.length} signals)…`);
+    const result = await groupSignalsWithClaude(chunk, existingPatterns || []);
+    if (result?.groups) allGroups.push(...result.groups);
+    else console.warn(`pattern-detect-background: chunk ${Math.floor(i/CHUNK_SIZE)+1} grouping returned null — skipping`);
+  }
+  const grouped = { groups: allGroups };
+  if (allGroups.length === 0) { console.error('pattern-detect-background: all chunks failed grouping'); return; }
 
   let patternsCreated = 0;
   let patternsUpdated = 0;
