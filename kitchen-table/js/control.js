@@ -1614,8 +1614,11 @@ function _wmAbilities(){
   document.getElementById('wm-panel')?.appendChild(modal);
 }
 
+// ── COMMUNITY SIGNAL PROXY (all calls go same-origin → cs-proxy → community-signal server-side) ──
+const _CS='/.netlify/functions/cs-proxy?fn=';
+
 // ── SECTOR PULSE VIEW ─────────────────────────
-const PULSE_URL='https://community-signal.netlify.app/.netlify/functions/signals-read';
+const PULSE_URL=_CS+'signals-read';
 function getPulseSecret(){
   let s=localStorage.getItem('pulse_secret');
   if(!s){s=prompt('Enter the Community Signal secret key (stored locally, never sent to Kamunity servers):','');if(s)localStorage.setItem('pulse_secret',s);}
@@ -1723,9 +1726,9 @@ function pulseAsk(id){
 function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // ── PATTERNS VIEW (Phase 2 PROPAGATE) ─────────────────────────────────────────
-const PATTERN_URL   ='https://community-signal.netlify.app/.netlify/functions/pattern-detect';
-const STORE_URL     ='https://community-signal.netlify.app/.netlify/functions/signal-store';
-const NEWSLETTER_URL='https://community-signal.netlify.app/.netlify/functions/newsletter-draft';
+const PATTERN_URL   =_CS+'pattern-detect';
+const STORE_URL     =_CS+'signal-store';
+const NEWSLETTER_URL=_CS+'newsletter-draft';
 
 let _patMode='patterns';
 
@@ -1828,12 +1831,42 @@ async function runPatternDetect(){
   if(status)status.textContent='Running pattern detection…';
   try{
     const r=await fetch(PATTERN_URL,{method:'POST',headers:{'x-ingest-secret':getPulseSecret()}});
-    const data=await r.json();
-    if(status)status.textContent=`Detection complete: ${data.patterns_created||0} created, ${data.patterns_updated||0} updated`;
-    loadPatterns();
+    if(r.status===202){
+      if(status)status.textContent='Detection running in background — polling for results…';
+      const before=await _getPatternCount();
+      let polls=0;
+      const poll=setInterval(async()=>{
+        polls++;
+        const after=await _getPatternCount();
+        if(after>before){
+          clearInterval(poll);
+          if(status)status.textContent=`Detection complete — ${after-before} new pattern(s) found`;
+          loadPatterns();
+        }else if(polls>=36){
+          clearInterval(poll);
+          if(status)status.textContent='Detection complete — no new patterns (signals may need more time or lacked groupings)';
+          loadPatterns();
+        }else{
+          if(status)status.textContent=`Detection running… (${polls*5}s elapsed)`;
+        }
+      },5000);
+    }else{
+      const data=await r.json();
+      if(status)status.textContent=`Detection complete: ${data.patterns_created||0} created, ${data.patterns_updated||0} updated`;
+      loadPatterns();
+    }
   }catch(e){
     if(status)status.textContent='Detection failed: '+e.message;
   }
+}
+
+async function _getPatternCount(){
+  try{
+    const r=await fetch(PATTERN_URL+'&mode=patterns',{headers:{'x-ingest-secret':getPulseSecret()}});
+    if(!r.ok)return 0;
+    const d=await r.json();
+    return d.count||0;
+  }catch{return 0;}
 }
 
 async function generateDrafts(patternId){
@@ -1921,9 +1954,9 @@ function patternAsk(id){
 
 // ── MATCH + MAKE (Phase 3) ──────────────────────────────────────────────────
 
-const MATCH_URL    ='https://community-signal.netlify.app/.netlify/functions/match-engine';
-const GENERATE_URL ='https://community-signal.netlify.app/.netlify/functions/generate-thing';
-const GENERATE_BG_URL='https://community-signal.netlify.app/.netlify/functions/generate-thing-background';
+const MATCH_URL      =_CS+'match-engine';
+const GENERATE_URL   =_CS+'generate-thing';
+const GENERATE_BG_URL=_CS+'generate-thing-background';
 
 let mmMode='library';
 
@@ -2119,8 +2152,8 @@ function mmAsk(id){
 
 // ── OUTREACH (Phase 4) ──────────────────────────────────────────────────────
 
-const OPTIN_URL  ='https://community-signal.netlify.app/.netlify/functions/opt-in';
-const DM_URL     ='https://community-signal.netlify.app/.netlify/functions/dm-send';
+const OPTIN_URL=_CS+'opt-in';
+const DM_URL   =_CS+'dm-send';
 
 let outMode='pending';
 
@@ -2283,7 +2316,7 @@ async function outDraftForContact(contactId){
   const status=document.getElementById('outStatus');
   if(status)status.textContent='Fetching library items…';
   try{
-    const r=await fetch('https://community-signal.netlify.app/.netlify/functions/match-engine?mode=library',{headers:{'x-ingest-secret':getPulseSecret()}});
+    const r=await fetch(_CS+'match-engine&mode=library',{headers:{'x-ingest-secret':getPulseSecret()}});
     const data=await r.json();
     const items=(data.items||data.library||[]).filter(i=>i.artifact_title);
     if(!items.length){if(status)status.textContent='No commons library artifacts to send. Generate one first (Phase 3).';return;}
@@ -2319,9 +2352,9 @@ function escHtml(s){
 }
 
 // ── SOURCES VIEW (Phase 1.5) ──────────────────────────────────────────────────
-const SOURCES_DISCOVERY_URL='https://community-signal.netlify.app/.netlify/functions/source-discovery';
-const SOURCES_SCHEDULER_URL='https://community-signal.netlify.app/.netlify/functions/rss-scheduler';
-const FETCH_LOG_URL='https://community-signal.netlify.app/.netlify/functions/signals-read';
+const SOURCES_DISCOVERY_URL=_CS+'source-discovery';
+const SOURCES_SCHEDULER_URL=_CS+'rss-scheduler';
+const FETCH_LOG_URL=_CS+'signals-read';
 
 let _sourcesTab='active';
 
@@ -2492,7 +2525,7 @@ async function triggerRSSScheduler(){
 }
 
 // ── CONSTELLATION VIEW (Phase 1.5) ────────────────────────────────────────────
-const CONSTELLATION_URL='https://community-signal.netlify.app/.netlify/functions/signals-read';
+const CONSTELLATION_URL=_CS+'signals-read';
 
 let _constellationTab='sector';
 
