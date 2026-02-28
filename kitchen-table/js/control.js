@@ -1819,8 +1819,7 @@ function renderPatterns(patterns){
           ${p.traceability_reasoning?.recommendation?`<span style="font-size:11px;color:var(--dim)"> — ${escHtml(p.traceability_reasoning.recommendation)}</span>`:''}
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;min-width:100px">
-          ${p.traceability_verdict==='PASS'&&!p.drafts_generated_at?`<button class="task-action-btn" style="background:var(--sky);color:#fff" onclick="generateDrafts('${p.id}')">✍ Draft</button>`:''}
-          ${p.newsletter_draft?`<button class="task-action-btn" onclick="viewDraft('${p.id}')">👁 View draft</button>`:''}
+          ${p.traceability_verdict==='PASS'?(p.newsletter_draft?`<button class="task-action-btn" style="background:var(--moss);color:#fff" onclick="viewDraft('${p.id}')">👁 View draft</button>`:`<button class="task-action-btn" style="background:var(--sky);color:#fff" onclick="generateDrafts('${p.id}')">✍ Draft</button>`):''}
           <button class="task-action-btn" onclick="patternAsk('${p.id}')">🤖 Ask WM</button>
         </div>
       </div>
@@ -1967,6 +1966,7 @@ async function patternSkip(id){
 
 function viewDraft(id){
   setPatternMode('queue',document.getElementById('patFilterQueue'));
+  if(id){setTimeout(()=>{const el=document.getElementById('qpat-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},400);}
 }
 
 function copyDraft(id,text){
