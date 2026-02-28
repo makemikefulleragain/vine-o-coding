@@ -1902,15 +1902,45 @@ async function _getPatternCount(){
 
 async function generateDrafts(patternId){
   const status=document.getElementById('patStatus');
-  if(status)status.textContent='Generating newsletter drafts…';
+  if(status)status.textContent='Starting draft generation…';
   try{
     const r=await fetch(NEWSLETTER_URL,{method:'POST',headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'}});
-    const data=await r.json();
-    if(status)status.textContent=`Drafted ${data.drafted||0} pattern${data.drafted!==1?'s':''}`;
-    loadPatterns();
+    if(r.status===202){
+      if(status)status.textContent='Draft generation running in background — polling for results…';
+      const before=await _getDraftCount();
+      let polls=0;
+      const poll=setInterval(async()=>{
+        polls++;
+        const after=await _getDraftCount();
+        if(after>before){
+          clearInterval(poll);
+          if(status)status.textContent=`${after-before} draft(s) generated — check Newsletter queue`;
+          loadPatterns();
+        }else if(polls>=24){
+          clearInterval(poll);
+          if(status)status.textContent='Draft generation complete — check Newsletter queue tab';
+          loadPatterns();
+        }else{
+          if(status)status.textContent=`Drafting… (${polls*5}s elapsed)`;
+        }
+      },5000);
+    }else{
+      const data=await r.json();
+      if(status)status.textContent=`Drafted ${data.drafted||0} pattern${data.drafted!==1?'s':''}`;
+      loadPatterns();
+    }
   }catch(e){
     if(status)status.textContent='Draft generation failed: '+e.message;
   }
+}
+
+async function _getDraftCount(){
+  try{
+    const r=await fetch(NEWSLETTER_URL+'&mode=queue',{headers:{'x-ingest-secret':getPulseSecret()}});
+    if(!r.ok)return 0;
+    const d=await r.json();
+    return(d.queue||[]).filter(p=>p.newsletter_draft).length;
+  }catch{return 0;}
 }
 
 async function patternApprove(id){

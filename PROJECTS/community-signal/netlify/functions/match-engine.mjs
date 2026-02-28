@@ -69,7 +69,15 @@ export const handler = async (event) => {
     return json(405, { error: 'POST required for triage mode' });
   }
 
-  console.log('match-engine: triggering background triage…');
+  const secret = event.headers['x-ingest-secret'];
+  const bgUrl  = `${process.env.URL}/.netlify/functions/match-engine-background`;
+  console.log('match-engine: triggering background triage at', bgUrl);
+  fetch(bgUrl, {
+    method:  'POST',
+    headers: { 'x-ingest-secret': secret, 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ pattern_id: patternId || null }),
+  }).catch(err => console.error('match-engine: background trigger failed:', err.message));
+
   return json(202, { message: 'Triage started', note: 'Poll GET ?mode=library for results in ~2 minutes' });
 };
 

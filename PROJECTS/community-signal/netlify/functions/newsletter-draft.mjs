@@ -79,7 +79,15 @@ export const handler = async (event) => {
     return json(405, { error: 'POST required for generate mode' });
   }
 
-  console.log('newsletter-draft: triggering background draft generation…');
+  const secret = event.headers['x-ingest-secret'];
+  const bgUrl  = `${process.env.URL}/.netlify/functions/newsletter-draft-background`;
+  console.log('newsletter-draft: triggering background at', bgUrl);
+  fetch(bgUrl, {
+    method:  'POST',
+    headers: { 'x-ingest-secret': secret, 'Content-Type': 'application/json' },
+    body:    JSON.stringify({}),
+  }).catch(err => console.error('newsletter-draft: background trigger failed:', err.message));
+
   return json(202, { message: 'Draft generation started', note: 'Poll GET ?mode=queue for results in ~2 minutes' });
 };
 
