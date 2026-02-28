@@ -50,17 +50,16 @@ export const handler = async (event) => {
     if (error || !data) { console.error('Library item not found:', libraryId); return; }
     items = [data];
   } else {
-    // Find items needing generation: review_status=pending AND no real artifact yet
-    // (artifact_content is either the placeholder text or a short CONNECT reference)
-    const { data: allPending, error } = await supabase
+    // Find items needing generation: pending or approved, with stub artifact content
+    const { data: allItems, error } = await supabase
       .from('commons_library')
       .select('*, patterns(*)')
-      .eq('review_status', 'pending');
+      .in('review_status', ['pending', 'approved']);
 
     if (error) { console.error('DB read failed:', error.message); return; }
 
     // Filter to items without substantial artifact content (< 200 chars = placeholder/stub)
-    const data = (allPending || []).filter(i =>
+    const data = (allItems || []).filter(i =>
       !i.artifact_content || i.artifact_content.length < 200
     );
 

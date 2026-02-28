@@ -2085,17 +2085,15 @@ function renderMMLibrary(items,out){
         </details>`
       :'';
 
-    const actions=isPending
-      ?''
-      :item.review_status==='pending'
-      ?`<div style="display:flex;gap:8px;margin-top:8px">
+    const actions=item.review_status==='pending'
+      ?`<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
           <button class="task-action-btn" style="background:var(--moss);color:#fff" onclick="mmApprove('${item.id}')">✓ Approve</button>
           <button class="task-action-btn" onclick="mmReject('${item.id}')">✗ Reject</button>
-          <button class="task-action-btn" onclick="mmCopyArtifact('${item.id}')">📋 Copy</button>
+          ${!isPending?`<button class="task-action-btn" onclick="mmCopyArtifact('${item.id}')">📋 Copy</button>`:''}
           <button class="task-action-btn" onclick="mmAsk('${item.id}')">🔮 Ask WM</button>
         </div>`
       :`<div style="display:flex;gap:8px;margin-top:8px">
-          <button class="task-action-btn" onclick="mmCopyArtifact('${item.id}')">📋 Copy artifact</button>
+          ${!isPending?`<button class="task-action-btn" onclick="mmCopyArtifact('${item.id}')">📋 Copy artifact</button>`:''}
           <button class="task-action-btn" onclick="mmAsk('${item.id}')">🔮 Ask WM</button>
         </div>`;
 
