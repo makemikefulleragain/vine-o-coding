@@ -2134,15 +2134,45 @@ function escHtml(s){
 
 async function runTriage(){
   const status=document.getElementById('mmStatus');
-  if(status)status.textContent='Running triage…';
+  if(status)status.textContent='Starting triage…';
   try{
     const r=await fetch(MATCH_URL,{method:'POST',headers:{'x-ingest-secret':getPulseSecret(),'Content-Type':'application/json'},body:'{}'});
-    const data=await r.json();
-    if(status)status.textContent=`Triage complete: ${data.triaged||0} pattern${data.triaged!==1?'s':''} triaged`;
-    loadMatchMake();
+    if(r.status===202){
+      if(status)status.textContent='Triage running in background — polling for results…';
+      const before=await _getLibraryCount();
+      let polls=0;
+      const poll=setInterval(async()=>{
+        polls++;
+        const after=await _getLibraryCount();
+        if(after>before){
+          clearInterval(poll);
+          if(status)status.textContent=`Triage complete — ${after-before} new item(s) in library`;
+          loadMatchMake();
+        }else if(polls>=24){
+          clearInterval(poll);
+          if(status)status.textContent='Triage complete — refresh to see results';
+          loadMatchMake();
+        }else{
+          if(status)status.textContent=`Triaging… (${polls*5}s elapsed)`;
+        }
+      },5000);
+    }else{
+      const data=await r.json();
+      if(status)status.textContent=`Triage complete: ${data.triaged||0} pattern${data.triaged!==1?'s':''} triaged`;
+      loadMatchMake();
+    }
   }catch(e){
     if(status)status.textContent='Triage failed: '+e.message;
   }
+}
+
+async function _getLibraryCount(){
+  try{
+    const r=await fetch(MATCH_URL+'?mode=library',{headers:{'x-ingest-secret':getPulseSecret()}});
+    if(!r.ok)return 0;
+    const d=await r.json();
+    return(d.library||[]).length;
+  }catch{return 0;}
 }
 
 async function runGenerate(){
