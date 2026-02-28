@@ -1731,6 +1731,8 @@ const STORE_URL     =_CS+'signal-store';
 const NEWSLETTER_URL=_CS+'newsletter-draft';
 
 let _patMode='patterns';
+let _patVerdict='all';
+let _patternsCache=[];
 
 function setPatternMode(mode,btn){
   _patMode=mode;
@@ -1760,23 +1762,52 @@ async function loadPatterns(){
       if(status)status.textContent=(data.count||0)+' pattern'+(data.count!==1?'s':'')+' in newsletter queue';
       renderNewsletterQueue(data.queue||[]);
     } else {
+      _patternsCache=data.patterns||[];
+      _renderVerdictCounts(_patternsCache);
       if(status)status.textContent=(data.count||0)+' pattern'+(data.count!==1?'s':'')+' detected';
-      renderPatterns(data.patterns||[]);
+      renderPatterns(_patternsCache);
     }
   }catch(e){
     out.innerHTML='<p style="color:var(--danger);padding:16px">Could not reach Pattern endpoint.<br><small>'+e.message+'</small></p>';
   }
 }
 
+function setPatternVerdict(v,btn){
+  _patVerdict=v;
+  document.querySelectorAll('#patVerdictBar .vbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderPatterns(_patternsCache);
+}
+
+function _renderVerdictCounts(patterns){
+  const bar=document.getElementById('patVerdictBar');if(!bar)return;
+  const counts={all:patterns.length,PASS:0,REVIEW:0,FAIL:0,accumulating:0};
+  patterns.forEach(p=>{
+    if(p.traceability_verdict==='PASS')counts.PASS++;
+    else if(p.traceability_verdict==='REVIEW')counts.REVIEW++;
+    else if(p.traceability_verdict==='FAIL')counts.FAIL++;
+    if(p.status==='accumulating')counts.accumulating++;
+  });
+  bar.innerHTML=
+    `<button class="vbtn${_patVerdict==='all'?' active':''}" onclick="setPatternVerdict('all',this)">All <span class="vcount">${counts.all}</span></button>`+
+    `<button class="vbtn pass${_patVerdict==='PASS'?' active':''}" onclick="setPatternVerdict('PASS',this)">PASS <span class="vcount">${counts.PASS}</span></button>`+
+    `<button class="vbtn review${_patVerdict==='REVIEW'?' active':''}" onclick="setPatternVerdict('REVIEW',this)">REVIEW <span class="vcount">${counts.REVIEW}</span></button>`+
+    `<button class="vbtn fail${_patVerdict==='FAIL'?' active':''}" onclick="setPatternVerdict('FAIL',this)">FAIL <span class="vcount">${counts.FAIL}</span></button>`+
+    `<button class="vbtn accum${_patVerdict==='accumulating'?' active':''}" onclick="setPatternVerdict('accumulating',this)">Accumulating <span class="vcount">${counts.accumulating}</span></button>`;
+}
+
 function renderPatterns(patterns){
   const out=document.getElementById('patOut');if(!out)return;
-  if(!patterns.length){
+  const filtered=_patVerdict==='all'?patterns
+    :_patVerdict==='accumulating'?patterns.filter(p=>p.status==='accumulating')
+    :patterns.filter(p=>p.traceability_verdict===_patVerdict);
+  if(!filtered.length){
     out.innerHTML='<p style="color:var(--faint);padding:16px">No patterns yet. Add field signals or run ⚡ Detect patterns after signals accumulate.</p>';
     return;
   }
   const verdictColor=v=>v==='PASS'?'var(--moss)':v==='FAIL'?'var(--danger)':v==='REVIEW'?'var(--ember)':'var(--dim)';
   const statusIcon=s=>s==='ready'?'✅':s==='published'?'📢':s==='skipped'?'⏭':s==='accumulating'?'⏳':'❓';
-  out.innerHTML=patterns.map(p=>{
+  out.innerHTML=filtered.map(p=>{
     const tags=(p.sector_tags||[]).map(t=>`<span style="background:var(--hover);border-radius:4px;padding:2px 6px;font-size:10px;color:var(--dim)">${t}</span>`).join(' ');
     return`<div class="gap-card" style="margin-bottom:12px" id="pat-${p.id}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">

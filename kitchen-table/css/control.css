@@ -573,6 +573,17 @@
 }
 .fbtn:hover { background: var(--hover); }
 .fbtn.active { background: var(--active); border-color: var(--active); color: var(--text); font-weight: 600; }
+.vbtn { padding: 4px 10px; border: 1.5px solid var(--hover); border-radius: 20px; background: var(--bg); font-size: 11px; color: var(--dim); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.vbtn:hover { background: var(--hover); }
+.vbtn.active { border-color: currentColor; font-weight: 700; }
+.vbtn.pass { color: var(--moss); }
+.vbtn.pass.active { background: var(--moss); color: #fff; border-color: var(--moss); }
+.vbtn.review { color: var(--ember); }
+.vbtn.review.active { background: var(--ember); color: #fff; border-color: var(--ember); }
+.vbtn.fail { color: var(--danger); }
+.vbtn.fail.active { background: var(--danger); color: #fff; border-color: var(--danger); }
+.vbtn.accum.active { background: var(--active); border-color: var(--active); color: var(--text); }
+.vcount { font-size: 10px; opacity: 0.8; margin-left: 3px; }
 .task-group-head { font-size: 12px; font-weight: 700; color: var(--dim); text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 0; border-bottom: 1px solid var(--hover); margin-bottom: 8px; }
 .task-item {
   display: flex; align-items: flex-start; gap: 10px;
