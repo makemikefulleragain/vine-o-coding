@@ -15,10 +15,10 @@ const STEP_HEADINGS = [
   { title: 'What should this NOT do?', subtitle: 'Every project needs edges. What\'s out of scope? What could go wrong?' },
   { title: 'What should be built first?', subtitle: "You don't have to plan everything. Just the first three steps. The method will help you figure out the rest." },
   { title: 'Where will this live?', subtitle: "Your tool needs a home on the internet. Don't worry — we'll help you set it up." },
-  { title: 'Your foundation documents are ready', subtitle: 'These 6 files tell an AI coding assistant everything it needs to know about your project. Review them, then download.' },
+  { title: 'Your foundation documents are ready', subtitle: 'These files give an AI coding assistant a grounded, reviewable starting point. Review them, then download.' },
 ]
 
-export default function WidgetShell({ currentStep, onNext, onBack, canNext, children }) {
+export default function WidgetShell({ currentStep, onNext, onBack, onReset, canNext, children }) {
   const isLastStep = currentStep === STEPS.length - 1
   const isFirstStep = currentStep === 0
   const heading = STEP_HEADINGS[currentStep]
@@ -35,6 +35,7 @@ export default function WidgetShell({ currentStep, onNext, onBack, canNext, chil
               <li key={i} className="flex items-center flex-1 last:flex-none">
                 <div className="flex flex-col items-center">
                   <div
+                    aria-current={isCurrent ? 'step' : undefined}
                     className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
                       isCompleted
                         ? 'bg-emerald-500 text-white'
@@ -71,7 +72,16 @@ export default function WidgetShell({ currentStep, onNext, onBack, canNext, chil
         <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
           {heading.title}
         </h2>
-        <p className="mt-2 text-slate-500 text-base">{heading.subtitle}</p>
+        <div className="mt-2 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+          <p className="text-slate-500 text-base">{heading.subtitle}</p>
+          <button
+            type="button"
+            onClick={onReset}
+            className="self-start text-xs font-semibold text-slate-500 hover:text-red-600 transition-colors"
+          >
+            Reset draft
+          </button>
+        </div>
       </div>
 
       {/* Step content */}
@@ -85,6 +95,7 @@ export default function WidgetShell({ currentStep, onNext, onBack, canNext, chil
           <button
             onClick={onBack}
             disabled={isFirstStep}
+            type="button"
             className={`inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-xl transition-colors ${
               isFirstStep
                 ? 'text-slate-300 cursor-not-allowed'
@@ -98,6 +109,7 @@ export default function WidgetShell({ currentStep, onNext, onBack, canNext, chil
           <button
             onClick={onNext}
             disabled={!canNext}
+            type="button"
             className={`inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl transition-colors ${
               canNext
                 ? 'bg-indigo-600 text-white hover:bg-indigo-700'

@@ -1,18 +1,36 @@
 import JSZip from 'jszip'
-import { saveAs } from 'file-saver'
 
-export async function downloadZip(docs, projectName) {
+export function getZipFilename(projectName) {
+  const safeName = projectName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'community-app'
+
+  return `${safeName}-foundation.zip`
+}
+
+export async function createZipBlob(docs) {
   const zip = new JSZip()
 
   Object.entries(docs).forEach(([filename, content]) => {
     zip.file(filename, content)
   })
 
-  const blob = await zip.generateAsync({ type: 'blob' })
-  const safeName = projectName
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
+  return zip.generateAsync({ type: 'blob', mimeType: 'application/zip' })
+}
 
-  saveAs(blob, `${safeName}-foundation.zip`)
+export async function downloadZip(docs, projectName) {
+  const blob = await createZipBlob(docs)
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+
+  anchor.href = url
+  anchor.download = getZipFilename(projectName)
+  anchor.style.display = 'none'
+
+  document.body.appendChild(anchor)
+  anchor.click()
+  document.body.removeChild(anchor)
+
+  window.setTimeout(() => URL.revokeObjectURL(url), 0)
 }

@@ -5,6 +5,12 @@ export default function FadeIn({ children, className = '', delay = 0 }) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      setVisible(true)
+      return undefined
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -25,7 +31,7 @@ export default function FadeIn({ children, className = '', delay = 0 }) {
       className={`${className} transition-all duration-500 ease-out ${
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
       }`}
-      style={{ transitionDelay: delay ? `${delay}ms` : '0ms' }}
+      style={{ transitionDelay: visible && delay ? `${delay}ms` : '0ms' }}
     >
       {children}
     </div>

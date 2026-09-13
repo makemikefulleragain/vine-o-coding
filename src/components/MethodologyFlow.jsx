@@ -15,6 +15,8 @@ export default function MethodologyFlow({ compact = false }) {
   const [activeStep, setActiveStep] = useState(-1)
   const [playing, setPlaying] = useState(false)
   const [completed, setCompleted] = useState(false)
+  const reduceMotion = typeof window !== 'undefined'
+    && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
   const reset = useCallback(() => {
     setActiveStep(-1)
@@ -36,6 +38,13 @@ export default function MethodologyFlow({ compact = false }) {
   }, [playing, activeStep])
 
   const handlePlay = () => {
+    if (reduceMotion) {
+      setActiveStep(STEPS.length - 1)
+      setCompleted(true)
+      setPlaying(false)
+      return
+    }
+
     if (completed) {
       reset()
       setTimeout(() => {
@@ -126,6 +135,7 @@ export default function MethodologyFlow({ compact = false }) {
         <button
           onClick={completed ? handlePlay : handlePlay}
           disabled={playing}
+          aria-live="polite"
           className={`inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl transition-all ${
             playing
               ? 'bg-slate-100 text-slate-400 cursor-not-allowed'

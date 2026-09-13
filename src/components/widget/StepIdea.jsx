@@ -10,10 +10,11 @@ export default function StepIdea({ data, onChange }) {
       {/* Form */}
       <div className="lg:col-span-2 space-y-5">
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="projectName" className="block text-sm font-semibold text-slate-700 mb-1.5">
             Give your project a name
           </label>
           <input
+            id="projectName"
             type="text"
             value={data.projectName}
             onChange={e => update('projectName', e.target.value)}
@@ -23,10 +24,11 @@ export default function StepIdea({ data, onChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="whatItDoes" className="block text-sm font-semibold text-slate-700 mb-1.5">
             In a sentence or two, what does this tool do?
           </label>
           <textarea
+            id="whatItDoes"
             value={data.whatItDoes}
             onChange={e => update('whatItDoes', e.target.value)}
             placeholder="e.g. A place for our cooking club to share recipes, rate them, and plan what to cook next."
@@ -36,10 +38,11 @@ export default function StepIdea({ data, onChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="whoItsFor" className="block text-sm font-semibold text-slate-700 mb-1.5">
             Who will use this? A club, a team, a community?
           </label>
           <textarea
+            id="whoItsFor"
             value={data.whoItsFor}
             onChange={e => update('whoItsFor', e.target.value)}
             placeholder="e.g. My school cooking club — 12 members, years 9-10."
@@ -49,10 +52,11 @@ export default function StepIdea({ data, onChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="problemItSolves" className="block text-sm font-semibold text-slate-700 mb-1.5">
             What problem does it fix? What's hard right now without it?
           </label>
           <textarea
+            id="problemItSolves"
             value={data.problemItSolves}
             onChange={e => update('problemItSolves', e.target.value)}
             placeholder="e.g. Recipes are scattered across group chats and random websites. Nobody can find anything when it's time to cook."

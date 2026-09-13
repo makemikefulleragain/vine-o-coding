@@ -10,10 +10,11 @@ export default function StepBoundaries({ data, onChange }) {
       {/* Form */}
       <div className="lg:col-span-2 space-y-5">
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="whatItsNot" className="block text-sm font-semibold text-slate-700 mb-1.5">
             List things your tool should NOT try to do
           </label>
           <textarea
+            id="whatItsNot"
             value={data.whatItsNot}
             onChange={e => update('whatItsNot', e.target.value)}
             placeholder="e.g. Not a social media app. Not a meal delivery service. Not a calorie counter."
@@ -23,14 +24,16 @@ export default function StepBoundaries({ data, onChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="harmConsiderations" className="block text-sm font-semibold text-slate-700 mb-1.5">
             Could this tool cause harm if it gets something wrong?
             <span className="font-normal text-slate-400 ml-1">(optional but important)</span>
           </label>
-          <p className="text-xs text-slate-400 mb-2">
+          <p id="harmConsiderations-help" className="text-xs text-slate-400 mb-2">
             Think about: financial data, health info, personal details, safety-critical decisions.
           </p>
           <textarea
+            id="harmConsiderations"
+            aria-describedby="harmConsiderations-help"
             value={data.harmConsiderations}
             onChange={e => update('harmConsiderations', e.target.value)}
             placeholder="e.g. Food allergies — should show allergen warnings. School-age users — no personal info beyond first names."

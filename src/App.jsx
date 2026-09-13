@@ -11,6 +11,7 @@ import Method from './pages/Method.jsx'
 import CaseStudy from './pages/CaseStudy.jsx'
 import OurStory from './pages/OurStory.jsx'
 import About from './pages/About.jsx'
+import NotFound from './pages/NotFound.jsx'
 
 export default function App() {
   const [feedbackOpen, setFeedbackOpen] = useState(false)
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/case-study" element={<CaseStudy />} />
           <Route path="/our-story" element={<OurStory />} />
           <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />

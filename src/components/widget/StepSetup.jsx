@@ -78,11 +78,12 @@ export default function StepSetup({ data, onChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="techNotes" className="block text-sm font-semibold text-slate-700 mb-1.5">
             Any tools or services you already use or want to use?
             <span className="font-normal text-slate-400 ml-1">(optional)</span>
           </label>
           <textarea
+            id="techNotes"
             value={data.techNotes}
             onChange={e => update('techNotes', e.target.value)}
             placeholder="e.g. Need image uploads for recipe photos. Want to connect to Google Sheets."

@@ -28,6 +28,8 @@ export default function DocumentPreview({ filename, content }) {
         <span className="text-sm font-mono font-semibold text-slate-700">{filename}</span>
         <button
           onClick={handleCopy}
+          type="button"
+          aria-live="polite"
           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors bg-white border border-slate-200 hover:border-indigo-300 hover:text-indigo-600"
         >
           {copied ? (

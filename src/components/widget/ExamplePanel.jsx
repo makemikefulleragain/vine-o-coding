@@ -20,11 +20,16 @@ export default function ExamplePanel({ grantsHub, recipeRemix }) {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-indigo-100">
+      <div className="flex border-b border-indigo-100" role="tablist" aria-label="Example projects">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
+            id={`example-tab-${tab.id}`}
+            role="tab"
+            type="button"
+            aria-selected={activeTab === tab.id}
+            aria-controls={`example-panel-${tab.id}`}
             className={`flex-1 px-3 py-2.5 text-sm font-medium transition-colors ${
               activeTab === tab.id
                 ? 'text-indigo-700 bg-white border-b-2 border-indigo-600'
@@ -38,7 +43,12 @@ export default function ExamplePanel({ grantsHub, recipeRemix }) {
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-3">
+      <dl
+        id={`example-panel-${active.id}`}
+        role="tabpanel"
+        aria-labelledby={`example-tab-${active.id}`}
+        className="p-4 space-y-3"
+      >
         {Object.entries(active.data).map(([label, value]) => (
           <div key={label}>
             <dt className="text-xs font-semibold text-indigo-600 uppercase tracking-wide mb-1">
@@ -47,7 +57,7 @@ export default function ExamplePanel({ grantsHub, recipeRemix }) {
             <dd className="text-sm text-slate-600 leading-relaxed">{value}</dd>
           </div>
         ))}
-      </div>
+      </dl>
     </div>
   )
 }
