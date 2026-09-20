@@ -113,7 +113,7 @@ export function normalizeProjectData(data = {}, options = {}) {
 
   const triggers = EXTRA_RESEARCH_TRIGGERS.filter((trigger) => (
     (trigger.id === 'shared-data' && normalized.hasDatabase)
-      || trigger.keywords.some((keyword) => combined.includes(keyword))
+      || trigger.keywords.some((keyword) => containsTerm(combined, keyword))
   ))
 
   return {
@@ -129,6 +129,11 @@ export function normalizeProjectData(data = {}, options = {}) {
     phase3Title: makeShortTitle(normalized.phase3Goal, 'Make It Trustworthy'),
     researchTriggers: triggers,
   }
+}
+
+function containsTerm(text, term) {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`(^|[^a-z0-9])${escaped}(?=$|[^a-z0-9])`, 'i').test(text)
 }
 
 function generateConstitution(d) {

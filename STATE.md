@@ -1,9 +1,22 @@
 # STATE.md — Outcome Vine Coding Site
 
-**Last updated:** 2026-02-15 (Phase 8 complete — smooth animations + page split + mobile nav)
-**Current phase:** Phase 8 complete. Deployed. Awaiting Round 5 testing.
+**Last updated:** 2026-09-20 (consolidated local release candidate accepted)
+**Current phase:** Consolidated source accepted locally; owner approval required before publication.
 **Deployed URL:** https://vine-o-coding.netlify.app
 **Stack:** Vite 6.4.1 + React 19 + Tailwind CSS 4 + JSZip → Netlify
+
+---
+
+## 2026-09-20 acceptance update
+
+- The canonical local generator now produces the eleven-file Core Plus pack: CONSTITUTION, MISSION, PRODUCT_BRIEF, POC_ACCEPTANCE, DATA_MODEL, RISK_REGISTER, TEST_PLAN, RUNNER, PHASE_QUEUE, SETUP and STATE.
+- The six-step generator and ZIP download passed desktop and 375 × 812 mobile browser checks with no console errors or horizontal overflow.
+- The source suite has 12 automated tests; the production build and dependency audit pass with no known vulnerabilities.
+- A false AI-trigger match caused by substring detection was found during acceptance, fixed with term-boundary matching, and covered by a regression test.
+- The public canonical site is not yet identical to this accepted local build. No remote publication or duplicate-site change is authorised by this update.
+- Full evidence and remaining gates: `LOCAL_RELEASE_ACCEPTANCE_2026-09-20.md`.
+
+The Phase 0–8 record below is retained as development history. Where it describes the earlier six-document widget or earlier test status, this acceptance update is current.
 
 ---
 
@@ -237,7 +250,7 @@
 - No accessibility audit (flagged in Phase 1 critique)
 - No illustrated characters/pictorial animations (Maya's request)
 - Blog-style editorial Our Story not yet built (timeline exists, narrative deferred)
-- No automated tests for widget or case study
+- ~~No automated tests for the widget generator~~ (source suite added; 12 tests pass at local acceptance)
 - No error handling for edge cases in widget
 - Placeholder URL (outcome-vine.netlify.app) needs updating after deploy
 - Footer anchor links (#privacy, #terms) need browser verification

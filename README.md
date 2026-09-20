@@ -18,7 +18,7 @@ Before consolidation, the original history was recovered using GitHub objects pl
 
 - Intended repository: `makemikefulleragain/vine-o-coding`.
 - Intended showcase: `https://vine-o-coding.netlify.app`; duplicate: `https://outcome-vine.netlify.app`.
-- Tests/build and a browser wizard/download smoke check must pass on this source.
-- Confirm the current public site matches the reviewed source before Git linking or redirecting the duplicate.
+- Tests/build, the six-step browser path, the eleven-file download and mobile checks passed locally on 20 September 2026; see `LOCAL_RELEASE_ACCEPTANCE_2026-09-20.md`.
+- The current public canonical site does not yet match the accepted local asset. Owner approval is required before GitHub or Netlify publication.
 - Preserve both deployments and record a known-good rollback deployment before any publication.
 - No deployment, domain change or duplicate retirement is authorized merely by this local consolidation.

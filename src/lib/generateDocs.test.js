@@ -63,6 +63,15 @@ describe('generateDocs', () => {
     )
   })
 
+  it('does not treat the letters ai inside ordinary words as an AI feature', () => {
+    const spec = normalizeProjectData({
+      whatItDoes: 'Shows availability details for pantry collections.',
+      techNotes: 'Begin with local sample data after a written backend decision.',
+    }, { date: '2026-08-31' })
+
+    expect(spec.researchTriggers.map(trigger => trigger.id)).not.toContain('ai-output')
+  })
+
   it('normalizes empty data into a usable starter pack', () => {
     const spec = normalizeProjectData({}, { date: '2026-08-31' })
     const docs = generateDocs({}, { date: '2026-08-31' })
