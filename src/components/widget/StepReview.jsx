@@ -1,18 +1,9 @@
 import { useState } from 'react'
 import { Download, Copy, Check, Sparkles, ArrowRight, ShieldAlert } from 'lucide-react'
 import DocumentPreview from './DocumentPreview.jsx'
-import { generateDocs } from '../../lib/generateDocs.js'
+import { GENERATED_DOC_ORDER, generateDocs } from '../../lib/generateDocs.js'
 import { generatePrompt } from '../../lib/generatePrompt.js'
 import { downloadZip } from '../../lib/downloadZip.js'
-
-const DOC_ORDER = [
-  'CONSTITUTION.md',
-  'MISSION.md',
-  'RUNNER.md',
-  'PHASE_QUEUE.md',
-  'SETUP.md',
-  'STATE.md',
-]
 
 export default function StepReview({ data }) {
   const [activeDoc, setActiveDoc] = useState('CONSTITUTION.md')
@@ -51,15 +42,19 @@ export default function StepReview({ data }) {
       {/* Document tabs + preview */}
       <div>
         <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
-          Your foundation documents
+          Your Core Plus document pack
         </h3>
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-1 mb-4">
-          {DOC_ORDER.map(name => (
+        <div className="flex flex-wrap gap-1 mb-4" role="tablist" aria-label="Generated documents">
+          {GENERATED_DOC_ORDER.map(name => (
             <button
               key={name}
               onClick={() => setActiveDoc(name)}
+              type="button"
+              role="tab"
+              aria-selected={activeDoc === name}
+              aria-controls="document-preview-panel"
               className={`px-3 py-1.5 text-xs font-mono font-medium rounded-lg transition-colors ${
                 activeDoc === name
                   ? 'bg-indigo-600 text-white'
@@ -72,7 +67,9 @@ export default function StepReview({ data }) {
         </div>
 
         {/* Preview */}
-        <DocumentPreview filename={activeDoc} content={docs[activeDoc]} />
+        <div id="document-preview-panel" role="tabpanel">
+          <DocumentPreview filename={activeDoc} content={docs[activeDoc]} />
+        </div>
       </div>
 
       {/* Download ZIP */}
@@ -80,6 +77,8 @@ export default function StepReview({ data }) {
         <button
           onClick={handleDownloadZip}
           disabled={downloading}
+          type="button"
+          aria-live="polite"
           className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-60"
         >
           <Download className="w-5 h-5" />
@@ -96,6 +95,8 @@ export default function StepReview({ data }) {
           </div>
           <button
             onClick={handleCopyPrompt}
+            type="button"
+            aria-live="polite"
             className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-white border border-indigo-200 hover:border-indigo-400 text-indigo-700 transition-colors"
           >
             {promptCopied ? (

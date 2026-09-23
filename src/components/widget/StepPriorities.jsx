@@ -10,10 +10,11 @@ export default function StepPriorities({ data, onChange }) {
       {/* Form */}
       <div className="lg:col-span-2 space-y-5">
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="phase1Goal" className="block text-sm font-semibold text-slate-700 mb-1.5">
             What's the single most important thing to build first?
           </label>
           <textarea
+            id="phase1Goal"
             value={data.phase1Goal}
             onChange={e => update('phase1Goal', e.target.value)}
             placeholder="e.g. Show a list of recipes with photos and ingredient lists. Anyone in the club can browse."
@@ -23,11 +24,12 @@ export default function StepPriorities({ data, onChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="phase2Goal" className="block text-sm font-semibold text-slate-700 mb-1.5">
             After that works, what's next?
             <span className="font-normal text-slate-400 ml-1">(optional)</span>
           </label>
           <textarea
+            id="phase2Goal"
             value={data.phase2Goal}
             onChange={e => update('phase2Goal', e.target.value)}
             placeholder="e.g. Let members add new recipes with a simple form. Rate and comment on recipes."
@@ -37,11 +39,12 @@ export default function StepPriorities({ data, onChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="phase3Goal" className="block text-sm font-semibold text-slate-700 mb-1.5">
             And after that?
             <span className="font-normal text-slate-400 ml-1">(it's fine to leave this blank)</span>
           </label>
           <textarea
+            id="phase3Goal"
             value={data.phase3Goal}
             onChange={e => update('phase3Goal', e.target.value)}
             placeholder="e.g. Plan next session — vote on which recipe to cook, generate a shopping list."

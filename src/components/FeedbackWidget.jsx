@@ -100,12 +100,14 @@ export default function FeedbackWidget({ onClose }) {
         {/* Reaction picker */}
         <div className="px-5 pb-4">
           <p className="text-xs text-slate-500 mb-2">How does this page feel?</p>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-2" role="radiogroup" aria-label="Feedback reaction">
             {REACTIONS.map((r) => (
               <button
                 key={r.value}
                 type="button"
                 onClick={() => setReaction(r.value)}
+                role="radio"
+                aria-checked={reaction === r.value}
                 className={`flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all text-center ${
                   reaction === r.value
                     ? 'border-indigo-400 bg-indigo-50'
@@ -121,7 +123,11 @@ export default function FeedbackWidget({ onClose }) {
 
         {/* Optional message */}
         <div className="px-5 pb-4">
+          <label htmlFor="feedback-message" className="sr-only">
+            Optional feedback message
+          </label>
           <textarea
+            id="feedback-message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Anything else? (optional)"

@@ -10,10 +10,11 @@ export default function StepUsers({ data, onChange }) {
       {/* Form */}
       <div className="lg:col-span-2 space-y-5">
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="primaryUserName" className="block text-sm font-semibold text-slate-700 mb-1.5">
             A name for your main user (real or made up)
           </label>
           <input
+            id="primaryUserName"
             type="text"
             value={data.primaryUserName}
             onChange={e => update('primaryUserName', e.target.value)}
@@ -23,10 +24,11 @@ export default function StepUsers({ data, onChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="primaryUserSituation" className="block text-sm font-semibold text-slate-700 mb-1.5">
             Describe this person and when they'd use your tool
           </label>
           <textarea
+            id="primaryUserSituation"
             value={data.primaryUserSituation}
             onChange={e => update('primaryUserSituation', e.target.value)}
             placeholder="e.g. Year 10, runs the cooking club WhatsApp group. She plans each session and picks the recipe. She's on her phone, usually during lunch."
@@ -36,11 +38,12 @@ export default function StepUsers({ data, onChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label htmlFor="secondaryUser" className="block text-sm font-semibold text-slate-700 mb-1.5">
             Anyone else who might use it?
             <span className="font-normal text-slate-400 ml-1">(optional)</span>
           </label>
           <textarea
+            id="secondaryUser"
             value={data.secondaryUser}
             onChange={e => update('secondaryUser', e.target.value)}
             placeholder="e.g. Club members who want to browse recipes and add their own."
